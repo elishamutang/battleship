@@ -46,8 +46,16 @@ describe('Test gameboard class', () => {
 
             expect(demoGameboard.ships).toContain(ship)
 
-            for (let i = 0; i < ship.length; i++) {
-                expect(demoGameboard.board[x][y + i]).toBe(ship.typeOfShip.split('')[0])
+            let finalY = y + ship.length
+
+            if (finalY > 10) {
+                for (let i = 0; i < ship.length; i++) {
+                    expect(demoGameboard.board[x][y - 1]).toBe(ship.typeOfShip.split('')[0])
+                }
+            } else {
+                for (let i = 0; i < ship.length; i++) {
+                    expect(demoGameboard.board[x][y + 1]).toBe(ship.typeOfShip.split('')[0])
+                }
             }
 
             // Testing out of bounds ship placement
@@ -59,7 +67,7 @@ describe('Test gameboard class', () => {
         // First ship
         it('first ship (destroyer)', () => {
             const demoShip = new Ship(3) // Destroyer
-            const coord = [0, 0]
+            const coord = [2, 1]
 
             placeShipMock(demoShip, coord)
         })
@@ -67,17 +75,25 @@ describe('Test gameboard class', () => {
         // Second ship
         it('second ship (carrier)', () => {
             const demoShip = new Ship(5) // Carrier
-            const coord = [10, 0]
+            const coord = [5, 5]
 
             placeShipMock(demoShip, coord)
         })
 
         // Third ship
         it('third ship (patrol boat)', () => {
-            const demoShip = new Ship(3)
+            const demoShip = new Ship(2) // patrol boat
             const coord = [10, 10]
 
             placeShipMock(demoShip, coord)
+        })
+
+        // Number of ships
+        it('Number of ships and type of ships', () => {
+            expect(demoGameboard.ships.length).toBe(3)
+            expect(demoGameboard.ships[0].typeOfShip).toBe('destroyer')
+            expect(demoGameboard.ships[1].typeOfShip).toBe('carrier')
+            expect(demoGameboard.ships[2].typeOfShip).toBe('patrol boat')
         })
     })
 })
