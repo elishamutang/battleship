@@ -96,4 +96,42 @@ describe('Test gameboard class', () => {
             expect(demoGameboard.ships[2].typeOfShip).toBe('patrol boat')
         })
     })
+
+    // Test receiveAttack method
+    describe('Record hits', () => {
+        // Mock function
+        const hitsTakenMock = jest.fn((coord) => {
+            let [x, y] = coord
+
+            const [ship] = demoGameboard.ships.filter((elem) => {
+                if (elem.typeOfShip.split('')[0] === demoGameboard.board[x][y]) return elem
+            })
+
+            demoGameboard.receiveAttack(coord)
+
+            return ship
+        })
+
+        it('Logs and records hit on gameboard', () => {
+            const coord = [0, 0]
+            const [x, y] = coord
+
+            demoGameboard.receiveAttack(coord)
+
+            expect(demoGameboard.board[x][y]).toBe('x')
+        })
+
+        it('Determines if hit is on a ship or not, if yes log it.', () => {
+            const coord = [2, 1]
+            const [x, y] = coord
+
+            expect(hitsTakenMock(coord).hitsTaken).toBe(1)
+            expect(demoGameboard.board[x][y]).toBe('x')
+        })
+
+        it('Sink ship', () => {
+            hitsTakenMock([10, 10])
+            expect(hitsTakenMock([10, 9]).sunk).toBe(true)
+        })
+    })
 })
