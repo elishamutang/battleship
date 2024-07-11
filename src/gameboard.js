@@ -19,10 +19,15 @@ export class Gameboard {
         // Place ship on gameboard
         this.ships.push(ship)
 
-        let x = coord[0]
-        let y = coord[1]
+        let [x, y] = coord
 
-        this.board[x][y] = 'x'
+        // Starting coordinate, depending on the type of ship, the ship will populate a number of coordinates
+        // where the total number of coordinates occupied equals to its length.
+        this.board[x][y] = ship.typeOfShip.split('')[0]
+
+        for (let i = 0; i < ship.length; i++) {
+            this.board[x][y + i] = ship.typeOfShip.split('')[0]
+        }
     }
 
     receiveAttack() {
