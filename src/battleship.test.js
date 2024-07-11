@@ -130,8 +130,21 @@ describe('Test gameboard class', () => {
         })
 
         it('Sink ship', () => {
+            // Patrol boat
             hitsTakenMock([10, 10])
             expect(hitsTakenMock([10, 9]).sunk).toBe(true)
+
+            // Destroyer
+            hitsTakenMock([2, 1])
+            hitsTakenMock([2, 2])
+            expect(hitsTakenMock([2, 3]).sunk).toBe(true)
+
+            // Carrier
+            hitsTakenMock([5, 5])
+            hitsTakenMock([5, 6])
+            hitsTakenMock([5, 7])
+            hitsTakenMock([5, 8])
+            expect(hitsTakenMock([5, 9]).sunk).toBe(true)
         })
     })
 })
