@@ -21,12 +21,24 @@ export class Gameboard {
 
         let [x, y] = coord
 
+        if (x > 10 || y > 10) throw new Error('Out of bounds')
+
         // Starting coordinate, depending on the type of ship, the ship will populate a number of coordinates
         // where the total number of coordinates occupied equals to its length.
         this.board[x][y] = ship.typeOfShip.split('')[0]
 
-        for (let i = 0; i < ship.length; i++) {
-            this.board[x][y + i] = ship.typeOfShip.split('')[0]
+        let finalX = x + ship.length
+        let finalY = y + ship.length
+
+        // Add ships vertically by default
+        if (finalY > 10) {
+            for (let i = 0; i < ship.length; i++) {
+                this.board[x][y - i] = ship.typeOfShip.split('')[0]
+            }
+        } else {
+            for (let i = 0; i < ship.length; i++) {
+                this.board[x][y + i] = ship.typeOfShip.split('')[0]
+            }
         }
     }
 
