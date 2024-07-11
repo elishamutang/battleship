@@ -32,6 +32,7 @@ export class Gameboard {
         let finalY = y + ship.length
 
         // Add ships vertically by default
+        // Takes first letter of ship type and marks it on gameboard.
         if (finalY > 10) {
             for (let i = 0; i < ship.length; i++) {
                 this.board[x][y - i] = ship.typeOfShip.split('')[0]
@@ -66,6 +67,16 @@ export class Gameboard {
             }
         }
 
+        // Mark on gameboard.
         this.board[x][y] = 'x'
+
+        const allShipsSunk = this.ships.filter((ship) => {
+            if (ship.sunk) return ship
+        })
+
+        // Gameboard to detect if all ships have sunked.
+        if (allShipsSunk.length === this.ships.length) {
+            console.log('All ships have sunk')
+        }
     }
 }
