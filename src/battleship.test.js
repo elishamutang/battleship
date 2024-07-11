@@ -29,34 +29,55 @@ describe('Test ship class', () => {
 
 // Test gameboard class
 describe('Test gameboard class', () => {
+    // Demo gameboard
+    const demoGameboard = new Gameboard()
+
     // Test board
     it('board created', () => {
-        const demoGameboard = new Gameboard()
         expect(demoGameboard.board).toBeDefined()
     })
 
     // Testing ship placement on gameboard
     describe('Test ship placement on gameboard', () => {
-        const demoGameboard = new Gameboard()
+        const placeShipMock = jest.fn((ship, coord) => {
+            demoGameboard.placeShip(ship, coord)
+
+            let [x, y] = coord
+
+            expect(demoGameboard.ships).toContain(ship)
+
+            for (let i = 0; i < ship.length; i++) {
+                expect(demoGameboard.board[x][y + i]).toBe(ship.typeOfShip.split('')[0])
+            }
+
+            // Testing out of bounds ship placement
+            demoGameboard.board.forEach((row) => {
+                expect(row.length).toBe(11)
+            })
+        })
 
         // First ship
-        it('first ship', () => {
-            const demoShip = new Ship(3)
+        it('first ship (destroyer)', () => {
+            const demoShip = new Ship(3) // Destroyer
+            const coord = [0, 0]
 
-            demoGameboard.placeShip(demoShip, [0, 0])
-
-            expect(demoGameboard.ships).toEqual([demoShip])
-            expect(demoGameboard.board[0][0]).toEqual('x')
+            placeShipMock(demoShip, coord)
         })
 
         // Second ship
-        it('second ship', () => {
-            const demoShip = new Ship(5)
+        it('second ship (carrier)', () => {
+            const demoShip = new Ship(5) // Carrier
+            const coord = [10, 0]
 
-            demoGameboard.placeShip(demoShip, [10, 0])
+            placeShipMock(demoShip, coord)
+        })
 
-            expect(demoGameboard.ships).toEqual([demoGameboard.ships[0], demoGameboard.ships[1]])
-            expect(demoGameboard.board[10][0]).toEqual('x')
+        // Third ship
+        it('third ship (patrol boat)', () => {
+            const demoShip = new Ship(3)
+            const coord = [10, 10]
+
+            placeShipMock(demoShip, coord)
         })
     })
 })
