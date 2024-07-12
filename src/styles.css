@@ -19,20 +19,20 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
-    /* gap: 2rem; */
 }
 
 .gameboard {
-    height: 60%;
     width: 30%;
-    /* border: 1px solid black; */
+    height: 65%;
     margin: 0 2rem;
+    /* border: 1px solid red; */
+
+    display: flex;
+    flex-direction: column;
 }
 
 .row {
     height: calc(100% / 11);
-    /* border: 1px solid red; */
-
     display: flex;
 }
 
@@ -50,6 +50,12 @@ main {
     border: none;
 }
 
-.gameboard > .row:first-of-type > .loc:first-child {
+.gameboard .row:nth-child(2) > .loc:first-child {
     border: none;
+}
+
+.player {
+    margin-bottom: 1rem;
+    align-self: center;
+    font-size: 1.2rem;
 }
