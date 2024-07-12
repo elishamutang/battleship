@@ -1,5 +1,6 @@
 import { Ship } from './ship'
 import { Gameboard } from './gameboard'
+import { Player } from './player'
 
 // Test ship class
 describe('Test ship class', () => {
@@ -146,5 +147,17 @@ describe('Test gameboard class', () => {
             hitsTakenMock([5, 8])
             expect(hitsTakenMock([5, 9]).sunk).toBe(true)
         })
+
+        it('All ships have sunked', () => {
+            expect(demoGameboard.areAllShipsSunked).toBe(true)
+        })
+    })
+})
+
+describe('Player class', () => {
+    const playerOne = new Player()
+
+    it('Player object will have a gameboard', () => {
+        expect(Object.keys(playerOne.gameboard)).toEqual(['board', 'ships', 'areAllShipsSunked'])
     })
 })
