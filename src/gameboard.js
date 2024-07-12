@@ -2,6 +2,7 @@ export class Gameboard {
     constructor() {
         this.board = this.#generateBoard()
         this.ships = []
+        this.areAllShipsSunked = false
     }
 
     #generateBoard() {
@@ -76,7 +77,7 @@ export class Gameboard {
 
         // Gameboard to detect if all ships have sunked.
         if (allShipsSunk.length === this.ships.length) {
-            console.log('All ships have sunk')
+            this.areAllShipsSunked = true
         }
     }
 }
