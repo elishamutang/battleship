@@ -11,3 +11,45 @@ html {
 body {
     min-height: 100%;
 }
+
+main {
+    border: 2px solid black;
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* gap: 2rem; */
+}
+
+.gameboard {
+    height: 60%;
+    width: 30%;
+    /* border: 1px solid black; */
+    margin: 0 2rem;
+}
+
+.row {
+    height: calc(100% / 11);
+    /* border: 1px solid red; */
+
+    display: flex;
+}
+
+.loc {
+    width: calc(100% / 11);
+    border: 1px solid black;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.numbering,
+.alphabets {
+    border: none;
+}
+
+.gameboard > .row:first-of-type > .loc:first-child {
+    border: none;
+}
