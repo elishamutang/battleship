@@ -2,6 +2,7 @@ import { Ship } from './ship'
 import { Gameboard } from './gameboard'
 import { Player } from './player'
 
+// Main function to generate DOM.
 export default function generateTheDOM() {
     // Initialize players
     const realPlayer = new Player()
@@ -13,6 +14,31 @@ export default function generateTheDOM() {
 
     generateGameboard(realPlayer, realPlayerGameboard)
     generateGameboard(computerPlayer, computerPlayerGameboard)
+
+    // Add event listener to interact with gameboards.
+    realPlayerGameboard.addEventListener('mouseover', (e) => {
+        if (e.target.dataset.coord) {
+            // console.log(e.target.dataset.coord)
+        }
+    })
+
+    realPlayerGameboard.addEventListener('click', (e) => {
+        if (e.target.dataset.coord) {
+            e.target.textContent = 'x'
+        }
+    })
+
+    // FIX THIS !*
+    // Align gameboard coordinates between DOM and Gameboard class.
+    let realPlayerDOMGameboard = Array.from(realPlayerGameboard.querySelectorAll('[data-coord]'))
+
+    const alignedGameboard = realPlayer.gameboard.board.filter((row, idx) => {
+        if (idx !== 0) return row
+    })
+
+    alignedGameboard.forEach((row) => row.pop())
+
+    console.log(alignedGameboard)
 }
 
 function generateGameboard(player, playerGameboard) {
@@ -48,6 +74,17 @@ function generateGameboard(player, playerGameboard) {
         if (idx !== 0) {
             loc.textContent = alphabets[idx - 1]
             loc.className += ' alphabets'
+        }
+    })
+
+    // Generate coordinates of gameboard
+    getAllRowDivs.forEach((div, rowIdx) => {
+        if (rowIdx !== 0) {
+            Array.from(div.children).forEach((loc, idx) => {
+                if (idx !== 0) {
+                    loc.dataset.coord = `${rowIdx}${alphabets[idx - 1]}`
+                }
+            })
         }
     })
 }
