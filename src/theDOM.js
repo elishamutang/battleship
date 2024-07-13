@@ -43,19 +43,24 @@ export default function generateTheDOM() {
                 return parseInt(elem)
             })
 
-            demoGameboardRow = demoGameboardRow.slice(0, demoGameboardRow.indexOf(NaN)).join('') - 1
+            demoGameboardRow = parseInt(demoGameboardRow.slice(0, demoGameboardRow.indexOf(NaN)).join(''))
 
             // Logs on player gameboard.
-            alignedGameboard[demoGameboardRow].forEach((loc, idx) => {
+            realPlayer.gameboard.board[demoGameboardRow].forEach((loc, idx) => {
                 if (loc === e.target.dataset.coord) {
-                    console.log(alignedGameboard[demoGameboardRow][idx])
-                    alignedGameboard[demoGameboardRow][idx] = 'x'
+                    let x = demoGameboardRow
+                    let y = idx
+
+                    realPlayer.gameboard.receiveAttack([x, y])
                 }
             })
 
-            console.log(alignedGameboard)
+            console.log(realPlayer.gameboard.board)
         }
     })
+
+    // For now, manually locate each ship (total of 10 ships on the board)
+    // 4 patrol, 3 destroyer, 2 battleship, 1 carrier
 }
 
 function generateGameboard(player, playerGameboard) {
