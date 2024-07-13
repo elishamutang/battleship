@@ -39,6 +39,7 @@ main {
 .loc {
     width: calc(100% / 11);
     border: 1px solid black;
+    cursor: pointer;
 
     display: flex;
     justify-content: center;
