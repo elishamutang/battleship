@@ -18,13 +18,13 @@ export default function generateTheDOM() {
     // Align gameboard coordinates between DOM and Gameboard class (this code can be converted into a func).
     let realPlayerDOMGameboard = Array.from(realPlayerGameboard.querySelectorAll('[data-coord]'))
 
-    const alignedGameboard = realPlayer.gameboard.board.filter((row, idx) => {
+    realPlayer.gameboard.board = realPlayer.gameboard.board.filter((row, idx) => {
         if (idx !== 0) return row
     })
 
     // Map each DOM coordinate to the player gameboard.
     // Playable gameboard is now 10 x 10
-    alignedGameboard.forEach((row) => {
+    realPlayer.gameboard.board.forEach((row) => {
         row.pop()
 
         row.forEach((loc, idx) => {
@@ -43,7 +43,7 @@ export default function generateTheDOM() {
                 return parseInt(elem)
             })
 
-            demoGameboardRow = parseInt(demoGameboardRow.slice(0, demoGameboardRow.indexOf(NaN)).join(''))
+            demoGameboardRow = parseInt(demoGameboardRow.slice(0, demoGameboardRow.indexOf(NaN)).join('')) - 1
 
             // Logs on player gameboard.
             realPlayer.gameboard.board[demoGameboardRow].forEach((loc, idx) => {
@@ -63,7 +63,6 @@ export default function generateTheDOM() {
     // 4 patrol, 3 destroyer, 2 battleship, 1 carrier
 }
 
-// Re-factor this code to generate an extra row and column, based on a playable gameboard size of 10 x 10.
 function generateGameboard(player, playerGameboard) {
     // Construct gameboard
     player.gameboard.board.forEach((row) => {
