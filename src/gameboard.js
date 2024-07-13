@@ -33,7 +33,7 @@ export class Gameboard {
         let finalX = x + ship.length
         let finalY = y + ship.length
 
-        // Add ships vertically by default
+        // Add ships horizontally by default
         // Takes first letter of ship type and marks it on gameboard.
         if (finalY > 10) {
             for (let i = 0; i < ship.length; i++) {
