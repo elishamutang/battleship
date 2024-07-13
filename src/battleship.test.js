@@ -161,12 +161,5 @@ describe('Player class', () => {
         expect(Object.keys(playerOne.gameboard)).toEqual(['board', 'ships', 'areAllShipsSunked'])
     })
 
-    it.skip('Record hits on gameboard', () => {
-        const coord = [0, 0]
-        playerOne.gameboard.receiveAttack(coord)
-
-        expect(playerOne.gameboard.board[coord[0]][coord[1]]).toBe('x')
-    })
-
     it.todo('Record hits on ship')
 })
