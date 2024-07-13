@@ -61,6 +61,29 @@ export default function generateTheDOM() {
 
     // For now, manually locate each ship (total of 10 ships on the board)
     // 4 patrol, 3 destroyer, 2 battleship, 1 carrier
+    const patrolBoats = Array(4).fill(new Ship(2))
+    const destroyers = Array(3).fill(new Ship(3))
+    const battleships = Array(2).fill(new Ship(4))
+    const carrier = [new Ship(5)]
+
+    realPlayer.gameboard.placeShip(patrolBoats.shift(), [0, 0])
+    realPlayer.gameboard.placeShip(patrolBoats.shift(), [8, 2])
+    realPlayer.gameboard.placeShip(patrolBoats.shift(), [2, 4])
+    realPlayer.gameboard.placeShip(patrolBoats.shift(), [5, 9])
+
+    console.log(realPlayer.gameboard.board)
+
+    const getAllRowsRealPlayer = Array.from(realPlayerGameboard.getElementsByClassName('row'))
+
+    realPlayer.gameboard.board.forEach((row, rowIdx) => {
+        row.forEach((loc, idx) => {
+            if (loc === 'p') {
+                console.log(rowIdx + 1, idx + 1)
+                console.log(getAllRowsRealPlayer[rowIdx + 1].children[idx + 1])
+                getAllRowsRealPlayer[rowIdx + 1].children[idx + 1].className += ' patrolBoat'
+            }
+        })
+    })
 }
 
 function generateGameboard(player, playerGameboard) {
