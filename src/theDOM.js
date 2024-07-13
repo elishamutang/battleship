@@ -15,30 +15,47 @@ export default function generateTheDOM() {
     generateGameboard(realPlayer, realPlayerGameboard)
     generateGameboard(computerPlayer, computerPlayerGameboard)
 
-    // Add event listener to interact with gameboards.
-    realPlayerGameboard.addEventListener('mouseover', (e) => {
-        if (e.target.dataset.coord) {
-            // console.log(e.target.dataset.coord)
-        }
-    })
-
-    realPlayerGameboard.addEventListener('click', (e) => {
-        if (e.target.dataset.coord) {
-            e.target.textContent = 'x'
-        }
-    })
-
-    // FIX THIS !*
-    // Align gameboard coordinates between DOM and Gameboard class.
+    // Align gameboard coordinates between DOM and Gameboard class (this code can be converted into a func).
     let realPlayerDOMGameboard = Array.from(realPlayerGameboard.querySelectorAll('[data-coord]'))
 
     const alignedGameboard = realPlayer.gameboard.board.filter((row, idx) => {
         if (idx !== 0) return row
     })
 
-    alignedGameboard.forEach((row) => row.pop())
+    // Map each DOM coordinate to the player gameboard.
+    // Playable gameboard is now 10 x 10
+    alignedGameboard.forEach((row) => {
+        row.pop()
 
-    console.log(alignedGameboard)
+        row.forEach((loc, idx) => {
+            row[idx] = realPlayerDOMGameboard.shift().dataset.coord
+        })
+    })
+
+    // Add event listener to interact with gameboards.
+    // Record hit logs on gameboard.
+    realPlayerGameboard.addEventListener('click', (e) => {
+        if (e.target.dataset.coord) {
+            // Displays on gameboard UI.
+            e.target.textContent = 'x'
+
+            let demoGameboardRow = e.target.dataset.coord.split('').map((elem) => {
+                return parseInt(elem)
+            })
+
+            demoGameboardRow = demoGameboardRow.slice(0, demoGameboardRow.indexOf(NaN)).join('') - 1
+
+            // Logs on player gameboard.
+            alignedGameboard[demoGameboardRow].forEach((loc, idx) => {
+                if (loc === e.target.dataset.coord) {
+                    console.log(alignedGameboard[demoGameboardRow][idx])
+                    alignedGameboard[demoGameboardRow][idx] = 'x'
+                }
+            })
+
+            console.log(alignedGameboard)
+        }
+    })
 }
 
 function generateGameboard(player, playerGameboard) {
