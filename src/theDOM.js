@@ -63,6 +63,7 @@ export default function generateTheDOM() {
     // 4 patrol, 3 destroyer, 2 battleship, 1 carrier
 }
 
+// Re-factor this code to generate an extra row and column, based on a playable gameboard size of 10 x 10.
 function generateGameboard(player, playerGameboard) {
     // Construct gameboard
     player.gameboard.board.forEach((row) => {

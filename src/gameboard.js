@@ -5,6 +5,7 @@ export class Gameboard {
         this.areAllShipsSunked = false
     }
 
+    // Instead of initializing an array length of 11, we can make it 10 here.
     #generateBoard() {
         const board = Array(11)
             .fill(0)
