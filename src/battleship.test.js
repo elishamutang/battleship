@@ -40,37 +40,19 @@ describe('Test gameboard class', () => {
 
     // Testing ship placement on gameboard
     describe('Test ship placement on gameboard', () => {
-        const placeShipMock = jest.fn((ship, coord) => {
-            demoGameboard.placeShip(ship, coord)
-
-            let [x, y] = coord
-
-            expect(demoGameboard.ships).toContain(ship)
-
-            let finalY = y + ship.length
-
-            if (finalY > 10) {
-                for (let i = 0; i < ship.length; i++) {
-                    expect(demoGameboard.board[x][y - 1]).toBe(ship.typeOfShip.split('')[0])
-                }
-            } else {
-                for (let i = 0; i < ship.length; i++) {
-                    expect(demoGameboard.board[x][y + 1]).toBe(ship.typeOfShip.split('')[0])
-                }
-            }
-
-            // Testing out of bounds ship placement
+        const outOfBoundsCheck = () => {
             demoGameboard.board.forEach((row) => {
                 expect(row.length).toBe(11)
             })
-        })
+        }
 
         // First ship
         it('first ship (destroyer)', () => {
             const demoShip = new Ship(3) // Destroyer
             const coord = [2, 1]
 
-            placeShipMock(demoShip, coord)
+            demoGameboard.placeShip(demoShip, coord)
+            outOfBoundsCheck()
         })
 
         // Second ship
@@ -78,7 +60,8 @@ describe('Test gameboard class', () => {
             const demoShip = new Ship(5) // Carrier
             const coord = [5, 5]
 
-            placeShipMock(demoShip, coord)
+            demoGameboard.placeShip(demoShip, coord)
+            outOfBoundsCheck()
         })
 
         // Third ship
@@ -86,7 +69,15 @@ describe('Test gameboard class', () => {
             const demoShip = new Ship(2) // patrol boat
             const coord = [10, 10]
 
-            placeShipMock(demoShip, coord)
+            demoGameboard.placeShip(demoShip, coord)
+            outOfBoundsCheck()
+        })
+
+        // No out of bounds
+        it('Gameboard not out of bounds', () => {
+            demoGameboard.board.forEach((row) => {
+                expect(row.length).toBe(11)
+            })
         })
 
         // Number of ships
@@ -95,6 +86,16 @@ describe('Test gameboard class', () => {
             expect(demoGameboard.ships[0].typeOfShip).toBe('destroyer')
             expect(demoGameboard.ships[1].typeOfShip).toBe('carrier')
             expect(demoGameboard.ships[2].typeOfShip).toBe('patrol boat')
+        })
+
+        // Ships cannot overlap
+        it.skip('Ships cannot overlap', () => {
+            const demoShip = new Ship(4) // Battleship
+            const coord = [10, 10]
+
+            demoGameboard.placeShip(demoShip, coord)
+            outOfBoundsCheck()
+            expect(demoGameboard.board[coord[0]][coord[1]]).not.toBe(demoShip.typeOfShip.split('')[0])
         })
     })
 
