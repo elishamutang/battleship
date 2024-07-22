@@ -32,6 +32,34 @@ export default function generateTheDOM() {
         })
     })
 
+    // For now, manually locate each ship (total of 10 ships on the board)
+    // 4 patrol, 3 destroyer, 2 battleship, 1 carrier
+    const patrolBoats = Array(4).fill(new Ship(2))
+    const destroyers = Array(3).fill(new Ship(3))
+    const battleships = Array(2).fill(new Ship(4))
+    const carrier = [new Ship(5)]
+
+    realPlayer.gameboard.placeShip(patrolBoats.shift(), [0, 0]) // Patrol boat
+    realPlayer.gameboard.placeShip(patrolBoats.shift(), [9, 2])
+    realPlayer.gameboard.placeShip(patrolBoats.shift(), [2, 4])
+    realPlayer.gameboard.placeShip(patrolBoats.shift(), [5, 9])
+
+    // realPlayer.gameboard.placeShip(destroyers.shift(), [0, 0]) // Destroyer
+
+    console.log(realPlayer.gameboard.board)
+
+    const getAllRowsRealPlayer = Array.from(realPlayerGameboard.getElementsByClassName('row'))
+
+    realPlayer.gameboard.board.forEach((row, rowIdx) => {
+        row.forEach((loc, idx) => {
+            if (loc === 'p') {
+                // console.log(rowIdx + 1, idx + 1)
+                // console.log(getAllRowsRealPlayer[rowIdx + 1].children[idx + 1])
+                getAllRowsRealPlayer[rowIdx + 1].children[idx + 1].className += ' patrolBoat'
+            }
+        })
+    })
+
     // Add event listener to interact with gameboards.
     // Record hit logs on gameboard.
     realPlayerGameboard.addEventListener('click', (e) => {
@@ -45,6 +73,7 @@ export default function generateTheDOM() {
 
             demoGameboardRow = parseInt(demoGameboardRow.slice(0, demoGameboardRow.indexOf(NaN)).join('')) - 1
 
+            // Fix this !*
             // Logs on player gameboard.
             realPlayer.gameboard.board[demoGameboardRow].forEach((loc, idx) => {
                 if (loc === e.target.dataset.coord) {
@@ -57,32 +86,6 @@ export default function generateTheDOM() {
 
             console.log(realPlayer.gameboard.board)
         }
-    })
-
-    // For now, manually locate each ship (total of 10 ships on the board)
-    // 4 patrol, 3 destroyer, 2 battleship, 1 carrier
-    const patrolBoats = Array(4).fill(new Ship(2))
-    const destroyers = Array(3).fill(new Ship(3))
-    const battleships = Array(2).fill(new Ship(4))
-    const carrier = [new Ship(5)]
-
-    realPlayer.gameboard.placeShip(patrolBoats.shift(), [0, 0])
-    realPlayer.gameboard.placeShip(patrolBoats.shift(), [8, 2])
-    realPlayer.gameboard.placeShip(patrolBoats.shift(), [2, 4])
-    realPlayer.gameboard.placeShip(patrolBoats.shift(), [5, 9])
-
-    console.log(realPlayer.gameboard.board)
-
-    const getAllRowsRealPlayer = Array.from(realPlayerGameboard.getElementsByClassName('row'))
-
-    realPlayer.gameboard.board.forEach((row, rowIdx) => {
-        row.forEach((loc, idx) => {
-            if (loc === 'p') {
-                console.log(rowIdx + 1, idx + 1)
-                console.log(getAllRowsRealPlayer[rowIdx + 1].children[idx + 1])
-                getAllRowsRealPlayer[rowIdx + 1].children[idx + 1].className += ' patrolBoat'
-            }
-        })
     })
 }
 
