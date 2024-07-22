@@ -36,7 +36,6 @@ export class Gameboard {
         // where the total number of boxes occupied equals to its length.
         this.board[x][y] = ship.typeOfShip.split('')[0]
 
-        let finalX = x + ship.length
         let finalY = y + ship.length
 
         // Add ships horizontally by default
@@ -86,5 +85,29 @@ export class Gameboard {
         if (allShipsSunk.length === this.ships.length) {
             this.areAllShipsSunked = true
         }
+    }
+
+    // Flip ships from horizontal to vertical and vice versa.
+    flip(ship, coord) {
+        let [x, y] = coord
+
+        let finalX = x + ship.length
+
+        let i = 1
+        if (finalX > 10) {
+            while (i < ship.length) {
+                x -= i
+                this.board[x][y] = ship.typeOfShip.split('')[0]
+                i++
+            }
+        } else {
+            while (i < ship.length) {
+                x += i
+                this.board[x][y] = ship.typeOfShip.split('')[0]
+                i++
+            }
+        }
+
+        return [x, y]
     }
 }
