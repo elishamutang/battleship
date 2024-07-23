@@ -15,22 +15,8 @@ export default function generateTheDOM() {
     generateGameboard(realPlayer, realPlayerGameboard)
     generateGameboard(computerPlayer, computerPlayerGameboard)
 
-    // Align gameboard coordinates between DOM and Gameboard class (this code can be converted into a func).
-    let realPlayerDOMGameboard = Array.from(realPlayerGameboard.querySelectorAll('[data-coord]'))
-
-    realPlayer.gameboard.board = realPlayer.gameboard.board.filter((row, idx) => {
-        if (idx !== 0) return row
-    })
-
-    // Map each DOM coordinate to the player gameboard.
-    // Playable gameboard is now 10 x 10
-    realPlayer.gameboard.board.forEach((row) => {
-        row.pop()
-
-        row.forEach((loc, idx) => {
-            row[idx] = realPlayerDOMGameboard.shift().dataset.coord
-        })
-    })
+    // Align gameboard coordinates between DOM and Gameboard class.
+    mapCoordinates(realPlayer, realPlayerGameboard)
 
     // For now, manually locate each ship (total of 10 ships on the board)
     // 4 patrol, 3 destroyer, 2 battleship, 1 carrier
@@ -75,14 +61,18 @@ export default function generateTheDOM() {
 
             // Fix this !*
             // Logs on player gameboard.
-            realPlayer.gameboard.board[demoGameboardRow].forEach((loc, idx) => {
-                if (loc === e.target.dataset.coord) {
-                    let x = demoGameboardRow
-                    let y = idx
+            // realPlayer.gameboard.board[demoGameboardRow].forEach((loc, idx) => {
+            //     if (loc === e.target.dataset.coord) {
+            //         let x = demoGameboardRow
+            //         let y = idx
 
-                    realPlayer.gameboard.receiveAttack([x, y])
-                }
-            })
+            //         realPlayer.gameboard.receiveAttack([x, y])
+            //     }
+            // })
+
+            if (!realPlayer.gameboard.board[demoGameboardRow].includes(e.target.dataset.coord)) {
+                console.log(e.target.dataset.coord)
+            }
 
             console.log(realPlayer.gameboard.board)
         }
@@ -134,5 +124,23 @@ function generateGameboard(player, playerGameboard) {
                 }
             })
         }
+    })
+}
+
+function mapCoordinates(player, playerGameboard) {
+    let playerDOMGameboard = Array.from(playerGameboard.querySelectorAll('[data-coord]'))
+
+    player.gameboard.board = player.gameboard.board.filter((row, idx) => {
+        if (idx !== 0) return row
+    })
+
+    // Map each DOM coordinate to the player gameboard.
+    // Playable gameboard is now 10 x 10
+    player.gameboard.board.forEach((row) => {
+        row.pop()
+
+        row.forEach((loc, idx) => {
+            row[idx] = playerDOMGameboard.shift().dataset.coord
+        })
     })
 }
