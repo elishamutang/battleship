@@ -20,6 +20,8 @@ export class Gameboard {
     placeShip(ship, coord) {
         let [x, y] = coord
 
+        ship.location = coord
+
         // Check for out of bounds.
         if (x > 10 || y > 10) throw new Error('Out of bounds')
 
@@ -27,9 +29,6 @@ export class Gameboard {
         this.ships.forEach((ship) => {
             if (ship.typeOfShip.split('')[0] === this.board[x][y]) throw new Error('Space occupied.')
         })
-
-        // Keeps track of current ships on gameboard.
-        this.ships.push(ship)
 
         // Starting coordinate, depending on the type of ship, the ship will populate a number of coordinates
         // where the total number of boxes occupied equals to its length.
@@ -48,6 +47,9 @@ export class Gameboard {
                 this.board[x][y + i] = ship.typeOfShip.split('')[0]
             }
         }
+
+        // Keeps track of current ships on gameboard.
+        this.ships.push(ship)
 
         // Drag and drop option
         //...
