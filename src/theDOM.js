@@ -8,6 +8,9 @@ export default function generateTheDOM() {
     const realPlayer = new Player()
     const computerPlayer = new Player()
 
+    // Initialize reference gameboard.
+    const referenceGameboard = new Player()
+
     // Generate gameboard
     const realPlayerGameboard = document.getElementById('realPlayer')
     const computerPlayerGameboard = document.getElementById('computerPlayer')
@@ -16,7 +19,9 @@ export default function generateTheDOM() {
     generateGameboard(computerPlayer, computerPlayerGameboard)
 
     // Align gameboard coordinates between DOM and Gameboard class.
-    mapCoordinates(realPlayer, realPlayerGameboard)
+    mapCoordinates(realPlayer, realPlayerGameboard) // Real player
+    mapCoordinates(computerPlayer, computerPlayerGameboard) // Computer
+    mapCoordinates(referenceGameboard, realPlayerGameboard) // Reference board
 
     // For now, manually locate each ship (total of 10 ships on the board)
     // 4 patrol, 3 destroyer, 2 battleship, 1 carrier
@@ -59,22 +64,26 @@ export default function generateTheDOM() {
 
             demoGameboardRow = parseInt(demoGameboardRow.slice(0, demoGameboardRow.indexOf(NaN)).join('')) - 1
 
-            // Fix this !*
-            // Logs on player gameboard.
-            // realPlayer.gameboard.board[demoGameboardRow].forEach((loc, idx) => {
-            //     if (loc === e.target.dataset.coord) {
-            //         let x = demoGameboardRow
-            //         let y = idx
+            // Use the referenceGameboard to identify the coordinate.
+            // If coordinate is not present in realPlayer gameboard, then it is occupied by a type of 'Ship'.
 
-            //         realPlayer.gameboard.receiveAttack([x, y])
-            //     }
-            // })
-
+            // The DOM has the coordinates of the tile that is clicked and the position of that coordinate in the realPlayer.gameboard.board can be
+            // cross-checked with the referenceGameboard.
             if (!realPlayer.gameboard.board[demoGameboardRow].includes(e.target.dataset.coord)) {
-                console.log(e.target.dataset.coord)
+                referenceGameboard.gameboard.board[demoGameboardRow].forEach((loc, idx) => {
+                    // Tile that is clicked on the DOM is cross-checked against the referenceGameboard.
+                    if (loc === e.target.dataset.coord) {
+                        let x = demoGameboardRow
+                        let y = idx
+
+                        console.log(x, y)
+
+                        realPlayer.gameboard.receiveAttack([x, y])
+                    }
+                })
             }
 
-            console.log(realPlayer.gameboard.board)
+            console.log(realPlayer.gameboard)
         }
     })
 }
