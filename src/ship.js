@@ -4,6 +4,7 @@ export class Ship {
         this.hitsTaken = 0
         this.sunk = false
         this.typeOfShip = this.shipType()
+        this.location = []
     }
 
     hit() {
