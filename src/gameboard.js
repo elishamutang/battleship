@@ -53,6 +53,7 @@ export class Gameboard {
         //...
     }
 
+    // Fix this!
     // Receives a pair of coordinates and determines if any ships were attacked.
     receiveAttack(coord) {
         const [x, y] = coord
