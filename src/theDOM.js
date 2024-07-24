@@ -11,7 +11,7 @@ export default function generateTheDOM() {
     // Initialize reference gameboard.
     const referenceGameboard = new Player()
 
-    // Generate gameboard
+    // Generate gameboard in DOM.
     const realPlayerGameboard = document.getElementById('realPlayer')
     const computerPlayerGameboard = document.getElementById('computerPlayer')
 
