@@ -22,7 +22,7 @@ export class Ship {
     shipType() {
         switch (this.length) {
             case 2:
-                return 'patrol boat'
+                return 'patrolBoat'
             case 3:
                 return 'destroyer'
             case 4:
