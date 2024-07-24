@@ -57,56 +57,51 @@ export default function generateTheDOM() {
 
     console.log(realPlayer.gameboard.board)
 
-    const getAllRowsRealPlayer = Array.from(realPlayerGameboard.getElementsByClassName('row'))
+    // Flipping feature.
+    realPlayerGameboard.addEventListener('click', (e) => {
+        flipTheShip(e, realPlayer, realPlayerGameboard, referenceGameboard)
+    })
 
     // Style the ships.
-    realPlayer.gameboard.board.forEach((row, rowIdx) => {
-        row.forEach((loc, idx) => {
-            if (loc === 'p') {
-                getAllRowsRealPlayer[rowIdx + 1].children[idx + 1].className += ' patrolBoat'
-            } else if (loc === 'd') {
-                getAllRowsRealPlayer[rowIdx + 1].children[idx + 1].className += ' destroyer'
-            } else if (loc === 'c') {
-                getAllRowsRealPlayer[rowIdx + 1].children[idx + 1].className += ' carrier'
-            }
-        })
-    })
+    refreshStyling(realPlayer, realPlayerGameboard)
+
+    // THE BELOW EVENT LISTENER SHOULD ONLY BE FOR PLAYERS TO ATTACK THE COMPUTER PLAYERS.
 
     // Add event listener to interact with gameboards.
     // Record hit logs on gameboard.
-    realPlayerGameboard.addEventListener('click', (e) => {
-        if (e.target.dataset.coord) {
-            // Displays on gameboard UI.
-            e.target.textContent = 'x'
+    // realPlayerGameboard.addEventListener('click', (e) => {
+    //     if (e.target.dataset.coord) {
+    //         // Displays on gameboard UI.
+    //         e.target.textContent = 'x'
 
-            let demoGameboardRow = e.target.dataset.coord.split('').map((elem) => {
-                return parseInt(elem)
-            })
+    //         let demoGameboardRow = e.target.dataset.coord.split('').map((elem) => {
+    //             return parseInt(elem)
+    //         })
 
-            demoGameboardRow = parseInt(demoGameboardRow.slice(0, demoGameboardRow.indexOf(NaN)).join('')) - 1
+    //         demoGameboardRow = parseInt(demoGameboardRow.slice(0, demoGameboardRow.indexOf(NaN)).join('')) - 1
 
-            // Use the referenceGameboard to identify the coordinate.
-            // If coordinate is not present in realPlayer gameboard, then it is occupied by a type of 'Ship'.
+    //         // Use the referenceGameboard to identify the coordinate.
+    //         // If coordinate is not present in realPlayer gameboard, then it is occupied by a type of 'Ship'.
 
-            // The DOM has the coordinates of the tile that is clicked and the position of that coordinate in the realPlayer.gameboard.board can be
-            // cross-checked with the referenceGameboard.
-            if (!realPlayer.gameboard.board[demoGameboardRow].includes(e.target.dataset.coord)) {
-                referenceGameboard.gameboard.board[demoGameboardRow].forEach((loc, idx) => {
-                    // Tile that is clicked on the DOM is cross-checked against the referenceGameboard.
-                    if (loc === e.target.dataset.coord) {
-                        let x = demoGameboardRow
-                        let y = idx
+    //         // The DOM has the coordinates of the tile that is clicked and the position of that coordinate in the realPlayer.gameboard.board can be
+    //         // cross-checked with the referenceGameboard.
+    //         if (!realPlayer.gameboard.board[demoGameboardRow].includes(e.target.dataset.coord)) {
+    //             referenceGameboard.gameboard.board[demoGameboardRow].forEach((loc, idx) => {
+    //                 // Tile that is clicked on the DOM is cross-checked against the referenceGameboard.
+    //                 if (loc === e.target.dataset.coord) {
+    //                     let x = demoGameboardRow
+    //                     let y = idx
 
-                        console.log(x, y)
+    //                     console.log(x, y)
 
-                        realPlayer.gameboard.receiveAttack([x, y])
-                    }
-                })
-            }
+    //                     realPlayer.gameboard.receiveAttack([x, y])
+    //                 }
+    //             })
+    //         }
 
-            console.log(realPlayer.gameboard)
-        }
-    })
+    //         console.log(realPlayer.gameboard)
+    //     }
+    // })
 }
 
 function generateGameboard(player, playerGameboard) {
@@ -173,4 +168,67 @@ function mapCoordinates(player, playerGameboard) {
             row[idx] = playerDOMGameboard.shift().dataset.coord
         })
     })
+}
+
+function refreshStyling(player, gameboard) {
+    const getAllRowsPlayer = Array.from(gameboard.getElementsByClassName('row'))
+
+    // Style the ships.
+    player.gameboard.board.forEach((row, rowIdx) => {
+        row.forEach((loc, idx) => {
+            if (loc === 'p') {
+                getAllRowsPlayer[rowIdx + 1].children[idx + 1].className += ' patrolBoat'
+            } else if (loc === 'd') {
+                getAllRowsPlayer[rowIdx + 1].children[idx + 1].className += ' destroyer'
+            } else if (loc === 'c') {
+                getAllRowsPlayer[rowIdx + 1].children[idx + 1].className += ' carrier'
+            }
+        })
+    })
+}
+
+function flipTheShip(e, realPlayer, realPlayerGameboard, referenceGameboard) {
+    if (e.target.dataset.coord) {
+        let demoGameboardRow = e.target.dataset.coord.split('').map((elem) => {
+            return parseInt(elem)
+        })
+
+        demoGameboardRow = parseInt(demoGameboardRow.slice(0, demoGameboardRow.indexOf(NaN)).join('')) - 1
+
+        let [shipName] = Array.from(e.target.classList).filter((className) => {
+            if (className !== 'loc') return className
+        })
+
+        // If tile is occupied by a ship, enter here.
+        if (shipName) {
+            let relevantShips = Array.from(realPlayer.gameboard.ships).filter((ship) => {
+                if (ship.typeOfShip === shipName) return ship
+            })
+
+            if (!realPlayer.gameboard.board[demoGameboardRow].includes(e.target.dataset.coord)) {
+                referenceGameboard.gameboard.board[demoGameboardRow].forEach((loc, idx) => {
+                    // Tile that is clicked on the DOM is cross-checked against the referenceGameboard.
+                    if (loc === e.target.dataset.coord) {
+                        let x = demoGameboardRow
+                        let y = idx
+
+                        relevantShips.forEach((ship) => {
+                            ship.location.forEach((loc) => {
+                                let shipX = loc[0]
+                                let shipY = loc[1]
+
+                                if (shipX === x && shipY === y) {
+                                    console.log(ship)
+                                    realPlayer.gameboard.flip(ship)
+                                }
+                            })
+                        })
+                    }
+                })
+            }
+
+            // Refresh styling
+            refreshStyling(realPlayer, realPlayerGameboard)
+        }
+    }
 }
