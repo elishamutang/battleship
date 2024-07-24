@@ -107,9 +107,13 @@ export class Gameboard {
 
     // Flip ships from horizontal to vertical and vice versa.
     flip(ship) {
+        // Dissect the starting ship coordinate
         let [x, y] = ship.location[0]
+
+        // Remove every other coordinate AFTER the starting coordinate.
         ship.location = ship.location.slice(0, 1)
 
+        // Calculate the end coordinate of the ship.
         let finalX = x + ship.length
 
         let i = 1
