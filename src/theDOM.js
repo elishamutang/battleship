@@ -30,27 +30,44 @@ export default function generateTheDOM() {
         patrolBoats.push(new Ship(2))
     }
 
-    // const destroyers = Array(3).fill(new Ship(3))
-    // const battleships = Array(2).fill(new Ship(4))
-    // const carrier = [new Ship(5)]
+    const destroyers = []
+    for (let i = 0; i < 3; i++) {
+        destroyers.push(new Ship(3))
+    }
+
+    const battleShips = []
+    for (let i = 0; i < 2; i++) {
+        battleShips.push(new Ship(4))
+    }
+
+    const carrier = [new Ship(5)]
 
     realPlayer.gameboard.placeShip(patrolBoats.shift(), [0, 0]) // Patrol boat
     realPlayer.gameboard.placeShip(patrolBoats.shift(), [9, 2])
     realPlayer.gameboard.placeShip(patrolBoats.shift(), [2, 4])
     realPlayer.gameboard.placeShip(patrolBoats.shift(), [5, 9])
 
-    // realPlayer.gameboard.placeShip(destroyers.shift(), [0, 0]) // Destroyer
+    realPlayer.gameboard.placeShip(destroyers.shift(), [0, 3]) // Destroyer
+    realPlayer.gameboard.placeShip(destroyers.shift(), [9, 8])
+    realPlayer.gameboard.placeShip(destroyers.shift(), [4, 1])
+
+    // realPlayer.gameboard.placeShip(battleShips.shift(), []) // Battleships
+
+    realPlayer.gameboard.placeShip(carrier.shift(), [6, 6]) // Carrier
 
     console.log(realPlayer.gameboard.board)
 
     const getAllRowsRealPlayer = Array.from(realPlayerGameboard.getElementsByClassName('row'))
 
+    // Style the ships.
     realPlayer.gameboard.board.forEach((row, rowIdx) => {
         row.forEach((loc, idx) => {
             if (loc === 'p') {
-                // console.log(rowIdx + 1, idx + 1)
-                // console.log(getAllRowsRealPlayer[rowIdx + 1].children[idx + 1])
                 getAllRowsRealPlayer[rowIdx + 1].children[idx + 1].className += ' patrolBoat'
+            } else if (loc === 'd') {
+                getAllRowsRealPlayer[rowIdx + 1].children[idx + 1].className += ' destroyer'
+            } else if (loc === 'c') {
+                getAllRowsRealPlayer[rowIdx + 1].children[idx + 1].className += ' carrier'
             }
         })
     })
