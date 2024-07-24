@@ -65,3 +65,13 @@ main {
     border: 2px solid red;
     background-color: lightcoral;
 }
+
+.destroyer {
+    border: 2px solid blue;
+    background-color: lightblue;
+}
+
+.carrier {
+    border: 2px solid grey;
+    background-color: lightgray;
+}
