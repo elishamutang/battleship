@@ -107,26 +107,30 @@ export class Gameboard {
 
     // Flip ships from horizontal to vertical and vice versa.
     flip(ship) {
-        console.log(ship.location)
-        // let [x, y] = coord
+        let [x, y] = ship.location[0]
+        ship.location = ship.location.slice(0, 1)
 
-        // let finalX = x + ship.length
+        let finalX = x + ship.length
 
-        // let i = 1
-        // if (finalX > 10) {
-        //     while (i < ship.length) {
-        //         x -= i
-        //         this.board[x][y] = ship.typeOfShip.split('')[0]
-        //         i++
-        //     }
-        // } else {
-        //     while (i < ship.length) {
-        //         x += i
-        //         this.board[x][y] = ship.typeOfShip.split('')[0]
-        //         i++
-        //     }
-        // }
+        let i = 1
+        if (finalX > 10) {
+            while (i < ship.length) {
+                x -= i
+                this.board[x][y] = ship.typeOfShip.split('')[0]
+                ship.location.push([x, y])
+                i++
+            }
+        } else {
+            while (i < ship.length) {
+                x += i
+                this.board[x][y] = ship.typeOfShip.split('')[0]
+                ship.location.push([x, y])
+                i++
+            }
+        }
 
-        // return [x, y]
+        // console.log(x, y)
+
+        return [x, y]
     }
 }
