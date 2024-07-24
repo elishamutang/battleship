@@ -43,6 +43,8 @@ export class Gameboard {
                 this.board[x][y - i] = ship.typeOfShip.split('')[0]
                 ship.location.push([x, y - i])
             }
+
+            ship.location.reverse() // Store the coordinates in ascending order.
         } else {
             for (let i = 0; i < ship.length; i++) {
                 this.board[x][y + i] = ship.typeOfShip.split('')[0]
@@ -104,26 +106,27 @@ export class Gameboard {
     }
 
     // Flip ships from horizontal to vertical and vice versa.
-    flip(ship, coord) {
-        let [x, y] = coord
+    flip(ship) {
+        console.log(ship.location)
+        // let [x, y] = coord
 
-        let finalX = x + ship.length
+        // let finalX = x + ship.length
 
-        let i = 1
-        if (finalX > 10) {
-            while (i < ship.length) {
-                x -= i
-                this.board[x][y] = ship.typeOfShip.split('')[0]
-                i++
-            }
-        } else {
-            while (i < ship.length) {
-                x += i
-                this.board[x][y] = ship.typeOfShip.split('')[0]
-                i++
-            }
-        }
+        // let i = 1
+        // if (finalX > 10) {
+        //     while (i < ship.length) {
+        //         x -= i
+        //         this.board[x][y] = ship.typeOfShip.split('')[0]
+        //         i++
+        //     }
+        // } else {
+        //     while (i < ship.length) {
+        //         x += i
+        //         this.board[x][y] = ship.typeOfShip.split('')[0]
+        //         i++
+        //     }
+        // }
 
-        return [x, y]
+        // return [x, y]
     }
 }
