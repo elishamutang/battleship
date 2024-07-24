@@ -63,11 +63,10 @@ export class Gameboard {
 
         // Determines which ship is being attacked based on the coord that is passed to the method.
         const [ship] = this.ships.filter((elem) => {
-            if (
-                (elem.location[0][0] === x && elem.location[0][1] === y) ||
-                (elem.location[1][0] === x && elem.location[1][1] === y)
-            ) {
-                return elem
+            for (let loc of elem.location) {
+                if (loc[0] === x && loc[1] === y) {
+                    return elem
+                }
             }
         })
 
@@ -78,7 +77,10 @@ export class Gameboard {
                 let shipY = loc[1]
 
                 if (shipX === x && shipY === y) {
-                    ship.hitsTaken += 1
+                    // If ship is not sunked yet, register the attack, else don't add any more hits.
+                    if (!ship.sunk) {
+                        ship.hitsTaken += 1
+                    }
 
                     // If hitsTaken equals to ship length then ship has sunken.
                     if (ship.hitsTaken === ship.length) {
