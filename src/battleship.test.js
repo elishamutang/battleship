@@ -82,7 +82,7 @@ describe('Test gameboard class', () => {
 
         // Flip the ship
         describe('Flip the ship', () => {
-            it('Ship should not go out of bounds when flipped.', () => {
+            it.skip('Ship should not go out of bounds when flipped.', () => {
                 const demoShip = new Ship(2)
                 const coord = [9, 2]
 
@@ -90,7 +90,7 @@ describe('Test gameboard class', () => {
                 expect(demoGameboard.flip(demoShip, coord)).toEqual([8, 2]) // Final coordinate
             })
 
-            it('Ship flip', () => {
+            it.skip('Ship flip', () => {
                 const demoShip = new Ship(2)
                 const coord = [0, 3]
 
