@@ -57,11 +57,11 @@ export class Gameboard {
         //...
     }
 
-    // Fix this!
     // Receives a pair of coordinates and determines if any ships were attacked.
     receiveAttack(coord) {
         const [x, y] = coord
 
+        // Determines which ship is being attacked based on the coord that is passed to the method.
         const [ship] = this.ships.filter((elem) => {
             if (
                 (elem.location[0][0] === x && elem.location[0][1] === y) ||
