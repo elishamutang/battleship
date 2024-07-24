@@ -20,7 +20,7 @@ export class Gameboard {
     placeShip(ship, coord) {
         let [x, y] = coord
 
-        ship.location = coord
+        // ship.location.push(coord)
 
         // Check for out of bounds.
         if (x > 10 || y > 10) throw new Error('Out of bounds')
@@ -41,10 +41,12 @@ export class Gameboard {
         if (finalY > 10) {
             for (let i = 0; i < ship.length; i++) {
                 this.board[x][y - i] = ship.typeOfShip.split('')[0]
+                ship.location.push([x, y - i])
             }
         } else {
             for (let i = 0; i < ship.length; i++) {
                 this.board[x][y + i] = ship.typeOfShip.split('')[0]
+                ship.location.push([x, y + i])
             }
         }
 
@@ -61,19 +63,29 @@ export class Gameboard {
         const [x, y] = coord
 
         const [ship] = this.ships.filter((elem) => {
-            if (elem.typeOfShip.split('')[0] === this.board[x][y]) {
+            if (
+                (elem.location[0][0] === x && elem.location[0][1] === y) ||
+                (elem.location[1][0] === x && elem.location[1][1] === y)
+            ) {
                 return elem
             }
         })
 
         // If the coordinate is occupied by a type of ship, add it to hitsTaken property.
         if (ship) {
-            ship.hitsTaken += 1
+            ship.location.forEach((loc) => {
+                let shipX = loc[0]
+                let shipY = loc[1]
 
-            // If hitsTaken equals to ship length then ship has sunken.
-            if (ship.hitsTaken === ship.length) {
-                ship.sunk = true
-            }
+                if (shipX === x && shipY === y) {
+                    ship.hitsTaken += 1
+
+                    // If hitsTaken equals to ship length then ship has sunken.
+                    if (ship.hitsTaken === ship.length) {
+                        ship.sunk = true
+                    }
+                }
+            })
         }
 
         // Mark on gameboard.
