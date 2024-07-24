@@ -20,8 +20,6 @@ export class Gameboard {
     placeShip(ship, coord) {
         let [x, y] = coord
 
-        // ship.location.push(coord)
-
         // Check for out of bounds.
         if (x > 10 || y > 10) throw new Error('Out of bounds')
 
@@ -107,7 +105,7 @@ export class Gameboard {
 
     // Flip ships from horizontal to vertical and vice versa.
     flip(ship) {
-        // Dissect the starting ship coordinate
+        // Dissect the starting ship coordinate and store in variables x & y.
         let [x, y] = ship.location[0]
 
         // Remove every other coordinate AFTER the starting coordinate.
@@ -119,14 +117,15 @@ export class Gameboard {
         let i = 1
         if (finalX > 10) {
             while (i < ship.length) {
-                x -= i
+                x -= 1
                 this.board[x][y] = ship.typeOfShip.split('')[0]
                 ship.location.push([x, y])
                 i++
             }
         } else {
             while (i < ship.length) {
-                x += i
+                x += 1
+                console.log(`x: ${x}, i: ${i}`)
                 this.board[x][y] = ship.typeOfShip.split('')[0]
                 ship.location.push([x, y])
                 i++
