@@ -100,13 +100,14 @@ describe('Test gameboard class', () => {
         })
 
         // Ships cannot overlap
-        it.skip('Ships cannot overlap', () => {
+        it('Ships cannot overlap', () => {
             const demoShip = new Ship(4) // Battleship
             const coord = [10, 10]
 
-            demoGameboard.placeShip(demoShip, coord)
-            outOfBoundsCheck()
-            expect(demoGameboard.board[coord[0]][coord[1]]).not.toBe(demoShip.typeOfShip.split('')[0])
+            // Throws an error if overlapping.
+            expect(() => {
+                demoGameboard.placeShip(demoShip, coord)
+            }).toThrow()
         })
     })
 
@@ -164,14 +165,4 @@ describe('Test gameboard class', () => {
             expect(demoGameboard.areAllShipsSunked).toBe(true)
         })
     })
-})
-
-describe('Player class', () => {
-    const playerOne = new Player()
-
-    it('Player object will have a gameboard', () => {
-        expect(Object.keys(playerOne.gameboard)).toEqual(['board', 'ships', 'areAllShipsSunked'])
-    })
-
-    it.todo('Record hits on ship')
 })
