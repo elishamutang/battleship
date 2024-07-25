@@ -125,7 +125,6 @@ export class Gameboard {
         } else {
             while (i < ship.length) {
                 x += 1
-                console.log(`x: ${x}, i: ${i}`)
                 this.board[x][y] = ship.typeOfShip.split('')[0]
                 ship.location.push([x, y])
                 i++
