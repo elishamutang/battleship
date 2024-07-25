@@ -43,15 +43,16 @@ export default function generateTheDOM() {
     const carrier = [new Ship(5)]
 
     realPlayer.gameboard.placeShip(patrolBoats.shift(), [0, 0]) // Patrol boat
-    realPlayer.gameboard.placeShip(patrolBoats.shift(), [9, 2])
-    realPlayer.gameboard.placeShip(patrolBoats.shift(), [2, 4])
+    realPlayer.gameboard.placeShip(patrolBoats.shift(), [7, 8])
+    realPlayer.gameboard.placeShip(patrolBoats.shift(), [2, 3])
     realPlayer.gameboard.placeShip(patrolBoats.shift(), [5, 9])
 
     realPlayer.gameboard.placeShip(destroyers.shift(), [0, 3]) // Destroyer
     realPlayer.gameboard.placeShip(destroyers.shift(), [9, 8])
     realPlayer.gameboard.placeShip(destroyers.shift(), [4, 1])
 
-    // realPlayer.gameboard.placeShip(battleShips.shift(), []) // Battleships
+    realPlayer.gameboard.placeShip(battleShips.shift(), [3, 6]) // Battleships
+    realPlayer.gameboard.placeShip(battleShips.shift(), [8, 0])
 
     realPlayer.gameboard.placeShip(carrier.shift(), [6, 6]) // Carrier
 
@@ -182,6 +183,8 @@ function refreshStyling(player, gameboard) {
                 getAllRowsPlayer[rowIdx + 1].children[idx + 1].className = 'loc destroyer'
             } else if (loc === 'c') {
                 getAllRowsPlayer[rowIdx + 1].children[idx + 1].className = 'loc carrier'
+            } else if (loc === 'b') {
+                getAllRowsPlayer[rowIdx + 1].children[idx + 1].className = 'loc battleShip'
             }
         })
     })
