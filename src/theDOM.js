@@ -177,11 +177,11 @@ function refreshStyling(player, gameboard) {
     player.gameboard.board.forEach((row, rowIdx) => {
         row.forEach((loc, idx) => {
             if (loc === 'p') {
-                getAllRowsPlayer[rowIdx + 1].children[idx + 1].className += ' patrolBoat'
+                getAllRowsPlayer[rowIdx + 1].children[idx + 1].className = 'loc patrolBoat'
             } else if (loc === 'd') {
-                getAllRowsPlayer[rowIdx + 1].children[idx + 1].className += ' destroyer'
+                getAllRowsPlayer[rowIdx + 1].children[idx + 1].className = 'loc destroyer'
             } else if (loc === 'c') {
-                getAllRowsPlayer[rowIdx + 1].children[idx + 1].className += ' carrier'
+                getAllRowsPlayer[rowIdx + 1].children[idx + 1].className = 'loc carrier'
             }
         })
     })
@@ -201,9 +201,13 @@ function flipTheShip(e, realPlayer, realPlayerGameboard, referenceGameboard) {
 
         // If tile is occupied by a ship, enter here.
         if (shipName) {
+            // Narrow down the relevant ships based on what tile was clicked.
             let relevantShips = Array.from(realPlayer.gameboard.ships).filter((ship) => {
                 if (ship.typeOfShip === shipName) return ship
             })
+
+            // If tile that is clicked does not have a coordinate in the player's gameboard, that tile is occupied by a type of ship.
+            // We can traverse through the referenceGameboard and get the position of that tile.
 
             if (!realPlayer.gameboard.board[demoGameboardRow].includes(e.target.dataset.coord)) {
                 referenceGameboard.gameboard.board[demoGameboardRow].forEach((loc, idx) => {
@@ -212,13 +216,20 @@ function flipTheShip(e, realPlayer, realPlayerGameboard, referenceGameboard) {
                         let x = demoGameboardRow
                         let y = idx
 
+                        // Loop through the relevantShips to get the actual ship that was clicked, based on its location on the gameboard.
                         relevantShips.forEach((ship) => {
                             ship.location.forEach((loc) => {
                                 let shipX = loc[0]
                                 let shipY = loc[1]
 
                                 if (shipX === x && shipY === y) {
-                                    console.log(ship)
+                                    // Change coordinates after the starting point from horizontal to vertical.
+                                    if (shipY !== ship.location[0][1]) {
+                                        // Update the player gameboard and replace the Ship name with a coordinate from the target element's coordinate data.
+                                        realPlayer.gameboard.board[x][y] = e.target.dataset.coord
+                                        e.target.className = 'loc'
+                                    }
+
                                     realPlayer.gameboard.flip(ship)
                                 }
                             })
@@ -230,5 +241,7 @@ function flipTheShip(e, realPlayer, realPlayerGameboard, referenceGameboard) {
             // Refresh styling
             refreshStyling(realPlayer, realPlayerGameboard)
         }
+
+        console.log(realPlayer.gameboard.board)
     }
 }
