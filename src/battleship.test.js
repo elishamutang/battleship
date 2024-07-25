@@ -24,7 +24,7 @@ describe('Test ship class', () => {
     // Test type of ship.
     it('ship with length 4 should be a carrier type', () => {
         const demoShip = new Ship(4)
-        expect(demoShip.typeOfShip).toBe('battleship')
+        expect(demoShip.typeOfShip).toBe('battleShip')
     })
 })
 
@@ -82,7 +82,7 @@ describe('Test gameboard class', () => {
 
         // Flip the ship
         describe('Flip the ship', () => {
-            it.skip('Ship should not go out of bounds when flipped.', () => {
+            it('Ship should not go out of bounds when flipped.', () => {
                 const demoShip = new Ship(2)
                 const coord = [9, 2]
 
@@ -90,7 +90,7 @@ describe('Test gameboard class', () => {
                 expect(demoGameboard.flip(demoShip, coord)).toEqual([8, 2]) // Final coordinate
             })
 
-            it.skip('Ship flip', () => {
+            it('Ship flip', () => {
                 const demoShip = new Ship(2)
                 const coord = [0, 3]
 
@@ -104,10 +104,8 @@ describe('Test gameboard class', () => {
             const demoShip = new Ship(4) // Battleship
             const coord = [10, 10]
 
-            // Throws an error if overlapping.
-            expect(() => {
-                demoGameboard.placeShip(demoShip, coord)
-            }).toThrow()
+            // Returns undefined.
+            expect(demoGameboard.placeShip(demoShip, coord)).toBeUndefined()
         })
     })
 
@@ -136,7 +134,7 @@ describe('Test gameboard class', () => {
         })
 
         it('Determines if hit is on a ship or not, if yes log it.', () => {
-            const coord = [2, 1]
+            const coord = [10, 10]
             const [x, y] = coord
 
             expect(hitsTakenMock(coord).hitsTaken).toBe(1)
@@ -145,8 +143,13 @@ describe('Test gameboard class', () => {
 
         it('Sink ship', () => {
             // Patrol boat
-            hitsTakenMock([10, 10])
             expect(hitsTakenMock([10, 9]).sunk).toBe(true)
+
+            hitsTakenMock([8, 2])
+            expect(hitsTakenMock([9, 2]).sunk).toBe(true)
+
+            hitsTakenMock([0, 3])
+            expect(hitsTakenMock([1, 3]).sunk).toBe(true)
 
             // Destroyer
             hitsTakenMock([2, 1])
@@ -161,7 +164,7 @@ describe('Test gameboard class', () => {
             expect(hitsTakenMock([5, 9]).sunk).toBe(true)
         })
 
-        it.skip('All ships have sunked', () => {
+        it('All ships have sunked', () => {
             expect(demoGameboard.areAllShipsSunked).toBe(true)
         })
     })
