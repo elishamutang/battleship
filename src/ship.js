@@ -26,7 +26,7 @@ export class Ship {
             case 3:
                 return 'destroyer'
             case 4:
-                return 'battleship'
+                return 'battleShip'
             case 5:
                 return 'carrier'
         }
