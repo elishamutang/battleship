@@ -118,22 +118,41 @@ export class Gameboard {
 
     // Flip ships from horizontal to vertical and vice versa.
     flip(ship) {
-        // Dissect the starting ship coordinate and store in variables x & y.
-        let [x, y] = ship.location[0]
-
-        // Calculate the end coordinate of the ship.
-        let finalX = x + ship.length
+        let [x, y] = ship.location[0] // Dissect the starting ship coordinate and store in variables x & y.
+        let [x1, y1] = ship.location[1] // Get adjacent coordinate to compare.
 
         // Generate the locations of each tile that the ship will occupy.
         let shipTilePath = []
 
-        if (finalX > 10) {
-            for (let i = 1; i < ship.length; i++) {
-                shipTilePath.push([x - i, y])
+        // Horizontal to vertical
+        if (y1 !== y) {
+            // Calculate the end coordinate of the ship.
+            let finalX = x + ship.length
+
+            if (finalX > 10) {
+                for (let i = 1; i < ship.length; i++) {
+                    shipTilePath.push([x - i, y])
+                }
+            } else {
+                for (let i = 1; i < ship.length; i++) {
+                    shipTilePath.push([x + i, y])
+                }
             }
-        } else {
-            for (let i = 1; i < ship.length; i++) {
-                shipTilePath.push([x + i, y])
+        }
+
+        // Veritcal to horizontal
+        if (x1 !== x) {
+            // Calculate the end coordinate of the ship.
+            let finalY = y + ship.length
+
+            if (finalY > 10) {
+                for (let i = 1; i < ship.length; i++) {
+                    shipTilePath.push([x, y - i])
+                }
+            } else {
+                for (let i = 1; i < ship.length; i++) {
+                    shipTilePath.push([x, y + i])
+                }
             }
         }
 
@@ -168,8 +187,6 @@ export class Gameboard {
 
                 ship.location.push(tile)
             })
-
-            ship.location.sort()
         } else {
             // Maintain original orientation.
             ship.location.forEach((loc) => {
@@ -180,7 +197,7 @@ export class Gameboard {
             })
         }
 
-        console.log(ship)
+        // console.log(ship)
 
         return shipTilePath.pop()
     }
