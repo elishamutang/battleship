@@ -110,7 +110,7 @@ export class Gameboard {
     // Flip ships from horizontal to vertical and vice versa.
     flip(ship) {
         let [x, y] = ship.location[0] // Dissect the starting ship coordinate and store in variables x & y.
-        let [x1, y1] = ship.location[1] // Get adjacent coordinate to compare.
+        let [x1, y1] = ship.location[1] // Get adjacent coordinate to compare whether ship is currently placed horizontal or vertical.
 
         // Generate the locations of each tile that the ship will occupy.
         let shipTilePath = []
