@@ -105,12 +105,11 @@ export default function generateTheDOM() {
 
     // Record hit logs on gameboard.
     computerPlayerGameboard.addEventListener('click', (e) => {
-        if (e.target.dataset.coord) {
-            // Displays 'x' on gameboard UI. User can only click on tile once.
-            if (!Array.from(e.target.classList).includes('clicked')) {
-                e.target.textContent = 'x'
-                e.target.className += ' clicked'
-            }
+        // If the target is a valid coordinate and it has not been clicked, enter here.
+        if (e.target.dataset.coord && !Array.from(e.target.classList).includes('clicked')) {
+            // Displays 'x' on gameboard UI and marks the tile as "clicked".
+            e.target.textContent = 'x'
+            e.target.className += ' clicked'
 
             let demoGameboardRow = e.target.dataset.coord.split('').map((elem) => {
                 return parseInt(elem)
