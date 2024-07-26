@@ -28,8 +28,6 @@ export class Gameboard {
             const theShip = this.ships[i]
 
             if (theShip.typeOfShip.split('')[0] === this.board[x][y]) {
-                // console.log(x, y)
-                // console.log(this.board[x][y])
                 return
             }
         }
