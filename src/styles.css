@@ -71,17 +71,24 @@ main {
     background-color: lightblue;
 }
 
-.carrier {
-    border: 2px solid grey;
-    background-color: lightgray;
-}
-
 .battleShip {
     border: 2px solid orange;
     background-color: lightgoldenrodyellow;
 }
 
+.carrier {
+    border: 2px solid grey;
+    background-color: lightgray;
+}
+
 .clicked {
     filter: brightness(0.8);
     cursor: not-allowed;
+}
+
+.clicked.patrolBoat,
+.clicked.destroyer,
+.clicked.carrier,
+.clicked.battleShip {
+    color: red;
 }
