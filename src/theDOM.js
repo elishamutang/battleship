@@ -103,45 +103,48 @@ export default function generateTheDOM() {
 
     // THE BELOW EVENT LISTENER SHOULD ONLY BE FOR PLAYERS TO ATTACK THE COMPUTER PLAYERS.
 
-    // Add event listener to interact with gameboards.
     // Record hit logs on gameboard.
-    // realPlayerGameboard.addEventListener('click', (e) => {
-    //     if (e.target.dataset.coord) {
-    //         // Displays on gameboard UI.
-    //         e.target.textContent = 'x'
+    computerPlayerGameboard.addEventListener('click', (e) => {
+        if (e.target.dataset.coord) {
+            // Displays 'x' on gameboard UI. User can only click on tile once.
+            if (!Array.from(e.target.classList).includes('clicked')) {
+                e.target.textContent = 'x'
+                e.target.className += ' clicked'
+            }
 
-    //         let demoGameboardRow = e.target.dataset.coord.split('').map((elem) => {
-    //             return parseInt(elem)
-    //         })
+            let demoGameboardRow = e.target.dataset.coord.split('').map((elem) => {
+                return parseInt(elem)
+            })
 
-    //         demoGameboardRow = parseInt(demoGameboardRow.slice(0, demoGameboardRow.indexOf(NaN)).join('')) - 1
+            demoGameboardRow = parseInt(demoGameboardRow.slice(0, demoGameboardRow.indexOf(NaN)).join('')) - 1
 
-    //         // Use the referenceGameboard to identify the coordinate.
-    //         // If coordinate is not present in realPlayer gameboard, then it is occupied by a type of 'Ship'.
+            // Use the referenceGameboard to identify the coordinate.
+            // If coordinate is not present in player gameboard, then it is occupied by a type of 'Ship'.
 
-    //         // The DOM has the coordinates of the tile that is clicked and the position of that coordinate in the realPlayer.gameboard.board can be
-    //         // cross-checked with the referenceGameboard.
-    //         if (!realPlayer.gameboard.board[demoGameboardRow].includes(e.target.dataset.coord)) {
-    //             referenceGameboard.gameboard.board[demoGameboardRow].forEach((loc, idx) => {
-    //                 // Tile that is clicked on the DOM is cross-checked against the referenceGameboard.
-    //                 if (loc === e.target.dataset.coord) {
-    //                     let x = demoGameboardRow
-    //                     let y = idx
+            // The DOM has the coordinates of the tile that is clicked and the position of that coordinate in the computerPlayer.gameboard.board can be
+            // cross-checked against the referenceGameboard.
+            if (!computerPlayer.gameboard.board[demoGameboardRow].includes(e.target.dataset.coord)) {
+                referenceGameboard.gameboard.board[demoGameboardRow].forEach((loc, idx) => {
+                    // Tile that is clicked on the DOM is cross-checked against the referenceGameboard.
+                    // The position of that tile is obtained and passed to receiveAttack method to register the attack on that position (or tile).
+                    if (loc === e.target.dataset.coord) {
+                        let x = demoGameboardRow
+                        let y = idx
 
-    //                     console.log(x, y)
+                        console.log(x, y)
 
-    //                     realPlayer.gameboard.receiveAttack([x, y])
-    //                 }
-    //             })
-    //         }
+                        computerPlayer.gameboard.receiveAttack([x, y])
+                    }
+                })
+            }
 
-    //         console.log(realPlayer.gameboard)
-    //     }
-    // })
+            console.log(computerPlayer.gameboard)
+        }
+    })
 }
 
+// Construct gameboard
 function generateGameboard(player, playerGameboard) {
-    // Construct gameboard
     player.gameboard.board.forEach((row) => {
         const rowDiv = document.createElement('div')
         rowDiv.className = 'row'
@@ -188,6 +191,7 @@ function generateGameboard(player, playerGameboard) {
     })
 }
 
+// Align player gameboard coordinates with the DOM gameboard.
 function mapCoordinates(player, playerGameboard) {
     let playerDOMGameboard = Array.from(playerGameboard.querySelectorAll('[data-coord]'))
 
@@ -206,6 +210,7 @@ function mapCoordinates(player, playerGameboard) {
     })
 }
 
+// Render gameboard.
 function refreshStyling(player, gameboard) {
     const getAllRowsPlayer = Array.from(gameboard.getElementsByClassName('row'))
 
@@ -225,6 +230,7 @@ function refreshStyling(player, gameboard) {
     })
 }
 
+// Flip the ship functionality (horizontal to vertical and vice versa).
 function flipTheShip(e, realPlayer, realPlayerGameboard, referenceGameboard) {
     if (e.target.dataset.coord) {
         let demoGameboardRow = e.target.dataset.coord.split('').map((elem) => {
@@ -287,7 +293,7 @@ function flipTheShip(e, realPlayer, realPlayerGameboard, referenceGameboard) {
                 })
             }
 
-            // Refresh styling
+            // Re-render gameboard.
             refreshStyling(realPlayer, realPlayerGameboard)
         }
 
