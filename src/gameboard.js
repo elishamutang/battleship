@@ -20,7 +20,7 @@ export class Gameboard {
     placeShip(ship, coord) {
         let [x, y] = coord
 
-        // Check for out of bounds.
+        // Check for out of bounds (this code may be redundant for now, wait till Drag n Drop feature is implemented).
         if (x > 10 || y > 10) throw new Error('Out of bounds')
 
         // Check if space occupied by previously placed ships.
@@ -32,26 +32,54 @@ export class Gameboard {
             }
         }
 
-        // Starting coordinate, depending on the type of ship, the ship will populate a number of coordinates
-        // where the total number of boxes occupied equals to its length.
-        this.board[x][y] = ship.typeOfShip.split('')[0]
-
+        // Get the last Y (or column) coordinate to check whether we are still within the range of the gameboard.
         let finalY = y + ship.length
 
+        // Generate the locations of each tile that the ship will occupy.
+        let shipTilePath = []
+
         // Add ships horizontally by default
-        // Takes first letter of ship type and marks it on gameboard.
+        // Map out the pathway of the ship by generating all the tile coordinates that it will occupy and store in shipTilePath array.
         if (finalY > 10) {
             for (let i = 0; i < ship.length; i++) {
-                this.board[x][y - i] = ship.typeOfShip.split('')[0]
-                ship.location.push([x, y - i])
+                shipTilePath.push([x, y - i])
             }
-
-            ship.location.reverse() // Store the coordinates in ascending order.
         } else {
             for (let i = 0; i < ship.length; i++) {
-                this.board[x][y + i] = ship.typeOfShip.split('')[0]
-                ship.location.push([x, y + i])
+                shipTilePath.push([x, y + i])
             }
+        }
+
+        // Check if ship pathway will overlap with other ships.
+        // If no ships will overlap, noNaN will result to true.
+        const noNaN = shipTilePath
+            .map((tile) => {
+                let coordX = tile[0]
+                let coordY = tile[1]
+
+                let tileContent =
+                    typeof this.board[coordX][coordY] === 'number'
+                        ? this.board[coordX][coordY]
+                        : parseInt(this.board[coordX][coordY].split('')[0])
+
+                return tileContent
+            })
+            .every((tile) => {
+                return !isNaN(tile)
+            })
+
+        // If the pathway of the ship will not overlap with any other ships, render the ship.
+        if (noNaN) {
+            shipTilePath.forEach((tile) => {
+                let tileX = tile[0]
+                let tileY = tile[1]
+
+                this.board[tileX][tileY] = ship.typeOfShip.split('')[0]
+
+                ship.location.push(tile)
+            })
+        } else {
+            console.log('Ship overlap')
         }
 
         // Keeps track of current ships on gameboard.
