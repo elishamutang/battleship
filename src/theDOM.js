@@ -23,40 +23,39 @@ export default function generateTheDOM() {
     mapCoordinates(computerPlayer, computerPlayerGameboard) // Computer
     mapCoordinates(referenceGameboard, realPlayerGameboard) // Reference board
 
+    // REAL PLAYER GAMEBOARD.
     // For now, manually locate each ship (total of 10 ships on the board)
     // 4 patrol, 3 destroyer, 2 battleship, 1 carrier
-    const patrolBoats = []
+    const realPlayerPatrolBoats = []
     for (let i = 0; i < 4; i++) {
-        patrolBoats.push(new Ship(2))
+        realPlayerPatrolBoats.push(new Ship(2))
     }
 
-    const destroyers = []
+    const realPlayerDestroyers = []
     for (let i = 0; i < 3; i++) {
-        destroyers.push(new Ship(3))
+        realPlayerDestroyers.push(new Ship(3))
     }
 
-    const battleShips = []
+    const realPlayerBattleShips = []
     for (let i = 0; i < 2; i++) {
-        battleShips.push(new Ship(4))
+        realPlayerBattleShips.push(new Ship(4))
     }
 
-    const carrier = [new Ship(5)]
+    const realPlayerCarrier = [new Ship(5)]
 
-    realPlayer.gameboard.placeShip(patrolBoats.shift(), [0, 0]) // Patrol boat
-    realPlayer.gameboard.placeShip(patrolBoats.shift(), [7, 8])
-    realPlayer.gameboard.placeShip(patrolBoats.shift(), [2, 3])
-    realPlayer.gameboard.placeShip(patrolBoats.shift(), [5, 9])
+    realPlayer.gameboard.placeShip(realPlayerPatrolBoats.shift(), [0, 0]) // Patrol boat
+    realPlayer.gameboard.placeShip(realPlayerPatrolBoats.shift(), [7, 8])
+    realPlayer.gameboard.placeShip(realPlayerPatrolBoats.shift(), [2, 3])
+    realPlayer.gameboard.placeShip(realPlayerPatrolBoats.shift(), [5, 9])
 
-    realPlayer.gameboard.placeShip(destroyers.shift(), [0, 3]) // Destroyer
-    realPlayer.gameboard.placeShip(destroyers.shift(), [9, 8])
-    realPlayer.gameboard.placeShip(destroyers.shift(), [4, 1])
+    realPlayer.gameboard.placeShip(realPlayerDestroyers.shift(), [0, 3]) // Destroyer
+    realPlayer.gameboard.placeShip(realPlayerDestroyers.shift(), [9, 8])
+    realPlayer.gameboard.placeShip(realPlayerDestroyers.shift(), [4, 1])
 
-    realPlayer.gameboard.placeShip(battleShips.shift(), [3, 6]) // Battleships
-    realPlayer.gameboard.placeShip(battleShips.shift(), [8, 0])
+    realPlayer.gameboard.placeShip(realPlayerBattleShips.shift(), [3, 6]) // Battleships
+    realPlayer.gameboard.placeShip(realPlayerBattleShips.shift(), [8, 0])
 
-    realPlayer.gameboard.placeShip(carrier.shift(), [6, 6]) // Carrier
-
-    console.log(realPlayer.gameboard.board)
+    realPlayer.gameboard.placeShip(realPlayerCarrier.shift(), [6, 6]) // Carrier
 
     // Flipping feature.
     realPlayerGameboard.addEventListener('click', (e) => {
@@ -65,6 +64,42 @@ export default function generateTheDOM() {
 
     // Style the ships.
     refreshStyling(realPlayer, realPlayerGameboard)
+
+    // COMPUTER GAMEBOARD.
+    // For now, manually locate each ship (total of 10 ships on the board)
+    // 4 patrol, 3 destroyer, 2 battleship, 1 carrier
+    const compPatrolBoats = []
+    for (let i = 0; i < 4; i++) {
+        compPatrolBoats.push(new Ship(2))
+    }
+
+    const compDestroyers = []
+    for (let i = 0; i < 3; i++) {
+        compDestroyers.push(new Ship(3))
+    }
+
+    const compBattleShips = []
+    for (let i = 0; i < 2; i++) {
+        compBattleShips.push(new Ship(4))
+    }
+
+    const compCarrier = [new Ship(5)]
+
+    computerPlayer.gameboard.placeShip(compPatrolBoats.shift(), [0, 0]) // Patrol boat
+    computerPlayer.gameboard.placeShip(compPatrolBoats.shift(), [0, 4])
+    computerPlayer.gameboard.placeShip(compPatrolBoats.shift(), [9, 9])
+    computerPlayer.gameboard.placeShip(compPatrolBoats.shift(), [9, 3])
+
+    computerPlayer.gameboard.placeShip(compDestroyers.shift(), [0, 7]) // Destoyer
+    computerPlayer.gameboard.placeShip(compDestroyers.shift(), [6, 7])
+    computerPlayer.gameboard.placeShip(compDestroyers.shift(), [5, 0])
+
+    computerPlayer.gameboard.placeShip(compBattleShips.shift(), [4, 6]) // Battleships
+    computerPlayer.gameboard.placeShip(compBattleShips.shift(), [7, 0])
+
+    computerPlayer.gameboard.placeShip(compCarrier.shift(), [2, 2]) // Carrier
+
+    refreshStyling(computerPlayer, computerPlayerGameboard)
 
     // THE BELOW EVENT LISTENER SHOULD ONLY BE FOR PLAYERS TO ATTACK THE COMPUTER PLAYERS.
 
