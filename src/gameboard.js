@@ -24,13 +24,6 @@ export class Gameboard {
         if (x > 10 || y > 10) throw new Error('Out of bounds')
 
         // Check if space occupied by previously placed ships.
-        // this.ships.forEach((ship) => {
-        //     if (ship.typeOfShip.split('')[0] === this.board[x][y]) {
-        //         console.log('hi')
-        //         return
-        //     }
-        // })
-
         for (let i = 0; i < this.ships.length; i++) {
             const theShip = this.ships[i]
 
