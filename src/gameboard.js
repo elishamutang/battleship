@@ -78,15 +78,24 @@ export class Gameboard {
 
                 ship.location.push(tile)
             })
+
+            ship.location.sort()
         } else {
             console.log('Ship overlap')
         }
+
+        // Generate ship boundary to allow for a single box gap between each ship.
+        this.#generateShipBoundary(ship)
 
         // Keeps track of current ships on gameboard.
         this.ships.push(ship)
 
         // Drag and drop option
         //...
+    }
+
+    #generateShipBoundary(ship) {
+        console.log(ship)
     }
 
     // Receives a pair of coordinates and determines if any ships were attacked.
@@ -215,8 +224,6 @@ export class Gameboard {
                 this.board[locX][locY] = ship.typeOfShip.split('')[0]
             })
         }
-
-        // console.log(ship)
 
         return shipTilePath.pop()
     }
