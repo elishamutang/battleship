@@ -95,6 +95,60 @@ export class Gameboard {
     }
 
     #generateShipBoundary(ship) {
+        for (let i = 0; i < ship.location.length; i++) {
+            let coordX = ship.location[i][0]
+            let coordY = ship.location[i][1]
+
+            ship.boundary.push([coordX - 1, coordY]) // Top
+            ship.boundary.push([coordX - 1, coordY + 1]) // Top right
+            ship.boundary.push([coordX, coordY + 1]) // Right
+            ship.boundary.push([coordX + 1, coordY + 1]) // Bottom right
+            ship.boundary.push([coordX + 1, coordY]) // Bottom
+            ship.boundary.push([coordX + 1, coordY - 1]) // Bottom left
+            ship.boundary.push([coordX, coordY - 1]) // Left
+            ship.boundary.push([coordX - 1, coordY - 1]) // Top left
+        }
+
+        // Filter for out of bounds.
+        ship.boundary = ship.boundary.filter((coord) => {
+            if (coord[0] >= 0 && coord[1] >= 0) {
+                return coord
+            }
+        })
+
+        // Remove ship.location coordinates from ship.boundary array.
+        for (let i = 0; i < ship.boundary.length; i++) {
+            let boundaryX = ship.boundary[i][0]
+            let boundaryY = ship.boundary[i][1]
+
+            for (let j = 0; j < ship.location.length; j++) {
+                let locX = ship.location[j][0]
+                let locY = ship.location[j][1]
+
+                if (boundaryX === locX && boundaryY === locY) {
+                    ship.boundary.splice(i, 1)
+                }
+            }
+        }
+
+        // Remove duplicates in ship.boundary array
+        const removeDuplicates = (arr) => {
+            let seen = {}
+            let returnArr = []
+
+            for (let i = 0; i < arr.length; i++) {
+                if (!(arr[i] in seen)) {
+                    returnArr.push(arr[i])
+                    seen[arr[i]] = true
+                }
+            }
+
+            return returnArr
+        }
+
+        // Update new ship boundary array.
+        ship.boundary = removeDuplicates(ship.boundary)
+
         console.log(ship)
     }
 
