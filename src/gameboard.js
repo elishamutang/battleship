@@ -111,7 +111,7 @@ export class Gameboard {
 
         // Filter for out of bounds.
         ship.boundary = ship.boundary.filter((coord) => {
-            if (coord[0] >= 0 && coord[1] >= 0) {
+            if (coord[0] >= 0 && coord[1] >= 0 && coord[0] < 10 && coord[1] < 10) {
                 return coord
             }
         })
