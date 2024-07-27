@@ -5,7 +5,7 @@ export class Ship {
         this.sunk = false
         this.typeOfShip = this.shipType()
         this.location = []
-        this.shipBoundary = []
+        this.boundary = []
     }
 
     hit() {
