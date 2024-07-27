@@ -23,46 +23,15 @@ export default function generateTheDOM() {
     mapCoordinates(computerPlayer, computerPlayerGameboard) // Computer
     mapCoordinates(referenceGameboard, realPlayerGameboard) // Reference board
 
-    // REAL PLAYER GAMEBOARD.
-    // For now, manually locate each ship (total of 10 ships on the board)
-    // 4 patrol, 3 destroyer, 2 battleship, 1 carrier
-    const realPlayerPatrolBoats = []
-    for (let i = 0; i < 4; i++) {
-        realPlayerPatrolBoats.push(new Ship(2))
-    }
+    // Generate the ships.
+    generateTheShips(realPlayer)
 
-    const realPlayerDestroyers = []
-    for (let i = 0; i < 3; i++) {
-        realPlayerDestroyers.push(new Ship(3))
-    }
-
-    const realPlayerBattleShips = []
-    for (let i = 0; i < 2; i++) {
-        realPlayerBattleShips.push(new Ship(4))
-    }
-
-    const realPlayerCarrier = [new Ship(5)]
-
-    realPlayer.gameboard.placeShip(realPlayerPatrolBoats.shift(), [0, 0]) // Patrol boat
-    realPlayer.gameboard.placeShip(realPlayerPatrolBoats.shift(), [7, 8])
-    realPlayer.gameboard.placeShip(realPlayerPatrolBoats.shift(), [2, 3])
-    realPlayer.gameboard.placeShip(realPlayerPatrolBoats.shift(), [5, 9])
-
-    realPlayer.gameboard.placeShip(realPlayerDestroyers.shift(), [0, 3]) // Destroyer
-    realPlayer.gameboard.placeShip(realPlayerDestroyers.shift(), [9, 8])
-    realPlayer.gameboard.placeShip(realPlayerDestroyers.shift(), [4, 1])
-
-    realPlayer.gameboard.placeShip(realPlayerBattleShips.shift(), [3, 6]) // Battleships
-    realPlayer.gameboard.placeShip(realPlayerBattleShips.shift(), [8, 0])
-
-    realPlayer.gameboard.placeShip(realPlayerCarrier.shift(), [6, 6]) // Carrier
-
-    // Flipping feature.
+    // Flipping feature (for real player only).
     realPlayerGameboard.addEventListener('click', (e) => {
         flipTheShip(e, realPlayer, realPlayerGameboard, referenceGameboard)
     })
 
-    // Style the ships.
+    // Render the real player's gameboard.
     refreshStyling(realPlayer, realPlayerGameboard)
 
     // COMPUTER GAMEBOARD.
@@ -85,19 +54,19 @@ export default function generateTheDOM() {
 
     const compCarrier = [new Ship(5)]
 
-    computerPlayer.gameboard.placeShip(compPatrolBoats.shift(), [0, 0]) // Patrol boat
-    computerPlayer.gameboard.placeShip(compPatrolBoats.shift(), [0, 4])
-    computerPlayer.gameboard.placeShip(compPatrolBoats.shift(), [9, 9])
-    computerPlayer.gameboard.placeShip(compPatrolBoats.shift(), [9, 3])
+    // computerPlayer.gameboard.placeShip(compPatrolBoats.shift(), [0, 0]) // Patrol boat
+    // computerPlayer.gameboard.placeShip(compPatrolBoats.shift(), [0, 4])
+    // computerPlayer.gameboard.placeShip(compPatrolBoats.shift(), [9, 9])
+    // computerPlayer.gameboard.placeShip(compPatrolBoats.shift(), [9, 3])
 
-    computerPlayer.gameboard.placeShip(compDestroyers.shift(), [0, 7]) // Destoyer
-    computerPlayer.gameboard.placeShip(compDestroyers.shift(), [6, 7])
-    computerPlayer.gameboard.placeShip(compDestroyers.shift(), [5, 0])
+    // computerPlayer.gameboard.placeShip(compDestroyers.shift(), [0, 7]) // Destoyer
+    // computerPlayer.gameboard.placeShip(compDestroyers.shift(), [6, 7])
+    // computerPlayer.gameboard.placeShip(compDestroyers.shift(), [5, 0])
 
-    computerPlayer.gameboard.placeShip(compBattleShips.shift(), [4, 6]) // Battleships
-    computerPlayer.gameboard.placeShip(compBattleShips.shift(), [7, 0])
+    // computerPlayer.gameboard.placeShip(compBattleShips.shift(), [4, 6]) // Battleships
+    // computerPlayer.gameboard.placeShip(compBattleShips.shift(), [7, 0])
 
-    computerPlayer.gameboard.placeShip(compCarrier.shift(), [2, 2]) // Carrier
+    // computerPlayer.gameboard.placeShip(compCarrier.shift(), [2, 2]) // Carrier
 
     refreshStyling(computerPlayer, computerPlayerGameboard)
 
@@ -107,8 +76,8 @@ export default function generateTheDOM() {
     computerPlayerGameboard.addEventListener('click', (e) => {
         // If the target is a valid coordinate and it has not been clicked, enter here.
         if (e.target.dataset.coord && !Array.from(e.target.classList).includes('clicked')) {
-            // Displays 'x' on gameboard UI and marks the tile as "clicked".
-            e.target.textContent = 'x'
+            // Marks tile on gameboard UI and identify it as "clicked".
+            e.target.textContent = String.fromCharCode(parseInt('25CF', 16))
             e.target.className += ' clicked'
 
             let demoGameboardRow = e.target.dataset.coord.split('').map((elem) => {
@@ -129,6 +98,8 @@ export default function generateTheDOM() {
                     if (loc === e.target.dataset.coord) {
                         let x = demoGameboardRow
                         let y = idx
+
+                        e.target.textContent = 'X' // For ships, mark with 'X'.
 
                         console.log(x, y)
 
@@ -298,4 +269,45 @@ function flipTheShip(e, realPlayer, realPlayerGameboard, referenceGameboard) {
 
         console.log(realPlayer.gameboard.board)
     }
+}
+
+function generateTheShips(player) {
+    // For now, manually locate each ship (total of 10 ships on the board)
+    // 4 patrol, 3 destroyer, 2 battleship, 1 carrier
+
+    // Create a randomizer that generates random coordinates for each ship. Ensure there is at least a 1 box gap between the ships.
+    const randomizer = () => {
+        return Math.floor(Math.random() * 10)
+    }
+
+    const realPlayerPatrolBoats = []
+    for (let i = 0; i < 4; i++) {
+        realPlayerPatrolBoats.push(new Ship(2))
+    }
+
+    const realPlayerDestroyers = []
+    for (let i = 0; i < 3; i++) {
+        realPlayerDestroyers.push(new Ship(3))
+    }
+
+    const realPlayerBattleShips = []
+    for (let i = 0; i < 2; i++) {
+        realPlayerBattleShips.push(new Ship(4))
+    }
+
+    const realPlayerCarrier = [new Ship(5)]
+
+    player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [0, 0]) // Patrol boat
+    player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [7, 8])
+    player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [2, 3])
+    player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [5, 9])
+
+    player.gameboard.placeShip(realPlayerDestroyers.shift(), [0, 3]) // Destroyer
+    player.gameboard.placeShip(realPlayerDestroyers.shift(), [9, 8])
+    player.gameboard.placeShip(realPlayerDestroyers.shift(), [4, 1])
+
+    player.gameboard.placeShip(realPlayerBattleShips.shift(), [3, 6]) // Battleships
+    player.gameboard.placeShip(realPlayerBattleShips.shift(), [8, 0])
+
+    player.gameboard.placeShip(realPlayerCarrier.shift(), [6, 6]) // Carrier
 }
