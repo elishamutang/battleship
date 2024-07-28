@@ -70,38 +70,50 @@ export class Gameboard {
                 return !isNaN(tile)
             })
 
+        // FIX THIS !*
         // If the pathway of the ship will not overlap with any other ships, render the ship.
         if (noNaN) {
+            // Generate ship boundary to allow for a single box gap between each ship.
+            this.#generateShipBoundary(ship, shipTilePath)
+
+            ship.location = shipTilePath
+            ship.location.sort()
+
+            // Check if ship that is being placed is within any other ship's boundary.
+            if (!this.#checkBoundary(ship)) {
+                const randomizer = () => {
+                    return Math.floor(Math.random() * 10)
+                }
+
+                const newCoord = [randomizer(), randomizer()]
+
+                // this.placeShip(ship, newCoord)
+
+                console.log(ship)
+            }
             shipTilePath.forEach((tile) => {
                 let tileX = tile[0]
                 let tileY = tile[1]
 
                 this.board[tileX][tileY] = ship.typeOfShip.split('')[0]
-
-                ship.location.push(tile)
             })
-
-            ship.location.sort()
         } else {
-            console.log('Ship overlap')
+            // If ship overlaps, do something here. Re-assign new coordinates/location to the ship.
+            console.log('Ship overlap and within boundary')
         }
-
-        // Generate ship boundary to allow for a single box gap between each ship.
-        this.#generateShipBoundary(ship)
 
         // Keeps track of current ships on gameboard.
         this.ships.push(ship)
-        Gameboard.findShip()
-        this.#checkBoundary(ship)
 
+        console.log(this.ships)
         // Drag and drop option
         //...
     }
 
-    #generateShipBoundary(ship) {
-        for (let i = 0; i < ship.location.length; i++) {
-            let coordX = ship.location[i][0]
-            let coordY = ship.location[i][1]
+    #generateShipBoundary(ship, shipTilePath) {
+        for (let i = 0; i < shipTilePath.length; i++) {
+            let coordX = shipTilePath[i][0]
+            let coordY = shipTilePath[i][1]
 
             ship.boundary.push([coordX - 1, coordY]) // Top
             ship.boundary.push([coordX - 1, coordY + 1]) // Top right
@@ -125,9 +137,9 @@ export class Gameboard {
             let boundaryX = ship.boundary[i][0]
             let boundaryY = ship.boundary[i][1]
 
-            for (let j = 0; j < ship.location.length; j++) {
-                let locX = ship.location[j][0]
-                let locY = ship.location[j][1]
+            for (let j = 0; j < shipTilePath.length; j++) {
+                let locX = shipTilePath[j][0]
+                let locY = shipTilePath[j][1]
 
                 if (boundaryX === locX && boundaryY === locY) {
                     ship.boundary.splice(i, 1)
@@ -154,13 +166,28 @@ export class Gameboard {
         ship.boundary = removeDuplicates(ship.boundary)
     }
 
-    #checkBoundary(ship) {}
+    // If true, ship that is being placed is out of boundary from other ships. Else, it is being placed within the boundary of some ship(s).
+    #checkBoundary(ship) {
+        const locationContent = []
+        let outOfBoundary = true
 
-    // Receives a pair of coordinates and determines if any ships were attacked.
-    receiveAttack(coord) {
+        for (let coord of ship.boundary) {
+            let x = coord[0]
+            let y = coord[1]
+
+            locationContent.push(this.board[x][y])
+        }
+
+        outOfBoundary = locationContent.every((elem) => {
+            return elem.length > 1
+        })
+
+        return outOfBoundary
+    }
+
+    #findShip(coord) {
         const [x, y] = coord
 
-        // Determines which ship is being attacked based on the coord that is passed to the method.
         const [ship] = this.ships.filter((elem) => {
             for (let loc of elem.location) {
                 if (loc[0] === x && loc[1] === y) {
@@ -168,6 +195,16 @@ export class Gameboard {
                 }
             }
         })
+
+        return ship
+    }
+
+    // Receives a pair of coordinates and determines if any ships were attacked.
+    receiveAttack(coord) {
+        const [x, y] = coord
+
+        // Determines which ship is being attacked based on the coord that is passed to the method.
+        const ship = this.#findShip(coord)
 
         // If the coordinate is occupied by a type of ship, add it to hitsTaken property.
         if (ship) {
