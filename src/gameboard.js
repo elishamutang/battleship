@@ -2,9 +2,11 @@ export class Gameboard {
     constructor() {
         this.board = this.#generateBoard()
         this.ships = []
-        this.areAllShipsSunked = false
     }
 
+    static areAllShipsSunked = false
+
+    // Consider to change this private method to a static method.
     #generateBoard() {
         const board = Array(11)
             .fill(0)
@@ -89,6 +91,8 @@ export class Gameboard {
 
         // Keeps track of current ships on gameboard.
         this.ships.push(ship)
+        Gameboard.findShip()
+        this.#checkBoundary(ship)
 
         // Drag and drop option
         //...
@@ -148,9 +152,9 @@ export class Gameboard {
 
         // Update new ship boundary array.
         ship.boundary = removeDuplicates(ship.boundary)
-
-        console.log(ship)
     }
+
+    #checkBoundary(ship) {}
 
     // Receives a pair of coordinates and determines if any ships were attacked.
     receiveAttack(coord) {
@@ -194,7 +198,7 @@ export class Gameboard {
 
         // Gameboard to detect if all ships have sunked.
         if (allShipsSunk.length === this.ships.length) {
-            this.areAllShipsSunked = true
+            Gameboard.areAllShipsSunked = true
         }
     }
 
