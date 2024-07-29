@@ -165,7 +165,7 @@ describe('Test gameboard class', () => {
         })
 
         it('All ships have sunked', () => {
-            expect(Gameboard.areAllShipsSunked).toBe(true)
+            expect(demoGameboard.areAllShipsSunked).toBe(true)
         })
     })
 })
