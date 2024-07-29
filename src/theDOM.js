@@ -298,16 +298,20 @@ function generateTheShips(player) {
     const realPlayerCarrier = [new Ship(5)]
 
     player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [0, 0]) // Patrol boat
-    player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [7, 8])
-    player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [2, 3])
-    player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [5, 9])
+    player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [0, 2])
+    // player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [7, 8])
 
-    player.gameboard.placeShip(realPlayerDestroyers.shift(), [0, 3]) // Destroyer
-    player.gameboard.placeShip(realPlayerDestroyers.shift(), [9, 8])
-    player.gameboard.placeShip(realPlayerDestroyers.shift(), [4, 1])
+    // player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [randomizer(), randomizer()]) // Patrol boat (random)
+    // player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [randomizer(), randomizer()])
+    // player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [randomizer(), randomizer()])
+    // player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [5, 9])
 
-    player.gameboard.placeShip(realPlayerBattleShips.shift(), [3, 6]) // Battleships
-    player.gameboard.placeShip(realPlayerBattleShips.shift(), [8, 0])
+    // player.gameboard.placeShip(realPlayerDestroyers.shift(), [0, 3]) // Destroyer
+    // player.gameboard.placeShip(realPlayerDestroyers.shift(), [9, 8])
+    // player.gameboard.placeShip(realPlayerDestroyers.shift(), [4, 1])
 
-    player.gameboard.placeShip(realPlayerCarrier.shift(), [6, 6]) // Carrier
+    // player.gameboard.placeShip(realPlayerBattleShips.shift(), [3, 6]) // Battleships
+    // player.gameboard.placeShip(realPlayerBattleShips.shift(), [8, 0])
+
+    // player.gameboard.placeShip(realPlayerCarrier.shift(), [6, 6]) // Carrier
 }
