@@ -69,10 +69,13 @@ export class Gameboard {
                 return !isNaN(tile)
             })
 
-        // FIX THIS !*
         // If the pathway of the ship will not overlap with any other ships, render the ship.
         if (noNaN) {
             // Generate ship boundary to allow for a single box gap between each ship.
+            if (ship.boundary.length !== 0) {
+                ship.boundary = []
+            }
+
             this.#generateShipBoundary(ship, shipTilePath)
 
             ship.location = shipTilePath
@@ -86,25 +89,25 @@ export class Gameboard {
 
                 const newCoord = [randomizer(), randomizer()]
 
-                // this.placeShip(ship, newCoord)
+                this.placeShip(ship, newCoord)
+            } else {
+                shipTilePath.forEach((tile) => {
+                    let tileX = tile[0]
+                    let tileY = tile[1]
 
-                console.log(ship)
+                    this.board[tileX][tileY] = ship.typeOfShip.split('')[0]
+                })
+
+                // Keeps track of current ships on gameboard.
+                this.ships.push(ship)
+
+                console.log(this.ships)
             }
-            shipTilePath.forEach((tile) => {
-                let tileX = tile[0]
-                let tileY = tile[1]
-
-                this.board[tileX][tileY] = ship.typeOfShip.split('')[0]
-            })
         } else {
             // If ship overlaps, do something here. Re-assign new coordinates/location to the ship.
             console.log('Ship overlap and within boundary')
         }
 
-        // Keeps track of current ships on gameboard.
-        this.ships.push(ship)
-
-        console.log(this.ships)
         // Drag and drop option
         //...
     }
@@ -168,7 +171,6 @@ export class Gameboard {
     // If true, ship that is being placed is out of boundary from other ships. Else, it is being placed within the boundary of some ship(s).
     #checkBoundary(ship) {
         const locationContent = []
-        let outOfBoundary = true
 
         for (let coord of ship.boundary) {
             let x = coord[0]
@@ -177,9 +179,20 @@ export class Gameboard {
             locationContent.push(this.board[x][y])
         }
 
-        outOfBoundary = locationContent.every((elem) => {
-            return elem.length > 1
-        })
+        // Use noNaN implementation here, similar to what was done in placeShip and generateBoundary methods.
+        const outOfBoundary = ship.boundary
+            .map((coord) => {
+                let x = coord[0]
+                let y = coord[1]
+
+                let content =
+                    typeof this.board[x][y] === 'number' ? this.board[x][y] : parseInt(this.board[x][y].split('')[0])
+
+                return content
+            })
+            .every((elem) => {
+                return !isNaN(elem)
+            })
 
         return outOfBoundary
     }
