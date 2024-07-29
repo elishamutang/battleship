@@ -2,9 +2,8 @@ export class Gameboard {
     constructor() {
         this.board = this.#generateBoard()
         this.ships = []
+        this.areAllShipsSunked = false
     }
-
-    static areAllShipsSunked = false
 
     // Consider to change this private method to a static method.
     #generateBoard() {
@@ -235,7 +234,7 @@ export class Gameboard {
 
         // Gameboard to detect if all ships have sunked.
         if (allShipsSunk.length === this.ships.length) {
-            Gameboard.areAllShipsSunked = true
+            this.areAllShipsSunked = true
         }
     }
 
