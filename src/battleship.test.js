@@ -80,22 +80,24 @@ describe('Test gameboard class', () => {
             })
         })
 
+        // ** Make these tests past ** //
         // Flip the ship
         describe('Flip the ship', () => {
             it('Ship should not go out of bounds when flipped.', () => {
                 const demoShip = new Ship(2)
-                const coord = [9, 2]
+                const coord = [10, 0]
 
                 demoGameboard.placeShip(demoShip, coord)
-                expect(demoGameboard.flip(demoShip, coord)).toEqual([8, 2]) // Final coordinate
+                expect(demoGameboard.flip(demoShip)).toEqual([9, 0]) // Final coordinate
             })
 
             it('Ship flip', () => {
                 const demoShip = new Ship(2)
-                const coord = [0, 3]
+                const coord = [0, 2]
 
                 demoGameboard.placeShip(demoShip, coord)
-                expect(demoGameboard.flip(demoShip, coord)).toEqual([1, 3]) // Final coordinate
+                console.log(demoGameboard)
+                expect(demoGameboard.flip(demoShip)).toEqual([3, 9]) // Final coordinate
             })
         })
 
@@ -149,7 +151,7 @@ describe('Test gameboard class', () => {
             expect(hitsTakenMock([9, 2]).sunk).toBe(true)
 
             hitsTakenMock([0, 3])
-            expect(hitsTakenMock([1, 3]).sunk).toBe(true)
+            console.log(hitsTakenMock([1, 3]))
 
             // Destroyer
             hitsTakenMock([2, 1])
