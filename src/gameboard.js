@@ -324,6 +324,9 @@ export class Gameboard {
 
             ship.location = shipTilePath
 
+            // Logic to remove previous ship location on the gameboard
+            // ....
+
             ship.location.forEach((tile) => {
                 let tileX = tile[0]
                 let tileY = tile[1]
