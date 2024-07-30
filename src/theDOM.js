@@ -200,6 +200,7 @@ function refreshStyling(player, gameboard) {
     })
 }
 
+// ** The logic in this function should really be inside the flip method in the Gameboard class ** //
 // Flip the ship functionality (horizontal to vertical and vice versa).
 function flipTheShip(e, realPlayer, realPlayerGameboard, referenceGameboard) {
     if (e.target.dataset.coord) {
@@ -267,7 +268,7 @@ function flipTheShip(e, realPlayer, realPlayerGameboard, referenceGameboard) {
             refreshStyling(realPlayer, realPlayerGameboard)
         }
 
-        console.log(realPlayer.gameboard.board)
+        // console.log(realPlayer.gameboard.board)
     }
 }
 
@@ -297,21 +298,29 @@ function generateTheShips(player) {
 
     const realPlayerCarrier = [new Ship(5)]
 
-    player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [0, 0]) // Patrol boat
-    player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [0, 2])
-    // player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [7, 8])
+    player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [1, 2]) // Patrol boat
+    player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [5, 0])
+    player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [8, 5])
+    player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [9, 8])
 
     // player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [randomizer(), randomizer()]) // Patrol boat (random)
     // player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [randomizer(), randomizer()])
     // player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [randomizer(), randomizer()])
-    // player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [5, 9])
+    // player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [randomizer(), randomizer()])
 
-    // player.gameboard.placeShip(realPlayerDestroyers.shift(), [0, 3]) // Destroyer
-    // player.gameboard.placeShip(realPlayerDestroyers.shift(), [9, 8])
-    // player.gameboard.placeShip(realPlayerDestroyers.shift(), [4, 1])
+    player.gameboard.placeShip(realPlayerDestroyers.shift(), [7, 1]) // Destroyer
+    player.gameboard.placeShip(realPlayerDestroyers.shift(), [6, 5])
+    player.gameboard.placeShip(realPlayerDestroyers.shift(), [3, 5])
+
+    // player.gameboard.placeShip(realPlayerDestroyers.shift(), [randomizer(), randomizer()]) // Destroyer
+    // player.gameboard.placeShip(realPlayerDestroyers.shift(), [randomizer(), randomizer()])
+    // player.gameboard.placeShip(realPlayerDestroyers.shift(), [randomizer(), randomizer()])
 
     // player.gameboard.placeShip(realPlayerBattleShips.shift(), [3, 6]) // Battleships
     // player.gameboard.placeShip(realPlayerBattleShips.shift(), [8, 0])
+
+    // player.gameboard.placeShip(realPlayerBattleShips.shift(), [randomizer(), randomizer()]) // Battleships
+    player.gameboard.placeShip(realPlayerBattleShips.shift(), [1, 6])
 
     // player.gameboard.placeShip(realPlayerCarrier.shift(), [6, 6]) // Carrier
 }
