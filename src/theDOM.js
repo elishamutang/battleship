@@ -229,25 +229,29 @@ function flipTheShip(e, realPlayer, realPlayerGameboard, referenceGameboard) {
 
                                 // If coordinates matches with the ones inside ship.location, then enter here.
                                 if (shipX === x && shipY === y) {
-                                    // Change coordinates after the starting point from horizontal to vertical.
-                                    for (let i = 1; i < ship.location.length; i++) {
-                                        let row = ship.location[i][0]
-                                        let col = ship.location[i][1]
+                                    // Store reference of the old ship orientation in oldShipLoc.
+                                    const oldShipLoc = ship.location
 
-                                        // Update the player gameboard and replace the Ship name with a coordinate from the target element's coordinate data.
-                                        realPlayer.gameboard.board[row][col] =
-                                            referenceGameboard.gameboard.board[row][col]
-
-                                        // Get the coordinate from referenceGameboard.
-                                        let DOMCoord = referenceGameboard.gameboard.board[row][col]
-
-                                        // Remove styling from tiles that were horizontal.
-                                        document.querySelector(`[data-coord = '${DOMCoord}']`).className = 'loc'
-                                    }
-
-                                    // FIX THIS !*
                                     // Player gameboard is updated to reflect the flipping from horizontal to vertical.
                                     realPlayer.gameboard.flip(ship)
+
+                                    if (oldShipLoc !== ship.location) {
+                                        // For coordinates in oldShipLoc, update the styling and also the player's gameboard.
+                                        for (let i = 1; i < oldShipLoc.length; i++) {
+                                            let row = oldShipLoc[i][0]
+                                            let col = oldShipLoc[i][1]
+
+                                            // Update the player gameboard and replace the Ship name with a coordinate from the target element's coordinate data.
+                                            realPlayer.gameboard.board[row][col] =
+                                                referenceGameboard.gameboard.board[row][col]
+
+                                            // Get the coordinate from referenceGameboard.
+                                            let DOMCoord = referenceGameboard.gameboard.board[row][col]
+
+                                            // Remove styling from tiles occupied by coordinates in oldShipLoc.
+                                            document.querySelector(`[data-coord = '${DOMCoord}']`).className = 'loc'
+                                        }
+                                    }
                                 }
                             })
                         })
@@ -259,7 +263,7 @@ function flipTheShip(e, realPlayer, realPlayerGameboard, referenceGameboard) {
             refreshStyling(realPlayer, realPlayerGameboard)
         }
 
-        // console.log(realPlayer.gameboard.board)
+        console.log(realPlayer.gameboard.board)
     }
 }
 
