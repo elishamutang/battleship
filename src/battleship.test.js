@@ -81,6 +81,7 @@ describe('Test gameboard class', () => {
         })
 
         // **Re-consider this test.**//
+        // This test can maybe count the gap between ships and ensure that the gap is at least 1 box.
         // Ships cannot overlap
         it.skip('Ships cannot overlap', () => {
             const demoShip = new Ship(4) // Battleship
