@@ -132,32 +132,28 @@ function generateGameboard(player, playerGameboard) {
     const getAllRowDivs = Array.from(playerGameboard.getElementsByClassName('row'))
 
     // Numbering
-    getAllRowDivs.forEach((div, idx) => {
-        if (idx !== 0) {
-            div.children[0].textContent = idx
-            div.children[0].className += ' numbering'
-        }
-    })
+    // getAllRowDivs.forEach((div, idx) => {
+    //     if (idx !== 0) {
+    //         div.children[0].textContent = idx
+    //         div.children[0].className += ' numbering'
+    //     }
+    // })
 
     // Alphabets
     const alphabets = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
 
-    Array.from(getAllRowDivs[0].children).forEach((loc, idx) => {
-        if (idx !== 0) {
-            loc.textContent = alphabets[idx - 1]
-            loc.className += ' alphabets'
-        }
-    })
+    // Array.from(getAllRowDivs[0].children).forEach((loc, idx) => {
+    //     if (idx !== 0) {
+    //         loc.textContent = alphabets[idx - 1]
+    //         loc.className += ' alphabets'
+    //     }
+    // })
 
     // Generate coordinates of gameboard
     getAllRowDivs.forEach((div, rowIdx) => {
-        if (rowIdx !== 0) {
-            Array.from(div.children).forEach((loc, idx) => {
-                if (idx !== 0) {
-                    loc.dataset.coord = `${rowIdx}${alphabets[idx - 1]}`
-                }
-            })
-        }
+        Array.from(div.children).forEach((loc, idx) => {
+            loc.dataset.coord = `${rowIdx + 1}${alphabets[idx]}`
+        })
     })
 }
 
@@ -165,15 +161,9 @@ function generateGameboard(player, playerGameboard) {
 function mapCoordinates(player, playerGameboard) {
     let playerDOMGameboard = Array.from(playerGameboard.querySelectorAll('[data-coord]'))
 
-    player.gameboard.board = player.gameboard.board.filter((row, idx) => {
-        if (idx !== 0) return row
-    })
-
     // Map each DOM coordinate to the player gameboard.
     // Playable gameboard is now 10 x 10
     player.gameboard.board.forEach((row) => {
-        row.pop()
-
         row.forEach((loc, idx) => {
             row[idx] = playerDOMGameboard.shift().dataset.coord
         })
@@ -188,13 +178,13 @@ function refreshStyling(player, gameboard) {
     player.gameboard.board.forEach((row, rowIdx) => {
         row.forEach((loc, idx) => {
             if (loc === 'p') {
-                getAllRowsPlayer[rowIdx + 1].children[idx + 1].className = 'loc patrolBoat'
+                getAllRowsPlayer[rowIdx].children[idx].className = 'loc patrolBoat'
             } else if (loc === 'd') {
-                getAllRowsPlayer[rowIdx + 1].children[idx + 1].className = 'loc destroyer'
+                getAllRowsPlayer[rowIdx].children[idx].className = 'loc destroyer'
             } else if (loc === 'c') {
-                getAllRowsPlayer[rowIdx + 1].children[idx + 1].className = 'loc carrier'
+                getAllRowsPlayer[rowIdx].children[idx].className = 'loc carrier'
             } else if (loc === 'b') {
-                getAllRowsPlayer[rowIdx + 1].children[idx + 1].className = 'loc battleShip'
+                getAllRowsPlayer[rowIdx].children[idx].className = 'loc battleShip'
             }
         })
     })
@@ -255,6 +245,7 @@ function flipTheShip(e, realPlayer, realPlayerGameboard, referenceGameboard) {
                                         document.querySelector(`[data-coord = '${DOMCoord}']`).className = 'loc'
                                     }
 
+                                    // FIX THIS !*
                                     // Player gameboard is updated to reflect the flipping from horizontal to vertical.
                                     realPlayer.gameboard.flip(ship)
                                 }
