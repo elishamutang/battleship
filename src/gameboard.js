@@ -256,6 +256,7 @@ export class Gameboard {
         }
     }
 
+    // **Consider moving this functionality for real players only** //
     // Flip ships from horizontal to vertical and vice versa.
     flip(ship) {
         // Generate reference gameboard
