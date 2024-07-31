@@ -6,10 +6,10 @@ export class Gameboard {
     }
 
     #generateBoard() {
-        const board = Array(11)
+        const board = Array(10)
             .fill(0)
             .map((elem) => {
-                elem = Array(11).fill(0)
+                elem = Array(10).fill(0)
                 return elem
             })
 
@@ -59,6 +59,7 @@ export class Gameboard {
                 return !isNaN(tile)
             })
 
+        // Generate random coordinates if overlapping or within other ships' boundary.
         const randomizer = () => {
             return Math.floor(Math.random() * 10)
         }
@@ -102,8 +103,11 @@ export class Gameboard {
             try {
                 const newCoord = [randomizer(), randomizer()]
                 this.placeShip(ship, newCoord)
-                // console.log(ship)
+                // console.log(this.board)
             } catch {
+                // Program enters here if ship cannot fit in the gameboard due to its horizontal orientation.
+                // Hence, need to flip it vertically and try to fit again. Else, repeat this step again.
+
                 throw 'Cannot fit in gameboard'
                 // this.flip(ship)
             }
@@ -254,6 +258,9 @@ export class Gameboard {
 
     // Flip ships from horizontal to vertical and vice versa.
     flip(ship) {
+        // Generate reference gameboard
+        let referenceGameboard = this.#generateBoard()
+
         let [x, y] = ship.location[0] // Dissect the starting ship coordinate and store in variables x & y.
         let [x1, y1] = ship.location[1] // Get adjacent coordinate to compare whether ship is currently placed horizontal or vertical.
 
@@ -313,20 +320,26 @@ export class Gameboard {
         // Insert initial ship starting coordinate at the beginning of shipTilePath array.
         shipTilePath.unshift(...ship.location.slice(0, 1))
 
+        // Reset ship boundary
+        ship.boundary = []
+
         // Generate new boundary
         this.#generateShipBoundary(ship, shipTilePath)
+
+        // Logic to remove previous ship location on the gameboard
+        ship.location.forEach((tile) => {
+            let tileX = tile[0]
+            let tileY = tile[1]
+
+            this.board[tileX][tileY] = referenceGameboard[tileX][tileY]
+        })
 
         // If the pathway of the ship will not overlap with any other ships, enter here and
         // check if its new position will overlap with a ship's boundary.
         if (noNaN && this.#checkBoundary(ship)) {
-            // Reset ship boundary
-            ship.boundary = []
-
             ship.location = shipTilePath
 
-            // Logic to remove previous ship location on the gameboard
-            // ....
-
+            // Render new orientation of ship.
             ship.location.forEach((tile) => {
                 let tileX = tile[0]
                 let tileY = tile[1]
