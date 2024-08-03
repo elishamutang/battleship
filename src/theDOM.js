@@ -8,20 +8,12 @@ export default function generateTheDOM() {
     const realPlayer = new Player()
     const computerPlayer = new Player()
 
-    // Initialize reference gameboard.
-    const referenceGameboard = new Player()
-
     // Generate gameboard in DOM.
     const realPlayerGameboard = document.getElementById('realPlayer')
     const computerPlayerGameboard = document.getElementById('computerPlayer')
 
     generateGameboard(realPlayer, realPlayerGameboard)
     generateGameboard(computerPlayer, computerPlayerGameboard)
-
-    // Align gameboard coordinates between DOM and Gameboard class.
-    mapCoordinates(realPlayer, realPlayerGameboard) // Real player
-    mapCoordinates(computerPlayer, computerPlayerGameboard) // Computer
-    mapCoordinates(referenceGameboard, realPlayerGameboard) // Reference board
 
     // Generate the ships.
     generateTheShips(realPlayer)
@@ -149,23 +141,11 @@ function generateGameboard(player, playerGameboard) {
     //     }
     // })
 
-    // Generate coordinates of gameboard
+    // Generate coordinates of gameboard and set as dataset coordinate for the DOM elements.
     getAllRowDivs.forEach((div, rowIdx) => {
         Array.from(div.children).forEach((loc, idx) => {
-            loc.dataset.coord = `${rowIdx + 1}${alphabets[idx]}`
-        })
-    })
-}
-
-// Align player gameboard coordinates with the DOM gameboard.
-function mapCoordinates(player, playerGameboard) {
-    let playerDOMGameboard = Array.from(playerGameboard.querySelectorAll('[data-coord]'))
-
-    // Map each DOM coordinate to the player gameboard.
-    // Playable gameboard is now 10 x 10
-    player.gameboard.board.forEach((row) => {
-        row.forEach((loc, idx) => {
-            row[idx] = playerDOMGameboard.shift().dataset.coord
+            loc.dataset.row = `${rowIdx}`
+            loc.dataset.col = idx
         })
     })
 }
@@ -190,15 +170,11 @@ function refreshStyling(player, gameboard) {
     })
 }
 
-// ** The logic in this function should really be inside the flip method in the Gameboard class ** //
 // Flip the ship functionality (horizontal to vertical and vice versa).
-function flipTheShip(e, realPlayer, realPlayerGameboard, referenceGameboard) {
-    if (e.target.dataset.coord) {
-        let demoGameboardRow = e.target.dataset.coord.split('').map((elem) => {
-            return parseInt(elem)
-        })
-
-        demoGameboardRow = parseInt(demoGameboardRow.slice(0, demoGameboardRow.indexOf(NaN)).join('')) - 1
+function flipTheShip(e, realPlayer, realPlayerGameboard) {
+    if (e.target.dataset.row && e.target.dataset.col) {
+        let demoGameboardRow = parseInt(e.target.dataset.row)
+        let demoGameboardCol = parseInt(e.target.dataset.col)
 
         let [shipName] = Array.from(e.target.classList).filter((className) => {
             if (className !== 'loc') return className
@@ -211,53 +187,26 @@ function flipTheShip(e, realPlayer, realPlayerGameboard, referenceGameboard) {
                 if (ship.typeOfShip === shipName) return ship
             })
 
-            // If tile that is clicked does not have a coordinate in the player's gameboard, that tile is occupied by a type of ship.
-            // We can traverse through the referenceGameboard and get the position of that tile.
+            // Traverse through the relevantShips array and find the selected ship based on the clicked locations.
+            relevantShips.forEach((ship) => {
+                ship.location.forEach((loc) => {
+                    let x = loc[0]
+                    let y = loc[1]
 
-            if (!realPlayer.gameboard.board[demoGameboardRow].includes(e.target.dataset.coord)) {
-                referenceGameboard.gameboard.board[demoGameboardRow].forEach((loc, idx) => {
-                    // Tile that is clicked on the DOM is cross-checked against the referenceGameboard.
-                    if (loc === e.target.dataset.coord) {
-                        let x = demoGameboardRow
-                        let y = idx
+                    if (x === demoGameboardRow && y === demoGameboardCol) {
+                        // Keep track of old ship location coordinates, to remove the styling when ship is flipped.
+                        let oldShipLoc = ship.location
 
-                        // Loop through the relevantShips to get the actual ship that was clicked, based on its location on the gameboard.
-                        relevantShips.forEach((ship) => {
-                            ship.location.forEach((loc) => {
-                                let shipX = loc[0]
-                                let shipY = loc[1]
+                        realPlayer.gameboard.flip(ship)
 
-                                // If coordinates matches with the ones inside ship.location, then enter here.
-                                if (shipX === x && shipY === y) {
-                                    // Store reference of the old ship orientation in oldShipLoc.
-                                    const oldShipLoc = ship.location
-
-                                    // Player gameboard is updated to reflect the flipping from horizontal to vertical.
-                                    realPlayer.gameboard.flip(ship)
-
-                                    if (oldShipLoc !== ship.location) {
-                                        // For coordinates in oldShipLoc, update the styling and also the player's gameboard.
-                                        for (let i = 1; i < oldShipLoc.length; i++) {
-                                            let row = oldShipLoc[i][0]
-                                            let col = oldShipLoc[i][1]
-
-                                            // Update the player gameboard and replace the Ship name with a coordinate from the target element's coordinate data.
-                                            realPlayer.gameboard.board[row][col] =
-                                                referenceGameboard.gameboard.board[row][col]
-
-                                            // Get the coordinate from referenceGameboard.
-                                            let DOMCoord = referenceGameboard.gameboard.board[row][col]
-
-                                            // Remove styling from tiles occupied by coordinates in oldShipLoc.
-                                            document.querySelector(`[data-coord = '${DOMCoord}']`).className = 'loc'
-                                        }
-                                    }
-                                }
-                            })
-                        })
+                        for (let i = 1; i < oldShipLoc.length; i++) {
+                            document.querySelector(
+                                `[data-row='${oldShipLoc[i][0]}'][data-col='${oldShipLoc[i][1]}']`
+                            ).className = 'loc'
+                        }
                     }
                 })
-            }
+            })
 
             // Re-render gameboard.
             refreshStyling(realPlayer, realPlayerGameboard)
@@ -298,14 +247,16 @@ function generateTheShips(player) {
     player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [8, 5])
     player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [9, 8])
 
+    // player.gameboard.placeShip(realPlayerCarrier.shift(), [randomizer(), randomizer()]) // Carrier
+
     // player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [randomizer(), randomizer()]) // Patrol boat (random)
     // player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [randomizer(), randomizer()])
     // player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [randomizer(), randomizer()])
     // player.gameboard.placeShip(realPlayerPatrolBoats.shift(), [randomizer(), randomizer()])
 
-    player.gameboard.placeShip(realPlayerDestroyers.shift(), [7, 1]) // Destroyer
-    player.gameboard.placeShip(realPlayerDestroyers.shift(), [6, 5])
-    player.gameboard.placeShip(realPlayerDestroyers.shift(), [3, 5])
+    // player.gameboard.placeShip(realPlayerDestroyers.shift(), [7, 1]) // Destroyer
+    // player.gameboard.placeShip(realPlayerDestroyers.shift(), [6, 5])
+    // player.gameboard.placeShip(realPlayerDestroyers.shift(), [3, 5])
 
     // player.gameboard.placeShip(realPlayerDestroyers.shift(), [randomizer(), randomizer()]) // Destroyer
     // player.gameboard.placeShip(realPlayerDestroyers.shift(), [randomizer(), randomizer()])
@@ -315,7 +266,5 @@ function generateTheShips(player) {
     // player.gameboard.placeShip(realPlayerBattleShips.shift(), [8, 0])
 
     // player.gameboard.placeShip(realPlayerBattleShips.shift(), [randomizer(), randomizer()]) // Battleships
-    player.gameboard.placeShip(realPlayerBattleShips.shift(), [1, 6])
-
-    // player.gameboard.placeShip(realPlayerCarrier.shift(), [6, 6]) // Carrier
+    // player.gameboard.placeShip(realPlayerBattleShips.shift(), [randomizer(), randomizer()])
 }
