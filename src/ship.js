@@ -22,13 +22,13 @@ export class Ship {
 
     shipType() {
         switch (this.length) {
-            case 2:
+            case 1:
                 return 'patrolBoat'
-            case 3:
+            case 2:
                 return 'destroyer'
-            case 4:
+            case 3:
                 return 'battleShip'
-            case 5:
+            case 4:
                 return 'carrier'
         }
     }
