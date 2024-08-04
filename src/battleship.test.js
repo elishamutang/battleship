@@ -24,7 +24,7 @@ describe('Test ship class', () => {
     // Test type of ship.
     it('ship with length 4 should be a carrier type', () => {
         const demoShip = new Ship(4)
-        expect(demoShip.typeOfShip).toBe('battleShip')
+        expect(demoShip.typeOfShip).toBe('carrier')
     })
 })
 
@@ -57,7 +57,7 @@ describe('Test gameboard class', () => {
 
         // Second ship
         it('second ship (carrier)', () => {
-            const demoShip = new Ship(5) // Carrier
+            const demoShip = new Ship(4) // Carrier
             const coord = [5, 5]
 
             demoGameboard.placeShip(demoShip, coord)
@@ -169,8 +169,7 @@ describe('Test gameboard class', () => {
             hitsTakenMock([5, 5])
             hitsTakenMock([5, 6])
             hitsTakenMock([5, 7])
-            hitsTakenMock([5, 8])
-            expect(hitsTakenMock([5, 9]).sunk).toBe(true)
+            expect(hitsTakenMock([5, 8]).sunk).toBe(true)
         })
 
         it('All ships have sunked', () => {
