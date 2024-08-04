@@ -11,8 +11,14 @@ export default function generateTheDOM() {
     const realPlayerGameboard = document.getElementById('realPlayer')
     const computerPlayerGameboard = document.getElementById('computerPlayer')
 
+    // Initial state of computer gameboard.
+    computerPlayerGameboard.style.display = 'none'
+
     generateGameboard(realPlayer, realPlayerGameboard)
     generateGameboard(computerPlayer, computerPlayerGameboard)
+
+    // Ship counter
+    shipCounter(realPlayerGameboard)
 
     // Generate the ships.
     generateTheShips(realPlayer, computerPlayer)
@@ -22,10 +28,8 @@ export default function generateTheDOM() {
         flipTheShip(e, realPlayer, realPlayerGameboard)
     })
 
-    // Render the real player's gameboard.
+    // Render the gameboards.
     refreshStyling(realPlayer, realPlayerGameboard)
-
-    // COMPUTER GAMEBOARD.
     refreshStyling(computerPlayer, computerPlayerGameboard)
 
     // Record hit logs on gameboard.
@@ -51,9 +55,7 @@ export default function generateTheDOM() {
 
                 computerPlayerGameboard.removeEventListener('click', clickOnBoard)
 
-                setTimeout(() => {
-                    alert('You won!')
-                }, 200)
+                endGame()
             }
         }
     }
@@ -283,4 +285,56 @@ function generateTheShips(realPlayer, computerPlayer) {
 
     realPlayerShips()
     computerPlayerShips()
+}
+
+function shipCounter(playerGameboard) {
+    const shipCountDiv = document.createElement('div')
+    shipCountDiv.className = 'shipCount'
+
+    playerGameboard.insertAdjacentElement('beforeend', shipCountDiv)
+
+    const generateShipIcon = (shipType, length) => {
+        const shipIcon = document.createElement('div')
+        shipIcon.className = `${shipType}Icon shipIcon`
+
+        for (let i = 0; i < length; i++) {
+            const filler = document.createElement('div')
+            filler.className = `icon`
+            shipIcon.append(filler)
+        }
+
+        return shipIcon
+    }
+
+    const appendIcon = (shipType, numOfShips, length) => {
+        const iconDiv = document.createElement('div')
+        iconDiv.className = `${shipType}IconDiv`
+
+        if (numOfShips > 1) {
+            for (let i = 0; i < numOfShips; i++) {
+                iconDiv.append(generateShipIcon(shipType, length))
+            }
+        } else {
+            return generateShipIcon(shipType, length)
+        }
+
+        return iconDiv
+    }
+
+    const carrierIcon = appendIcon('carrier', 1, 4)
+    const battleShipIconDiv = appendIcon('battleShip', 2, 3)
+    const destroyerIconDiv = appendIcon('destroyer', 3, 2)
+    const patrolBoatDiv = appendIcon('patrolBoat', 4, 1)
+
+    shipCountDiv.append(carrierIcon)
+    shipCountDiv.append(battleShipIconDiv)
+    shipCountDiv.append(destroyerIconDiv)
+    shipCountDiv.append(patrolBoatDiv)
+}
+
+function endGame() {
+    // Announce the winner
+    setTimeout(() => {
+        alert('You won!')
+    }, 200)
 }
