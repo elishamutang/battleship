@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+:root {
+    --totalNumOfTiles: 10;
+}
+
 html {
     height: 100%;
 }
@@ -32,12 +36,12 @@ main {
 }
 
 .row {
-    height: calc(100% / 11);
+    height: calc(100% / var(--totalNumOfTiles));
     display: flex;
 }
 
 .loc {
-    width: calc(100% / 11);
+    width: calc(100% / var(--totalNumOfTiles));
     border: 1px solid black;
     cursor: pointer;
 
@@ -50,10 +54,6 @@ main {
 .alphabets {
     border: none;
 }
-
-/* .gameboard .row:nth-child(2) > .loc:first-child {
-    border: none;
-} */
 
 .player {
     margin-bottom: 1rem;
