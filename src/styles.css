@@ -92,3 +92,7 @@ main {
 .clicked.battleShip {
     color: red;
 }
+
+.lost * {
+    cursor: not-allowed;
+}
