@@ -35,6 +35,10 @@ main {
     flex-direction: column;
 }
 
+.row > *:hover {
+    border: 3px solid red;
+}
+
 .row {
     height: calc(100% / var(--totalNumOfTiles));
     display: flex;
