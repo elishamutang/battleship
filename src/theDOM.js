@@ -1,6 +1,7 @@
 import { Ship } from './ship'
 import { Player } from './player'
 
+// ** Re-factor this code, kinda looks messy ** //
 // Main function to generate DOM.
 export default function generateTheDOM() {
     // Initialize players
@@ -14,14 +15,47 @@ export default function generateTheDOM() {
     // Initial state of computer gameboard.
     computerPlayerGameboard.style.display = 'none'
 
+    // Generate gameboards.
     generateGameboard(realPlayer, realPlayerGameboard)
     generateGameboard(computerPlayer, computerPlayerGameboard)
 
-    // Ship counter
+    // Attach board UI to gameboards.
+    const generateBoardUI = () => {
+        const div = document.createElement('div')
+        div.className = 'boardUI'
+
+        return div
+    }
+
+    const realPlayerBoardUI = generateBoardUI()
+    const computerPlayerBoardUI = generateBoardUI()
+
+    realPlayerGameboard.insertAdjacentElement('beforeend', realPlayerBoardUI)
+    computerPlayerGameboard.insertAdjacentElement('beforeend', computerPlayerBoardUI)
+
+    // Add ship counter to each gameboard.
     shipCounter(realPlayerGameboard)
+    shipCounter(computerPlayerGameboard)
+
+    // Add instructions, start button, and randomise ship placement button to real player gameboard.
+    const tipDiv = document.createElement('div')
+    tipDiv.className = 'tipDiv'
+
+    const tipContainer = document.createElement('p')
+    tipContainer.textContent = 'Drag and drop the ships.'
+
+    tipDiv.append(tipContainer)
+
+    realPlayerGameboard.querySelector('.boardUI').append(tipDiv)
 
     // Generate the ships.
     generateTheShips(realPlayer, computerPlayer)
+
+    realPlayerGameboard.addEventListener('mouseover', (e) => {
+        hoverOverRealPlayerShips(e, realPlayer, realPlayerGameboard)
+    })
+
+    // Before starting the game.
 
     // Flipping feature (for real player only).
     realPlayerGameboard.addEventListener('click', (e) => {
@@ -61,6 +95,52 @@ export default function generateTheDOM() {
     }
 
     computerPlayerGameboard.addEventListener('click', clickOnBoard)
+}
+
+// Hovering over real player ships.
+function hoverOverRealPlayerShips(e, realPlayer, realPlayerGameboard) {
+    const classList = Array.from(e.target.classList)
+
+    if (classList.length > 1) {
+        const shipType = classList[1]
+
+        const gameboardRow = parseInt(e.target.dataset.row)
+        const gameboardCol = parseInt(e.target.dataset.col)
+
+        // Narrow down the specific ship tile.
+        const [ship] = realPlayer.gameboard.ships
+            .filter((elem) => {
+                if (elem.typeOfShip === shipType) return elem
+            })
+            .filter((elem) => {
+                for (let i = 0; i < elem.location.length; i++) {
+                    if (elem.location[i][0] === gameboardRow && elem.location[i][1] === gameboardCol) {
+                        return elem
+                    }
+                }
+            })
+
+        const onMouseLeave = () => {
+            ship.location.forEach((loc) => {
+                let x = loc[0]
+                let y = loc[1]
+
+                document.querySelector(`[data-row='${x}'][data-col='${y}']`).className = `loc ${shipType}`
+            })
+        }
+
+        // Style the whole ship for hovering effect.
+        ship.location.forEach((loc) => {
+            let x = loc[0]
+            let y = loc[1]
+
+            document.querySelector(`[data-row='${x}'][data-col='${y}']`).className = `loc ${shipType} hover`
+
+            document
+                .querySelector(`[data-row='${x}'][data-col='${y}']`)
+                .addEventListener('mouseleave', onMouseLeave, { once: true })
+        })
+    }
 }
 
 // Construct gameboard
@@ -201,24 +281,6 @@ function generateTheShips(realPlayer, computerPlayer) {
 
         const realPlayerCarrier = [new Ship(4)]
 
-        // Carrier
-        // realPlayer.gameboard.placeShip(realPlayerCarrier.shift(), [0, 0])
-
-        // // Battleships
-        // realPlayer.gameboard.placeShip(realPlayerBattleShips.shift(), [0, 9])
-        // realPlayer.gameboard.placeShip(realPlayerBattleShips.shift(), [2, 2])
-
-        // // Destroyers
-        // realPlayer.gameboard.placeShip(realPlayerDestroyers.shift(), [9, 0])
-        // realPlayer.gameboard.placeShip(realPlayerDestroyers.shift(), [6, 6])
-        // realPlayer.gameboard.placeShip(realPlayerDestroyers.shift(), [9, 9])
-
-        // // Patrol boats
-        // realPlayer.gameboard.placeShip(realPlayerPatrolBoats.shift(), [1, 2]) // Patrol boat
-        // realPlayer.gameboard.placeShip(realPlayerPatrolBoats.shift(), [5, 0])
-        // realPlayer.gameboard.placeShip(realPlayerPatrolBoats.shift(), [8, 5])
-        // realPlayer.gameboard.placeShip(realPlayerPatrolBoats.shift(), [9, 8])
-
         // Randomize each ship location
         realPlayer.gameboard.placeShip(realPlayerCarrier.shift(), [randomizer(), randomizer()]) // Carrier
 
@@ -253,20 +315,6 @@ function generateTheShips(realPlayer, computerPlayer) {
 
         const compCarrier = [new Ship(4)]
 
-        // computerPlayer.gameboard.placeShip(compCarrier.shift(), [2, 2]) // Carrier
-
-        // computerPlayer.gameboard.placeShip(compBattleShips.shift(), [4, 6]) // Battleships
-        // computerPlayer.gameboard.placeShip(compBattleShips.shift(), [7, 0])
-
-        // computerPlayer.gameboard.placeShip(compDestroyers.shift(), [0, 7]) // Destoyer
-        // computerPlayer.gameboard.placeShip(compDestroyers.shift(), [6, 7])
-        // computerPlayer.gameboard.placeShip(compDestroyers.shift(), [5, 0])
-
-        // computerPlayer.gameboard.placeShip(compPatrolBoats.shift(), [0, 0]) // Patrol boat
-        // computerPlayer.gameboard.placeShip(compPatrolBoats.shift(), [0, 4])
-        // computerPlayer.gameboard.placeShip(compPatrolBoats.shift(), [9, 9])
-        // computerPlayer.gameboard.placeShip(compPatrolBoats.shift(), [9, 3])
-
         // Randomize every ship location
         computerPlayer.gameboard.placeShip(compCarrier.shift(), [randomizer(), randomizer()]) // Carrier
 
@@ -291,7 +339,13 @@ function shipCounter(playerGameboard) {
     const shipCountDiv = document.createElement('div')
     shipCountDiv.className = 'shipCount'
 
-    playerGameboard.insertAdjacentElement('beforeend', shipCountDiv)
+    playerGameboard.querySelector('.boardUI').append(shipCountDiv)
+
+    const remainingFleetHeading = document.createElement('div')
+    remainingFleetHeading.textContent = 'Remaining Fleet'
+    remainingFleetHeading.className = 'remainingFleet heading'
+
+    shipCountDiv.append(remainingFleetHeading)
 
     const generateShipIcon = (shipType, length) => {
         const shipIcon = document.createElement('div')
