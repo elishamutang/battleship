@@ -171,7 +171,7 @@ main {
 
 .boardUI {
     display: grid;
-    grid-template-columns: 0.4fr 0.6fr;
+    grid-template-columns: 0.5fr 0.5fr;
     grid-template-areas: 'fleets start';
 
     border: 1px solid gray;
@@ -192,4 +192,9 @@ main {
 
 .hover {
     border: 3px solid black;
+}
+
+.startBtn {
+    margin: 1rem 0;
+    padding: 1rem;
 }
