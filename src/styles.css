@@ -6,6 +6,7 @@
 
 :root {
     --totalNumOfTiles: 10;
+    --icon-length: 250%;
 }
 
 html {
@@ -134,35 +135,35 @@ main {
 }
 
 .carrierIcon {
-    width: calc(200% / 4);
+    width: calc(var(--icon-length) / 4);
 }
 
 .carrierIcon > .icon {
-    width: calc(200% / 3.125);
+    width: calc(var(--icon-length) / 3.125);
 }
 
 .battleShipIcon {
-    width: calc(200% / 6.25);
+    width: calc(var(--icon-length) / 6.25);
 }
 
 .battleShipIcon > .icon {
-    width: calc(200% / 3);
+    width: calc(var(--icon-length) / 3);
 }
 
 .destroyerIcon {
-    width: calc(200% / 12.5);
+    width: calc(var(--icon-length) / 12.5);
 }
 
 .destroyerIcon > .icon {
-    width: calc(200% / 2);
+    width: calc(var(--icon-length) / 2);
 }
 
 .patrolBoatIcon {
-    width: calc(200% / 25);
+    width: calc(var(--icon-length) / 25);
 }
 
 .patrolBoatIcon > .icon {
-    width: calc(200%);
+    width: calc(var(--icon-length));
 }
 
 .remainingFleet {
@@ -171,7 +172,7 @@ main {
 
 .boardUI {
     display: grid;
-    grid-template-columns: 0.5fr 0.5fr;
+    grid-template-columns: 0.4fr 0.6fr;
     grid-template-areas: 'fleets start';
 
     border: 1px solid gray;
