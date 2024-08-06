@@ -33,7 +33,7 @@ main {
     flex-direction: column;
 }
 
-#computerPlayer.row > *:hover {
+#computerPlayer > .row > *:hover {
     border: 3px solid red;
 }
 
