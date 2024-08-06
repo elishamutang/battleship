@@ -1,4 +1,4 @@
-export class Gameboard {
+export default class Gameboard {
     constructor() {
         this.board = this.#generateBoard()
         this.ships = []
