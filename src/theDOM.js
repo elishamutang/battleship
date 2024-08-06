@@ -13,7 +13,7 @@ export default function generateTheDOM() {
     const computerPlayerGameboard = document.getElementById('computerPlayer')
 
     // Initial state of computer gameboard.
-    // computerPlayerGameboard.style.display = 'none'
+    computerPlayerGameboard.style.display = 'none'
 
     // Generate gameboards.
     generateGameboard(realPlayer, realPlayerGameboard)
@@ -42,17 +42,24 @@ export default function generateTheDOM() {
     tipDiv.className = 'tipDiv'
 
     const tipContainer = document.createElement('p')
-    tipContainer.textContent = 'Drag and drop the ships.'
+    tipContainer.textContent = 'Drag and drop the ships. Ready? Click start below.'
 
     tipDiv.append(tipContainer)
 
     realPlayerGameboard.querySelector('.boardUI').append(tipDiv)
 
+    // Add start button
+    const startBtn = document.createElement('button')
+    startBtn.className = 'startBtn'
+    startBtn.textContent = 'START'
+
+    tipDiv.append(startBtn)
+
     // Generate the ships.
     generateTheShips(realPlayer, computerPlayer)
 
     realPlayerGameboard.addEventListener('mouseover', (e) => {
-        hoverOverRealPlayerShips(e, realPlayer, realPlayerGameboard)
+        hoverOverRealPlayerShips(e, realPlayer)
     })
 
     // Before starting the game.
@@ -98,10 +105,20 @@ export default function generateTheDOM() {
 }
 
 // Hovering over real player ships.
-function hoverOverRealPlayerShips(e, realPlayer, realPlayerGameboard) {
+function hoverOverRealPlayerShips(e, realPlayer) {
     const classList = Array.from(e.target.classList)
 
-    if (classList.length > 1) {
+    const isShip = () => {
+        if (
+            classList.includes('carrier') ||
+            classList.includes('battleShip') ||
+            classList.includes('patrolBoat') ||
+            classList.includes('destroyer')
+        )
+            return true
+    }
+
+    if (isShip()) {
         const shipType = classList[1]
 
         const gameboardRow = parseInt(e.target.dataset.row)
