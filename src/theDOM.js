@@ -13,7 +13,7 @@ export default function generateTheDOM() {
     const computerPlayerGameboard = document.getElementById('computerPlayer')
 
     // Initial state of computer gameboard.
-    computerPlayerGameboard.style.display = 'none'
+    // computerPlayerGameboard.style.display = 'none'
 
     // Generate gameboards.
     generateGameboard(realPlayer, realPlayerGameboard)
@@ -71,11 +71,11 @@ export default function generateTheDOM() {
         // If the target is a valid coordinate and it has not been clicked, enter here.
         if (e.target.dataset.row && e.target.dataset.col && !Array.from(e.target.classList).includes('clicked')) {
             // Marks tile on gameboard UI and identify it as "clicked".
-            e.target.textContent = String.fromCharCode(parseInt('25CF', 16))
+            e.target.textContent = String.fromCharCode(0x25cf)
             e.target.className += ' clicked'
 
-            let row = e.target.dataset.row
-            let col = e.target.dataset.col
+            const { row } = e.target.dataset
+            const { col } = e.target.dataset
 
             // If a ship is clicked, mark the tile 'X' and record the attack on computer player's gameboard.
             if (computerPlayer.gameboard.board[row][col] !== 0) {
@@ -122,8 +122,8 @@ function hoverOverRealPlayerShips(e, realPlayer, realPlayerGameboard) {
 
         const onMouseLeave = () => {
             ship.location.forEach((loc) => {
-                let x = loc[0]
-                let y = loc[1]
+                const x = loc[0]
+                const y = loc[1]
 
                 document.querySelector(`[data-row='${x}'][data-col='${y}']`).className = `loc ${shipType}`
             })
@@ -131,8 +131,8 @@ function hoverOverRealPlayerShips(e, realPlayer, realPlayerGameboard) {
 
         // Style the whole ship for hovering effect.
         ship.location.forEach((loc) => {
-            let x = loc[0]
-            let y = loc[1]
+            const x = loc[0]
+            const y = loc[1]
 
             document.querySelector(`[data-row='${x}'][data-col='${y}']`).className = `loc ${shipType} hover`
 
@@ -211,29 +211,29 @@ function refreshStyling(player, gameboard) {
 // Flip the ship functionality (horizontal to vertical and vice versa).
 function flipTheShip(e, realPlayer, realPlayerGameboard) {
     if (e.target.dataset.row && e.target.dataset.col) {
-        let demoGameboardRow = parseInt(e.target.dataset.row)
-        let demoGameboardCol = parseInt(e.target.dataset.col)
+        const demoGameboardRow = parseInt(e.target.dataset.row)
+        const demoGameboardCol = parseInt(e.target.dataset.col)
 
-        let [shipName] = Array.from(e.target.classList).filter((className) => {
+        const [shipName] = Array.from(e.target.classList).filter((className) => {
             if (className !== 'loc') return className
         })
 
         // If tile is occupied by a ship, enter here.
         if (shipName) {
             // Narrow down the relevant ships based on what tile was clicked.
-            let relevantShips = Array.from(realPlayer.gameboard.ships).filter((ship) => {
+            const relevantShips = Array.from(realPlayer.gameboard.ships).filter((ship) => {
                 if (ship.typeOfShip === shipName) return ship
             })
 
             // Traverse through the relevantShips array and find the selected ship based on the clicked locations.
             relevantShips.forEach((ship) => {
                 ship.location.forEach((loc) => {
-                    let x = loc[0]
-                    let y = loc[1]
+                    const x = loc[0]
+                    const y = loc[1]
 
                     if (x === demoGameboardRow && y === demoGameboardCol) {
                         // Keep track of old ship location coordinates, to remove the styling when ship is flipped.
-                        let oldShipLoc = ship.location
+                        const oldShipLoc = ship.location
 
                         realPlayer.gameboard.flip(ship)
 
@@ -259,9 +259,7 @@ function generateTheShips(realPlayer, computerPlayer) {
     // 4 patrol, 3 destroyer, 2 battleship, 1 carrier
 
     // Create a randomizer that generates random coordinates for each ship. Ensure there is at least a 1 box gap between the ships.
-    const randomizer = () => {
-        return Math.floor(Math.random() * 10)
-    }
+    const randomizer = () => Math.floor(Math.random() * 10)
 
     const realPlayerShips = () => {
         const realPlayerPatrolBoats = []
