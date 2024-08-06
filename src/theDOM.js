@@ -12,6 +12,7 @@ export default function generateTheDOM() {
     const realPlayerGameboard = document.getElementById('realPlayer')
     const computerPlayerGameboard = document.getElementById('computerPlayer')
 
+    // **Instead of setting display to none, we can dynamically add the board so that initially it is not present in the DOM**//
     // Initial state of computer gameboard.
     computerPlayerGameboard.style.display = 'none'
 
@@ -58,7 +59,22 @@ export default function generateTheDOM() {
         'click',
         (e) => {
             // Add computer gameboard after clicking start.
-            computerPlayerGameboard.style.display = 'block'
+            computerPlayerGameboard.style.display = 'flex'
+
+            // Remove the tip div
+            document.querySelector('.tipDiv').remove()
+
+            const boardUIDiv = Array.from(document.getElementsByClassName('boardUI'))
+            const shipCountDiv = Array.from(document.getElementsByClassName('shipCount'))
+
+            boardUIDiv.forEach((div) => {
+                div.style.border = 'none'
+            })
+
+            shipCountDiv.forEach((div) => {
+                div.style.border = 'none'
+                div.style.padding = '0.8rem 0'
+            })
         },
         { once: true }
     )
