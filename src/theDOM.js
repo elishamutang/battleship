@@ -54,6 +54,14 @@ export default function generateTheDOM() {
     startBtn.textContent = 'START'
 
     tipDiv.append(startBtn)
+    startBtn.addEventListener(
+        'click',
+        (e) => {
+            // Add computer gameboard after clicking start.
+            computerPlayerGameboard.style.display = 'block'
+        },
+        { once: true }
+    )
 
     // Generate the ships.
     generateTheShips(realPlayer, computerPlayer)
