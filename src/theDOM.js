@@ -1,19 +1,11 @@
 import { Ship } from './ship'
 import { Player } from './player'
 
-// ** Re-factor this code, kinda looks messy ** //
-// Main function to generate DOM.
-export default function generateTheDOM() {
-    // Initialize players
-    const realPlayer = new Player()
-    const computerPlayer = new Player()
-
-    // Generate gameboard in DOM.
+function beforeStart(realPlayer, computerPlayer) {
+    // Get gameboard in DOM.
     const realPlayerGameboard = document.getElementById('realPlayer')
     const computerPlayerGameboard = document.getElementById('computerPlayer')
 
-    // **Instead of setting display to none, we can dynamically add the board so that initially it is not present in the DOM**//
-    // Initial state of computer gameboard.
     computerPlayerGameboard.style.display = 'none'
 
     // Generate gameboards.
@@ -81,14 +73,25 @@ export default function generateTheDOM() {
 
     // Generate the ships.
     generateTheShips(realPlayer, computerPlayer)
+}
+
+// Main function to generate DOM.
+export default function generateTheDOM() {
+    // Initialize players
+    const realPlayer = new Player()
+    const computerPlayer = new Player()
+
+    // Before starting the round, always re-direct user to his/her own gameboard to configure the ship placements.
+    beforeStart(realPlayer, computerPlayer)
+
+    // Get gameboard in DOM.
+    const realPlayerGameboard = document.getElementById('realPlayer')
+    const computerPlayerGameboard = document.getElementById('computerPlayer')
 
     realPlayerGameboard.addEventListener('mouseover', (e) => {
         hoverOverRealPlayerShips(e, realPlayer)
     })
 
-    // Before starting the game.
-
-    // Flipping feature (for real player only).
     realPlayerGameboard.addEventListener('click', (e) => {
         flipTheShip(e, realPlayer, realPlayerGameboard)
     })
