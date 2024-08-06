@@ -1,4 +1,4 @@
-import { Gameboard } from './gameboard'
+import Gameboard from './gameboard'
 
 // Two types of players, "real" players and "computer" players.
 export class Player {
