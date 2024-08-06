@@ -326,17 +326,20 @@ function generateTheShips(realPlayer, computerPlayer) {
         // Randomize each ship location
         realPlayer.gameboard.placeShip(realPlayerCarrier.shift(), [randomizer(), randomizer()]) // Carrier
 
-        realPlayer.gameboard.placeShip(realPlayerBattleShips.shift(), [randomizer(), randomizer()]) // Battleships
-        realPlayer.gameboard.placeShip(realPlayerBattleShips.shift(), [randomizer(), randomizer()])
+        // Battleship
+        realPlayerBattleShips.forEach((battleship) => {
+            realPlayer.gameboard.placeShip(battleship, [randomizer(), randomizer()])
+        })
 
-        realPlayer.gameboard.placeShip(realPlayerDestroyers.shift(), [randomizer(), randomizer()]) // Destroyer
-        realPlayer.gameboard.placeShip(realPlayerDestroyers.shift(), [randomizer(), randomizer()])
-        realPlayer.gameboard.placeShip(realPlayerDestroyers.shift(), [randomizer(), randomizer()])
+        // Destroyer
+        realPlayerDestroyers.forEach((destroyer) => {
+            realPlayer.gameboard.placeShip(destroyer, [randomizer(), randomizer()])
+        })
 
-        realPlayer.gameboard.placeShip(realPlayerPatrolBoats.shift(), [randomizer(), randomizer()]) // Patrol boat
-        realPlayer.gameboard.placeShip(realPlayerPatrolBoats.shift(), [randomizer(), randomizer()])
-        realPlayer.gameboard.placeShip(realPlayerPatrolBoats.shift(), [randomizer(), randomizer()])
-        realPlayer.gameboard.placeShip(realPlayerPatrolBoats.shift(), [randomizer(), randomizer()])
+        // Patrol boat
+        realPlayerPatrolBoats.forEach((boat) => {
+            realPlayer.gameboard.placeShip(boat, [randomizer(), randomizer()])
+        })
     }
 
     const computerPlayerShips = () => {
@@ -360,17 +363,20 @@ function generateTheShips(realPlayer, computerPlayer) {
         // Randomize every ship location
         computerPlayer.gameboard.placeShip(compCarrier.shift(), [randomizer(), randomizer()]) // Carrier
 
-        computerPlayer.gameboard.placeShip(compBattleShips.shift(), [randomizer(), randomizer()]) // Battleships
-        computerPlayer.gameboard.placeShip(compBattleShips.shift(), [randomizer(), randomizer()])
+        // Battleship
+        compBattleShips.forEach((battleship) => {
+            computerPlayer.gameboard.placeShip(battleship, [randomizer(), randomizer()])
+        })
 
-        computerPlayer.gameboard.placeShip(compDestroyers.shift(), [randomizer(), randomizer()]) // Destroyers
-        computerPlayer.gameboard.placeShip(compDestroyers.shift(), [randomizer(), randomizer()])
-        computerPlayer.gameboard.placeShip(compDestroyers.shift(), [randomizer(), randomizer()])
+        // Destroyer
+        compDestroyers.forEach((destroyer) => {
+            computerPlayer.gameboard.placeShip(destroyer, [randomizer(), randomizer()])
+        })
 
-        computerPlayer.gameboard.placeShip(compPatrolBoats.shift(), [randomizer(), randomizer()]) // Patrol boat
-        computerPlayer.gameboard.placeShip(compPatrolBoats.shift(), [randomizer(), randomizer()])
-        computerPlayer.gameboard.placeShip(compPatrolBoats.shift(), [randomizer(), randomizer()])
-        computerPlayer.gameboard.placeShip(compPatrolBoats.shift(), [randomizer(), randomizer()])
+        // Patrol boat
+        compPatrolBoats.forEach((boat) => {
+            computerPlayer.gameboard.placeShip(boat, [randomizer(), randomizer()])
+        })
     }
 
     realPlayerShips()
