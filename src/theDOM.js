@@ -1,106 +1,18 @@
 import { Ship } from './ship'
 import { Player } from './player'
 
-function beforeStart(realPlayer, computerPlayer) {
-    // Get gameboard in DOM.
-    const realPlayerGameboard = document.getElementById('realPlayer')
-    const computerPlayerGameboard = document.getElementById('computerPlayer')
-
-    computerPlayerGameboard.style.display = 'none'
-
-    // Generate gameboards.
-    generateGameboard(realPlayer, realPlayerGameboard)
-    generateGameboard(computerPlayer, computerPlayerGameboard)
-
-    // Attach board UI to gameboards.
-    const generateBoardUI = () => {
-        const div = document.createElement('div')
-        div.className = 'boardUI'
-
-        return div
-    }
-
-    const realPlayerBoardUI = generateBoardUI()
-    const computerPlayerBoardUI = generateBoardUI()
-
-    realPlayerGameboard.insertAdjacentElement('beforeend', realPlayerBoardUI)
-    computerPlayerGameboard.insertAdjacentElement('beforeend', computerPlayerBoardUI)
-
-    // Add ship counter to each gameboard.
-    shipCounter(realPlayerGameboard)
-    shipCounter(computerPlayerGameboard)
-
-    // Add instructions, start button, and randomise ship placement button to real player gameboard.
-    const tipDiv = document.createElement('div')
-    tipDiv.className = 'tipDiv'
-
-    const tipContainer = document.createElement('p')
-    tipContainer.textContent = 'Drag and drop the ships. Ready? Click start below.'
-
-    tipDiv.append(tipContainer)
-
-    realPlayerGameboard.querySelector('.boardUI').append(tipDiv)
-
-    // Add start button
-    const startBtn = document.createElement('button')
-    startBtn.className = 'startBtn'
-    startBtn.textContent = 'START'
-
-    tipDiv.append(startBtn)
-    startBtn.addEventListener(
-        'click',
-        (e) => {
-            // Add computer gameboard after clicking start.
-            computerPlayerGameboard.style.display = 'flex'
-
-            // Remove the tip div
-            document.querySelector('.tipDiv').remove()
-
-            const boardUIDiv = Array.from(document.getElementsByClassName('boardUI'))
-            const shipCountDiv = Array.from(document.getElementsByClassName('shipCount'))
-
-            boardUIDiv.forEach((div) => {
-                div.style.border = 'none'
-            })
-
-            shipCountDiv.forEach((div) => {
-                div.style.border = 'none'
-                div.style.padding = '0.8rem 0'
-            })
-        },
-        { once: true }
-    )
-
-    // Generate the ships.
-    generateTheShips(realPlayer, computerPlayer)
-}
+// Initialize real player
+const realPlayer = new Player()
 
 // Main function to generate DOM.
 export default function generateTheDOM() {
-    // Initialize players
-    const realPlayer = new Player()
-    const computerPlayer = new Player()
-
     // Before starting the round, always re-direct user to his/her own gameboard to configure the ship placements.
-    beforeStart(realPlayer, computerPlayer)
+    setUp()
 
     // Get gameboard in DOM.
-    const realPlayerGameboard = document.getElementById('realPlayer')
     const computerPlayerGameboard = document.getElementById('computerPlayer')
 
-    realPlayerGameboard.addEventListener('mouseover', (e) => {
-        hoverOverRealPlayerShips(e, realPlayer)
-    })
-
-    realPlayerGameboard.addEventListener('click', (e) => {
-        flipTheShip(e, realPlayer, realPlayerGameboard)
-    })
-
-    // Render the gameboards.
-    refreshStyling(realPlayer, realPlayerGameboard)
-    refreshStyling(computerPlayer, computerPlayerGameboard)
-
-    // Record hit logs on gameboard.
+    // Record hit logs on opponent gameboard.
     function clickOnBoard(e) {
         // If the target is a valid coordinate and it has not been clicked, enter here.
         if (e.target.dataset.row && e.target.dataset.col && !Array.from(e.target.classList).includes('clicked')) {
@@ -131,6 +43,122 @@ export default function generateTheDOM() {
     computerPlayerGameboard.addEventListener('click', clickOnBoard)
 }
 
+function setUp() {
+    const computerPlayer = new Player()
+
+    // Get gameboard in DOM.
+    const realPlayerGameboard = document.getElementById('realPlayer')
+    const computerPlayerGameboard = document.getElementById('computerPlayer')
+
+    computerPlayerGameboard.style.display = 'none'
+
+    // Generate gameboards.
+    generateGameboard(realPlayer, realPlayerGameboard)
+    generateGameboard(computerPlayer, computerPlayerGameboard)
+
+    // Generate the ships.
+    generateTheShips(realPlayer, computerPlayer).realPlayerShips()
+
+    realPlayerGameboard.addEventListener('click', (e) => {
+        flipTheShip(e, realPlayer, realPlayerGameboard)
+    })
+
+    // Attach board UI to gameboards.
+    const generateBoardUI = () => {
+        const div = document.createElement('div')
+        div.className = 'boardUI'
+
+        return div
+    }
+
+    const realPlayerBoardUI = generateBoardUI()
+    const computerPlayerBoardUI = generateBoardUI()
+
+    realPlayerGameboard.insertAdjacentElement('beforeend', realPlayerBoardUI)
+    computerPlayerGameboard.insertAdjacentElement('beforeend', computerPlayerBoardUI)
+
+    // Add ship counter to each gameboard.
+    shipCounter(realPlayerGameboard)
+    shipCounter(computerPlayerGameboard)
+
+    // Add instructions, start button, and randomise ship placement button to real player gameboard.
+    const tipDiv = document.createElement('div')
+    tipDiv.className = 'tipDiv'
+
+    const tipContainer = document.createElement('p')
+    tipContainer.textContent = 'Drag and drop the ships (or go random). Ready? Click start below.'
+
+    tipDiv.append(tipContainer)
+
+    realPlayerGameboard.querySelector('.boardUI').append(tipDiv)
+
+    // Add randomise ship positions button.
+    const randomiseBtn = document.createElement('button')
+    randomiseBtn.className = 'randomiseBtn'
+    randomiseBtn.innerHTML = '<i class="gg-sync"></i>'
+
+    tipDiv.append(randomiseBtn)
+
+    randomiseBtn.addEventListener('click', (e) => {
+        realPlayer.gameboard.reset()
+
+        // Remove onMouseLeave event listeners for each ship location
+        realPlayer.gameboard.ships.forEach((ship) => {
+            ship.location.forEach((loc) => {
+                let x = loc[0]
+                let y = loc[1]
+
+                document
+                    .querySelector(`[data-row='${x}'][data-col='${y}']`)
+                    .removeEventListener('mouseleave', onMouseLeave)
+            })
+        })
+
+        refreshStyling(realPlayer, realPlayerGameboard)
+
+        generateTheShips(realPlayer, computerPlayer).realPlayerShips()
+    })
+
+    // Hover effect
+    realPlayerGameboard.addEventListener('mouseover', (e) => {
+        hoverOverRealPlayerShips(e, realPlayer)
+    })
+
+    // Add start button
+    const startBtn = document.createElement('button')
+    startBtn.className = 'startBtn'
+    startBtn.textContent = 'START'
+
+    tipDiv.append(startBtn)
+
+    startBtn.addEventListener(
+        'click',
+        (e) => {
+            // Add computer gameboard after clicking start.
+            computerPlayerGameboard.style.display = 'flex'
+
+            generateTheShips(realPlayer, computerPlayer).computerPlayerShips()
+            refreshStyling(computerPlayer, computerPlayerGameboard)
+
+            // Remove the tip div
+            document.querySelector('.tipDiv').remove()
+
+            const boardUIDiv = Array.from(document.getElementsByClassName('boardUI'))
+            const shipCountDiv = Array.from(document.getElementsByClassName('shipCount'))
+
+            boardUIDiv.forEach((div) => {
+                div.style.border = 'none'
+            })
+
+            shipCountDiv.forEach((div) => {
+                div.style.border = 'none'
+                div.style.padding = '0.8rem 0'
+            })
+        },
+        { once: true }
+    )
+}
+
 // Hovering over real player ships.
 function hoverOverRealPlayerShips(e, realPlayer) {
     const classList = Array.from(e.target.classList)
@@ -159,32 +187,38 @@ function hoverOverRealPlayerShips(e, realPlayer) {
             .filter((elem) => {
                 for (let i = 0; i < elem.location.length; i++) {
                     if (elem.location[i][0] === gameboardRow && elem.location[i][1] === gameboardCol) {
+                        // console.log(elem)
                         return elem
                     }
                 }
             })
 
-        const onMouseLeave = () => {
+        // Style the whole ship for hovering effect.
+        if (ship) {
             ship.location.forEach((loc) => {
                 const x = loc[0]
                 const y = loc[1]
 
-                document.querySelector(`[data-row='${x}'][data-col='${y}']`).className = `loc ${shipType}`
+                document.querySelector(`[data-row='${x}'][data-col='${y}']`).className = `loc ${shipType} hover`
+
+                document
+                    .querySelector(`[data-row='${x}'][data-col='${y}']`)
+                    .addEventListener('mouseleave', onMouseLeave, { once: true })
             })
         }
+    }
+}
 
-        // Style the whole ship for hovering effect.
+// onMouseLeave event listener.
+function onMouseLeave() {
+    realPlayer.gameboard.ships.forEach((ship) => {
         ship.location.forEach((loc) => {
             const x = loc[0]
             const y = loc[1]
 
-            document.querySelector(`[data-row='${x}'][data-col='${y}']`).className = `loc ${shipType} hover`
-
-            document
-                .querySelector(`[data-row='${x}'][data-col='${y}']`)
-                .addEventListener('mouseleave', onMouseLeave, { once: true })
+            document.querySelector(`[data-row='${x}'][data-col='${y}']`).className = `loc ${ship.typeOfShip}`
         })
-    }
+    })
 }
 
 // Construct gameboard
@@ -247,6 +281,8 @@ function refreshStyling(player, gameboard) {
                 getAllRowsPlayer[rowIdx].children[idx].className = 'loc carrier'
             } else if (loc === 'b') {
                 getAllRowsPlayer[rowIdx].children[idx].className = 'loc battleShip'
+            } else {
+                getAllRowsPlayer[rowIdx].children[idx].className = 'loc'
             }
         })
     })
@@ -340,6 +376,8 @@ function generateTheShips(realPlayer, computerPlayer) {
         realPlayerPatrolBoats.forEach((boat) => {
             realPlayer.gameboard.placeShip(boat, [randomizer(), randomizer()])
         })
+
+        refreshStyling(realPlayer, document.getElementById('realPlayer'))
     }
 
     const computerPlayerShips = () => {
@@ -377,10 +415,14 @@ function generateTheShips(realPlayer, computerPlayer) {
         compPatrolBoats.forEach((boat) => {
             computerPlayer.gameboard.placeShip(boat, [randomizer(), randomizer()])
         })
+
+        refreshStyling(computerPlayer, document.getElementById('computerPlayer'))
     }
 
-    realPlayerShips()
-    computerPlayerShips()
+    return {
+        realPlayerShips,
+        computerPlayerShips,
+    }
 }
 
 function shipCounter(playerGameboard) {
