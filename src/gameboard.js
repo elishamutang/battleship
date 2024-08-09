@@ -349,4 +349,10 @@ export default class Gameboard {
             return ship.location[ship.location.length - 1]
         }
     }
+
+    reset() {
+        this.board = this.#generateBoard()
+        this.ships = []
+        this.areAllShipsSunked = false
+    }
 }
