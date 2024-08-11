@@ -49,6 +49,7 @@ main.start {
     background-color: var(--banner-color);
     font-family: 'Liberation Serif';
     color: white;
+    font-size: 1rem;
     justify-self: center;
     padding: 0.5rem 1rem;
     border-bottom-left-radius: 1rem;
@@ -260,7 +261,6 @@ main.start {
 #banner.endGame {
     background-color: var(--banner-color);
     color: white;
-    text-align: center;
     padding: 0.5rem;
     display: inline-flex;
     gap: 0.5rem;
@@ -277,7 +277,7 @@ main.start {
 #restartBtn {
     cursor: pointer;
     background-color: var(--restart-button);
-    font-size: 1.2rem;
+    font-size: 1rem;
     padding: 0.5rem;
     color: white;
     border-radius: 0.4rem;
