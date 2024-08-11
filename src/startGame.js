@@ -1,6 +1,10 @@
 import { refreshStyling, generateTheShips, hoverOverRealPlayerShips, flipTheShip } from './theDOM'
 
 export default function startGame(realPlayer, computerPlayer) {
+    // Main
+    const mainDiv = document.querySelector('main')
+    mainDiv.className = 'start'
+
     // Get the gameboards
     const realPlayerGameboard = document.getElementById('realPlayer')
     const computerPlayerGameboard = document.getElementById('computerPlayer')
