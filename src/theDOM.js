@@ -86,6 +86,10 @@ export default function generateTheDOM() {
 }
 
 function setUp() {
+    // Prepare main tag
+    const mainDiv = document.querySelector('main')
+    mainDiv.className = 'prep'
+
     // Initial display of computer gameboard.
     computerPlayerGameboard.style.display = 'none'
 
