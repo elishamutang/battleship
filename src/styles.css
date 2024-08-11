@@ -40,6 +40,10 @@ main {
     border: 3px solid red;
 }
 
+#computerPlayer > .row > .no-hover {
+    pointer-events: none;
+}
+
 .row {
     height: calc(50vh / var(--totalNumOfTiles));
     display: flex;
@@ -211,4 +215,9 @@ main {
     margin: 0.5rem 0.5rem;
     padding: 0.5rem;
     cursor: pointer;
+}
+
+.gameboard.gameover {
+    opacity: 0.5;
+    pointer-events: none;
 }
