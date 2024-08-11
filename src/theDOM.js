@@ -75,7 +75,7 @@ export default function generateTheDOM() {
 
                 computerPlayerGameboard.removeEventListener('click', clickOnBoard)
 
-                endGame()
+                endGame(realPlayerGameboard, computerPlayerGameboard)
             }
 
             e.target.className += ' clicked'
