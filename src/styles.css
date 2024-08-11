@@ -9,6 +9,8 @@
 :root {
     --totalNumOfTiles: 9;
     --icon-length: 250%;
+    --banner-color: rgb(78, 108, 241);
+    --restart-button: rgb(233, 77, 77);
 }
 
 html {
@@ -23,20 +25,34 @@ main {
     border: 2px solid black;
     height: 100vh;
 
+    display: grid;
     justify-content: center;
     align-items: center;
 }
 
 main.prep {
-    display: flex;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        'banner'
+        'realPlayer';
 }
 
 main.start {
-    display: grid;
     grid-template-rows: auto 1fr;
     grid-template-areas:
         'banner banner'
         'realPlayer computerPlayer';
+}
+
+#banner {
+    grid-area: banner;
+    background-color: var(--banner-color);
+    font-family: 'Liberation Serif';
+    color: white;
+    justify-self: center;
+    padding: 0.5rem 1rem;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
 }
 
 #realPlayer {
@@ -241,8 +257,8 @@ main.start {
     pointer-events: none;
 }
 
-#endGameBanner {
-    background-color: rgb(78, 108, 241);
+#banner.endGame {
+    background-color: var(--banner-color);
     color: white;
     text-align: center;
     padding: 0.5rem;
@@ -260,7 +276,7 @@ main.start {
 
 #restartBtn {
     cursor: pointer;
-    background-color: rgb(233, 77, 77);
+    background-color: var(--restart-button);
     font-size: 1.2rem;
     padding: 0.5rem;
     color: white;
@@ -273,7 +289,7 @@ main.start {
 }
 
 #restartBtn:hover {
-    color: rgb(233, 77, 77);
+    color: var(--restart-button);
     background-color: white;
 
     letter-spacing: 0.1rem;
