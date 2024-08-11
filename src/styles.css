@@ -55,6 +55,10 @@ main {
     align-items: center;
 }
 
+.no-pointer {
+    cursor: default;
+}
+
 .numbering,
 .alphabets {
     border: none;
