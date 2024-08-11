@@ -12,24 +12,23 @@ export default function endGame(realPlayerGameboard, realPlayer, computerPlayerG
     realPlayerGameboard.className = realPlayerGameboard.className + ' gameover'
 
     // Add end game banner
-    const mainDiv = document.querySelector('main')
-
-    const endGameBanner = document.createElement('div')
-    endGameBanner.id = 'endGameBanner'
+    const bannerElem = document.getElementById('banner')
+    const bannerElemClone = bannerElem.cloneNode(true)
 
     const announcement = document.createElement('h1')
     announcement.id = 'announcement'
     announcement.textContent = 'You won!' // Announce the winner
 
-    endGameBanner.append(announcement)
-    mainDiv.insertAdjacentElement('afterbegin', endGameBanner)
+    bannerElem.innerHTML = ''
+    bannerElem.className = 'endGame'
+    bannerElem.append(announcement)
 
     // Add restart button.
     const restartBtn = document.createElement('button')
     restartBtn.id = 'restartBtn'
     restartBtn.textContent = 'Re-match?'
 
-    endGameBanner.append(restartBtn)
+    bannerElem.append(restartBtn)
 
     restartBtn.addEventListener('click', (e) => {
         // Reset gameboards.
@@ -37,7 +36,10 @@ export default function endGame(realPlayerGameboard, realPlayer, computerPlayerG
         computerPlayer.gameboard.reset()
 
         // Remove end game banner and gameboards.
-        document.getElementById('endGameBanner').remove()
+        document.getElementById('banner').remove()
+
+        // Replace end game banner with Battleship title.
+        document.querySelector('main').insertAdjacentElement('afterbegin', bannerElemClone)
 
         realPlayerGameboard.className = 'gameboard'
         computerPlayerGameboard.className = 'gameboard'
