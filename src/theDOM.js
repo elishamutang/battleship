@@ -1,8 +1,11 @@
 import { Ship } from './ship'
 import { Player } from './player'
+import startGame from './startGame'
+import endGame from './endGame'
 
-// Initialize real player
+// Initialize players
 const realPlayer = new Player()
+const computerPlayer = new Player()
 
 // Main function to generate DOM.
 export default function generateTheDOM() {
@@ -12,22 +15,58 @@ export default function generateTheDOM() {
     // Get gameboard in DOM.
     const computerPlayerGameboard = document.getElementById('computerPlayer')
 
-    // Record hit logs on opponent gameboard.
+    // Record hit logs on gameboard.
     function clickOnBoard(e) {
         // If the target is a valid coordinate and it has not been clicked, enter here.
         if (e.target.dataset.row && e.target.dataset.col && !Array.from(e.target.classList).includes('clicked')) {
             // Marks tile on gameboard UI and identify it as "clicked".
             e.target.textContent = String.fromCharCode(0x25cf)
-            e.target.className += ' clicked'
 
-            const { row } = e.target.dataset
-            const { col } = e.target.dataset
+            const row = parseInt(e.target.dataset.row)
+            const col = parseInt(e.target.dataset.col)
 
             // If a ship is clicked, mark the tile 'X' and record the attack on computer player's gameboard.
             if (computerPlayer.gameboard.board[row][col] !== 0) {
                 e.target.textContent = 'X'
 
                 computerPlayer.gameboard.receiveAttack([row, col])
+
+                const classList = Array.from(e.target.classList)
+
+                // Narrow down the specific ship tile.
+                const [ship] = computerPlayer.gameboard.ships
+                    .filter((elem) => {
+                        if (classList.includes(elem.typeOfShip)) return elem
+                    })
+                    .filter((elem) => {
+                        for (let i = 0; i < elem.location.length; i++) {
+                            if (elem.location[i][0] === row && elem.location[i][1] === col) {
+                                return elem
+                            }
+                        }
+                    })
+
+                const shipTypeIcon = Array.from(
+                    computerPlayerGameboard.getElementsByClassName(`${ship.typeOfShip}Icon`)
+                )
+
+                if (ship.sunk) {
+                    // Helper function to get the related ship icon.
+                    const getShipIcon = () => {
+                        const [shipIcon] = shipTypeIcon
+                            .filter((elem) => {
+                                if (!elem.className.includes('sunk')) {
+                                    return elem
+                                }
+                            })
+                            .toSpliced(1)
+
+                        return shipIcon
+                    }
+
+                    const shipIcon = getShipIcon()
+                    shipIcon.className = shipIcon.className + ' sunk'
+                }
             }
 
             if (computerPlayer.gameboard.areAllShipsSunked) {
@@ -37,6 +76,8 @@ export default function generateTheDOM() {
 
                 endGame()
             }
+
+            e.target.className += ' clicked'
         }
     }
 
@@ -44,8 +85,6 @@ export default function generateTheDOM() {
 }
 
 function setUp() {
-    const computerPlayer = new Player()
-
     // Get gameboard in DOM.
     const realPlayerGameboard = document.getElementById('realPlayer')
     const computerPlayerGameboard = document.getElementById('computerPlayer')
@@ -120,9 +159,7 @@ function setUp() {
     })
 
     // Hover effect
-    realPlayerGameboard.addEventListener('mouseover', (e) => {
-        hoverOverRealPlayerShips(e, realPlayer)
-    })
+    realPlayerGameboard.addEventListener('mouseover', hoverOverRealPlayerShips)
 
     // Add start button
     const startBtn = document.createElement('button')
@@ -134,33 +171,15 @@ function setUp() {
     startBtn.addEventListener(
         'click',
         (e) => {
-            // Add computer gameboard after clicking start.
-            computerPlayerGameboard.style.display = 'flex'
-
-            generateTheShips(realPlayer, computerPlayer).computerPlayerShips()
-            refreshStyling(computerPlayer, computerPlayerGameboard)
-
-            // Remove the tip div
-            document.querySelector('.tipDiv').remove()
-
-            const boardUIDiv = Array.from(document.getElementsByClassName('boardUI'))
-            const shipCountDiv = Array.from(document.getElementsByClassName('shipCount'))
-
-            boardUIDiv.forEach((div) => {
-                div.style.border = 'none'
-            })
-
-            shipCountDiv.forEach((div) => {
-                div.style.border = 'none'
-                div.style.padding = '0.8rem 0'
-            })
+            // Start game
+            startGame(realPlayer, computerPlayer)
         },
         { once: true }
     )
 }
 
 // Hovering over real player ships.
-function hoverOverRealPlayerShips(e, realPlayer) {
+export function hoverOverRealPlayerShips(e) {
     const classList = Array.from(e.target.classList)
 
     const isShip = () => {
@@ -187,7 +206,6 @@ function hoverOverRealPlayerShips(e, realPlayer) {
             .filter((elem) => {
                 for (let i = 0; i < elem.location.length; i++) {
                     if (elem.location[i][0] === gameboardRow && elem.location[i][1] === gameboardCol) {
-                        // console.log(elem)
                         return elem
                     }
                 }
@@ -210,7 +228,7 @@ function hoverOverRealPlayerShips(e, realPlayer) {
 }
 
 // onMouseLeave event listener.
-function onMouseLeave() {
+export function onMouseLeave() {
     realPlayer.gameboard.ships.forEach((ship) => {
         ship.location.forEach((loc) => {
             const x = loc[0]
@@ -267,7 +285,7 @@ function generateGameboard(player, playerGameboard) {
 }
 
 // Render gameboard.
-function refreshStyling(player, gameboard) {
+export function refreshStyling(player, gameboard) {
     const getAllRowsPlayer = Array.from(gameboard.getElementsByClassName('row'))
 
     // Style the ships.
@@ -329,12 +347,10 @@ function flipTheShip(e, realPlayer, realPlayerGameboard) {
             // Re-render gameboard.
             refreshStyling(realPlayer, realPlayerGameboard)
         }
-
-        console.log(realPlayer.gameboard.board)
     }
 }
 
-function generateTheShips(realPlayer, computerPlayer) {
+export function generateTheShips(realPlayer, computerPlayer) {
     // For now, manually locate each ship (total of 10 ships on the board)
     // 4 patrol, 3 destroyer, 2 battleship, 1 carrier
 
@@ -474,11 +490,4 @@ function shipCounter(playerGameboard) {
     shipCountDiv.append(battleShipIconDiv)
     shipCountDiv.append(destroyerIconDiv)
     shipCountDiv.append(patrolBoatDiv)
-}
-
-function endGame() {
-    // Announce the winner
-    setTimeout(() => {
-        alert('You won!')
-    }, 200)
 }
