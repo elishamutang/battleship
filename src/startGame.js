@@ -1,11 +1,19 @@
-import { refreshStyling, generateTheShips, hoverOverRealPlayerShips } from './theDOM'
+import { refreshStyling, generateTheShips, hoverOverRealPlayerShips, flipTheShip } from './theDOM'
 
 export default function startGame(realPlayer, computerPlayer) {
     // Get the gameboards
     const realPlayerGameboard = document.getElementById('realPlayer')
     const computerPlayerGameboard = document.getElementById('computerPlayer')
 
+    // Remove event listeners on real player gameboard.
     realPlayerGameboard.removeEventListener('mouseover', hoverOverRealPlayerShips)
+    realPlayerGameboard.removeEventListener('click', flipTheShip)
+
+    const allTiles = Array.from(realPlayerGameboard.getElementsByClassName('loc'))
+
+    allTiles.forEach((tile) => {
+        tile.className = tile.className + ' no-pointer'
+    })
 
     // Add computer gameboard after clicking start.
     computerPlayerGameboard.style.display = 'flex'
