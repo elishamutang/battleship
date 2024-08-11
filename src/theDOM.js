@@ -7,13 +7,14 @@ import endGame from './endGame'
 const realPlayer = new Player()
 const computerPlayer = new Player()
 
+// Get gameboard in DOM.
+const realPlayerGameboard = document.getElementById('realPlayer')
+const computerPlayerGameboard = document.getElementById('computerPlayer')
+
 // Main function to generate DOM.
 export default function generateTheDOM() {
     // Before starting the round, always re-direct user to his/her own gameboard to configure the ship placements.
     setUp()
-
-    // Get gameboard in DOM.
-    const computerPlayerGameboard = document.getElementById('computerPlayer')
 
     // Record hit logs on gameboard.
     function clickOnBoard(e) {
@@ -85,10 +86,7 @@ export default function generateTheDOM() {
 }
 
 function setUp() {
-    // Get gameboard in DOM.
-    const realPlayerGameboard = document.getElementById('realPlayer')
-    const computerPlayerGameboard = document.getElementById('computerPlayer')
-
+    // Initial display of computer gameboard.
     computerPlayerGameboard.style.display = 'none'
 
     // Generate gameboards.
@@ -98,9 +96,8 @@ function setUp() {
     // Generate the ships.
     generateTheShips(realPlayer, computerPlayer).realPlayerShips()
 
-    realPlayerGameboard.addEventListener('click', (e) => {
-        flipTheShip(e, realPlayer, realPlayerGameboard)
-    })
+    // Setup flipping feature
+    realPlayerGameboard.addEventListener('click', flipTheShip)
 
     // Attach board UI to gameboards.
     const generateBoardUI = () => {
@@ -307,7 +304,7 @@ export function refreshStyling(player, gameboard) {
 }
 
 // Flip the ship functionality (horizontal to vertical and vice versa).
-function flipTheShip(e, realPlayer, realPlayerGameboard) {
+export function flipTheShip(e) {
     if (e.target.dataset.row && e.target.dataset.col) {
         const demoGameboardRow = parseInt(e.target.dataset.row)
         const demoGameboardCol = parseInt(e.target.dataset.col)
