@@ -40,6 +40,22 @@ export default function startGame(realPlayer, computerPlayer) {
         div.style.padding = '0.8rem 0'
     })
 
+    // Disable real player gameboard first, making it the user's move to attack computer player.
+    // Insert overlay informing the user of his/her turn.
+    realPlayerGameboard.className = realPlayerGameboard.className + ' move'
+
+    const firstRowDiv = realPlayerGameboard.querySelector('.row')
+
+    const overlay = document.createElement('div')
+    overlay.className = 'overlay'
+
+    const overlayText = document.createElement('p')
+    overlayText.className = 'overlayText'
+    overlayText.innerHTML = "It's <span>your move</span>, click on any tile on your opponent's board."
+
+    overlay.append(overlayText)
+    firstRowDiv.insertAdjacentElement('afterbegin', overlay)
+
     // Attach event listener to attack computer gameboard.
     attackGameboard(computerPlayer, computerPlayerGameboard, realPlayer, realPlayerGameboard)
 }
