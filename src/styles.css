@@ -11,6 +11,7 @@
     --icon-length: 250%;
     --banner-color: rgb(78, 108, 241);
     --restart-button: rgb(233, 77, 77);
+    --disabled-tiles: rgba(245, 117, 117, 0.596);
 }
 
 html {
@@ -138,7 +139,9 @@ main.start {
 .clicked.patrolBoat,
 .clicked.destroyer,
 .clicked.carrier,
-.clicked.battleShip {
+.clicked.battleShip,
+.clicked.boundaryLoc {
+    background-color: var(--disabled-tiles);
     color: red;
 }
 
