@@ -16,6 +16,7 @@ export default function generateTheDOM() {
     // Before starting the round, always re-direct user to his/her own gameboard to configure the ship placements.
     setUp()
 
+    // ** Separate this function, it's long as **.
     // Record hit logs on gameboard.
     function clickOnBoard(e) {
         // If the target is a valid coordinate and it has not been clicked, enter here.
@@ -47,6 +48,8 @@ export default function generateTheDOM() {
                         }
                     })
 
+                console.log(ship)
+
                 const shipTypeIcon = Array.from(
                     computerPlayerGameboard.getElementsByClassName(`${ship.typeOfShip}Icon`)
                 )
@@ -67,6 +70,56 @@ export default function generateTheDOM() {
 
                     const shipIcon = getShipIcon()
                     shipIcon.className = shipIcon.className + ' sunk'
+
+                    ship.boundary.forEach((loc) => {
+                        let boundaryX = loc[0]
+                        let boundaryY = loc[1]
+
+                        let boundaryTile = computerPlayerGameboard.querySelector(
+                            `[data-row='${boundaryX}'][data-col='${boundaryY}']`
+                        )
+
+                        boundaryTile.textContent = 'X'
+                        boundaryTile.className = boundaryTile.className + ' clicked boundaryLoc'
+                    })
+                } else {
+                    // ** Improve this (e.g disable the boundary tiles) **
+                    // Style the diagonal boundary tiles.
+                    const getDiagonalBoundaries = () => {
+                        let diagonals = []
+
+                        diagonals.push([row - 1, col - 1])
+                        diagonals.push([row + 1, col - 1])
+                        diagonals.push([row - 1, col + 1])
+                        diagonals.push([row + 1, col + 1])
+
+                        diagonals = diagonals.filter((elem) => {
+                            let x = elem[0]
+                            let y = elem[1]
+
+                            if (x <= 9 && y <= 9 && x >= 0 && y >= 0) {
+                                return elem
+                            }
+                        })
+
+                        return diagonals
+                    }
+
+                    const diagonalBoundaries = getDiagonalBoundaries()
+
+                    diagonalBoundaries.forEach((boundary) => {
+                        let diagonalX = boundary[0]
+                        let diagonalY = boundary[1]
+
+                        let boundaryTile = computerPlayerGameboard.querySelector(
+                            `[data-row='${diagonalX}'][data-col='${diagonalY}']`
+                        )
+
+                        if (!boundaryTile.className.includes('clicked')) {
+                            boundaryTile.textContent = 'X'
+                            boundaryTile.className = boundaryTile.className + ' clicked boundaryLoc'
+                        }
+                    })
                 }
             }
 
