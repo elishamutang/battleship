@@ -139,10 +139,14 @@ main.start {
 .clicked.patrolBoat,
 .clicked.destroyer,
 .clicked.carrier,
-.clicked.battleShip,
-.clicked.boundaryLoc {
-    background-color: var(--disabled-tiles);
+.clicked.battleShip {
     color: red;
+}
+
+.clicked.boundaryLoc {
+    color: red;
+    background-color: var(--disabled-tiles);
+    filter: brightness(0.5);
 }
 
 .lost * {
