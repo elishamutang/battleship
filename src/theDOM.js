@@ -11,12 +11,8 @@ const realPlayerGameboard = document.getElementById('realPlayer')
 const computerPlayerGameboard = document.getElementById('computerPlayer')
 
 // Main function to generate DOM.
-export default function generateTheDOM() {
-    // Before starting the round, always re-direct user to his/her own gameboard to configure the ship placements.
-    setUp()
-}
-
-function setUp() {
+// Before starting the round, always re-direct user to his/her own gameboard to configure the ship placements.
+export default function setUp() {
     // Prepare main tag
     const mainDiv = document.querySelector('main')
     mainDiv.className = 'prep'

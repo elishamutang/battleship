@@ -1,4 +1,4 @@
 import styles from './styles.css'
-import generateTheDOM from './theDOM'
+import setUp from './theDOM'
 
-generateTheDOM()
+setUp()

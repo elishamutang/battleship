@@ -1,4 +1,4 @@
-import generateTheDOM from './theDOM'
+import setUp from './theDOM'
 
 export default function endGame(realPlayerGameboard, realPlayer, computerPlayerGameboard, computerPlayer) {
     // Disable gameboards.
@@ -53,6 +53,6 @@ export default function endGame(realPlayerGameboard, realPlayer, computerPlayerG
         }
 
         // Re-generate the DOM.
-        generateTheDOM()
+        setUp()
     })
 }
