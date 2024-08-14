@@ -232,7 +232,7 @@ export default class Gameboard {
         }
 
         // Mark on gameboard.
-        this.board[x][y] = 'x'
+        this.board[x][y] = 'X'
 
         const allShipsSunk = this.ships.filter((ship) => {
             if (ship.sunk) return ship
