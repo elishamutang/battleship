@@ -139,7 +139,7 @@ describe('Test gameboard class', () => {
 
             demoGameboard.receiveAttack(coord)
 
-            expect(demoGameboard.board[x][y]).toBe('x')
+            expect(demoGameboard.board[x][y]).toBe('X')
         })
 
         it('Determines if hit is on a ship or not, if yes log it.', () => {
@@ -147,7 +147,7 @@ describe('Test gameboard class', () => {
             const [x, y] = coord
 
             expect(hitsTakenMock(coord).hitsTaken).toBe(1)
-            expect(demoGameboard.board[x][y]).toBe('x')
+            expect(demoGameboard.board[x][y]).toBe('X')
         })
 
         it('Sink ship', () => {
