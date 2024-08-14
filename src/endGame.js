@@ -1,15 +1,14 @@
 import setUp from './theDOM'
 
-export default function endGame(realPlayerGameboard, realPlayer, computerPlayerGameboard, computerPlayer) {
-    // Disable gameboards.
-    const allTiles = Array.from(computerPlayerGameboard.getElementsByClassName('loc'))
+export default function endGame(realPlayer, computerPlayer) {
+    const realPlayerGameboard = document.getElementById('realPlayer')
+    const computerPlayerGameboard = document.getElementById('computerPlayer')
 
-    allTiles.forEach((tile) => {
-        tile.className = tile.className + ' no-hover'
-    })
+    computerPlayerGameboard.className = 'gameboard gameover'
+    realPlayerGameboard.className = 'gameboard gameover'
 
-    computerPlayerGameboard.className = computerPlayerGameboard.className + ' gameover'
-    realPlayerGameboard.className = realPlayerGameboard.className + ' gameover'
+    // Winner
+    const winner = computerPlayer.gameboard.areAllShipsSunked ? 'You' : 'BudgetAI'
 
     // Add end game banner
     const bannerElem = document.getElementById('banner')
@@ -17,7 +16,7 @@ export default function endGame(realPlayerGameboard, realPlayer, computerPlayerG
 
     const announcement = document.createElement('h1')
     announcement.id = 'announcement'
-    announcement.textContent = 'You won!' // Announce the winner
+    announcement.textContent = `${winner} won!`
 
     bannerElem.innerHTML = ''
     bannerElem.className = 'endGame'
@@ -45,11 +44,11 @@ export default function endGame(realPlayerGameboard, realPlayer, computerPlayerG
         computerPlayerGameboard.className = 'gameboard'
 
         const realPlayerGameboardChildren = Array.from(realPlayerGameboard.children)
-        const computerPlayerGameboardChildren = Array.from(computerPlayerGameboard.children)
+        const playerGameboardChildren = Array.from(computerPlayerGameboard.children)
 
         for (let i = 1; i < realPlayerGameboardChildren.length; i++) {
             realPlayerGameboardChildren[i].remove()
-            computerPlayerGameboardChildren[i].remove()
+            playerGameboardChildren[i].remove()
         }
 
         // Re-generate the DOM.
