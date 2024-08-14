@@ -1,14 +1,14 @@
 import { generateTheShips, hoverOverRealPlayerShips, flipTheShip } from './theDOM'
 import endGame from './endGame'
 
+// Get the gameboards
+const realPlayerGameboard = document.getElementById('realPlayer')
+const computerPlayerGameboard = document.getElementById('computerPlayer')
+
 export default function startGame(realPlayer, computerPlayer) {
-    // Main
+    // Get main tag
     const mainDiv = document.querySelector('main')
     mainDiv.className = 'start'
-
-    // Get the gameboards
-    const realPlayerGameboard = document.getElementById('realPlayer')
-    const computerPlayerGameboard = document.getElementById('computerPlayer')
 
     // Remove event listeners on real player gameboard.
     realPlayerGameboard.removeEventListener('mouseover', hoverOverRealPlayerShips)
@@ -57,13 +57,13 @@ export default function startGame(realPlayer, computerPlayer) {
     firstRowDiv.insertAdjacentElement('afterbegin', overlay)
 
     // Attach event listener to attack computer gameboard.
-    attackGameboard(computerPlayer, computerPlayerGameboard, realPlayer, realPlayerGameboard)
+    attackGameboard(computerPlayer, realPlayer)
 }
 
-function attackGameboard(computerPlayer, computerPlayerGameboard, realPlayer, realPlayerGameboard) {
+function attackGameboard(computerPlayer, realPlayer) {
     // Record hit logs on gameboard.
     function clickOnBoard(e) {
-        // If the target is a valid coordinate and it has not been clicked, enter here.
+        // If the target is a valid coordinate and has not been clicked, enter here.
         if (e.target.dataset.row && e.target.dataset.col && !Array.from(e.target.classList).includes('clicked')) {
             // Marks tile on gameboard UI and identify it as "clicked".
             e.target.textContent = String.fromCharCode(0x25cf)
@@ -71,110 +71,163 @@ function attackGameboard(computerPlayer, computerPlayerGameboard, realPlayer, re
             const row = parseInt(e.target.dataset.row)
             const col = parseInt(e.target.dataset.col)
 
+            e.target.className += ' clicked'
+
+            // Remove overlay on real player gameboard.
+            if (realPlayerGameboard.querySelector('.overlay') !== null) {
+                realPlayerGameboard.querySelector('.overlay').remove()
+            }
+
             // If a ship is clicked, mark the tile 'X' and record the attack on computer player's gameboard.
             if (computerPlayer.gameboard.board[row][col] !== 0) {
-                e.target.textContent = 'X'
+                // Mark on computer player and decide logic
+                recordHit(computerPlayer, computerPlayerGameboard, row, col)
 
-                computerPlayer.gameboard.receiveAttack([row, col])
+                // Player gets to move again.
+                realPlayerMoves()
+            } else {
+                realPlayerGameboard.className = 'gameboard'
 
-                const classList = Array.from(e.target.classList)
+                // Disable computer gameboard
+                computerPlayerGameboard.className = computerPlayerGameboard.className + ' move'
 
-                // Narrow down the specific ship tile.
-                const [ship] = computerPlayer.gameboard.ships
-                    .filter((elem) => {
-                        if (classList.includes(elem.typeOfShip)) return elem
-                    })
-                    .filter((elem) => {
-                        for (let i = 0; i < elem.location.length; i++) {
-                            if (elem.location[i][0] === row && elem.location[i][1] === col) {
-                                return elem
-                            }
-                        }
-                    })
-
-                const shipTypeIcon = Array.from(
-                    computerPlayerGameboard.getElementsByClassName(`${ship.typeOfShip}Icon`)
-                )
-
-                if (ship.sunk) {
-                    // Helper function to get the related ship icon.
-                    const getShipIcon = () => {
-                        const [shipIcon] = shipTypeIcon
-                            .filter((elem) => {
-                                if (!elem.className.includes('sunk')) {
-                                    return elem
-                                }
-                            })
-                            .toSpliced(1)
-
-                        return shipIcon
-                    }
-
-                    const shipIcon = getShipIcon()
-                    shipIcon.className = shipIcon.className + ' sunk'
-
-                    ship.boundary.forEach((loc) => {
-                        let boundaryX = loc[0]
-                        let boundaryY = loc[1]
-
-                        let boundaryTile = computerPlayerGameboard.querySelector(
-                            `[data-row='${boundaryX}'][data-col='${boundaryY}']`
-                        )
-
-                        boundaryTile.textContent = 'X'
-                        boundaryTile.className = boundaryTile.className + ' clicked boundaryLoc'
-                    })
-                } else {
-                    // Style the diagonal boundary tiles.
-                    const getDiagonalBoundaries = () => {
-                        let diagonals = []
-
-                        diagonals.push([row - 1, col - 1])
-                        diagonals.push([row + 1, col - 1])
-                        diagonals.push([row - 1, col + 1])
-                        diagonals.push([row + 1, col + 1])
-
-                        diagonals = diagonals.filter((elem) => {
-                            let x = elem[0]
-                            let y = elem[1]
-
-                            if (x <= 9 && y <= 9 && x >= 0 && y >= 0) {
-                                return elem
-                            }
-                        })
-
-                        return diagonals
-                    }
-
-                    const diagonalBoundaries = getDiagonalBoundaries()
-
-                    diagonalBoundaries.forEach((boundary) => {
-                        let diagonalX = boundary[0]
-                        let diagonalY = boundary[1]
-
-                        let boundaryTile = computerPlayerGameboard.querySelector(
-                            `[data-row='${diagonalX}'][data-col='${diagonalY}']`
-                        )
-
-                        if (!boundaryTile.className.includes('clicked')) {
-                            boundaryTile.textContent = 'X'
-                            boundaryTile.className = boundaryTile.className + ' clicked boundaryLoc'
-                        }
-                    })
-                }
+                // Reverts to computer move.
+                setTimeout(() => {
+                    computerMoves(realPlayer, computerPlayer)
+                }, 1500)
             }
 
+            // Check for the winner
             if (computerPlayer.gameboard.areAllShipsSunked) {
-                computerPlayerGameboard.className = 'gameboard lost'
-
-                computerPlayerGameboard.removeEventListener('click', clickOnBoard)
-
-                endGame(realPlayerGameboard, realPlayer, computerPlayerGameboard, computerPlayer)
+                endGame(realPlayer, computerPlayer)
             }
-
-            e.target.className += ' clicked'
         }
     }
 
     computerPlayerGameboard.addEventListener('click', clickOnBoard)
+}
+
+function recordHit(player, playerGameboard, row, col) {
+    const boardElem = playerGameboard.querySelector(`[data-row='${row}'][data-col='${col}']`)
+
+    // Mark on player gameboard.
+    player.gameboard.receiveAttack([row, col])
+    boardElem.textContent = player.gameboard.board[row][col]
+
+    const classList = Array.from(boardElem.classList)
+
+    // Narrow down the specific ship tile.
+    const [ship] = player.gameboard.ships
+        .filter((elem) => {
+            if (classList.includes(elem.typeOfShip)) return elem
+        })
+        .filter((elem) => {
+            for (let i = 0; i < elem.location.length; i++) {
+                if (elem.location[i][0] === row && elem.location[i][1] === col) {
+                    return elem
+                }
+            }
+        })
+
+    // Style boundary tiles
+    const styleBoundary = (boundary) => {
+        boundary.forEach((loc) => {
+            let boundaryX = loc[0]
+            let boundaryY = loc[1]
+
+            let boundaryTile = playerGameboard.querySelector(`[data-row='${boundaryX}'][data-col='${boundaryY}']`)
+
+            boundaryTile.textContent = 'X'
+
+            if (!boundaryTile.className.includes('clicked')) {
+                boundaryTile.className += ' clicked'
+            }
+        })
+    }
+
+    if (ship.sunk) {
+        const shipTypeIcon = Array.from(playerGameboard.getElementsByClassName(`${ship.typeOfShip}Icon`))
+
+        // Helper function to get the related ship icon.
+        const getShipIcon = () => {
+            const [shipIcon] = shipTypeIcon
+                .filter((elem) => {
+                    if (!elem.className.includes('sunk')) {
+                        return elem
+                    }
+                })
+                .toSpliced(1)
+
+            return shipIcon
+        }
+
+        const shipIcon = getShipIcon()
+        console.log(shipIcon)
+        shipIcon.className = shipIcon.className + ' sunk'
+
+        styleBoundary(ship.boundary)
+    } else {
+        // Style the diagonal boundary tiles.
+        const getDiagonalBoundaries = () => {
+            let diagonals = []
+
+            diagonals.push([row - 1, col - 1])
+            diagonals.push([row + 1, col - 1])
+            diagonals.push([row - 1, col + 1])
+            diagonals.push([row + 1, col + 1])
+
+            diagonals = diagonals.filter((elem) => {
+                let x = elem[0]
+                let y = elem[1]
+
+                if (x <= 9 && y <= 9 && x >= 0 && y >= 0) {
+                    return elem
+                }
+            })
+
+            return diagonals
+        }
+
+        const diagonalBoundaries = getDiagonalBoundaries()
+
+        styleBoundary(diagonalBoundaries)
+    }
+}
+
+function computerMoves(realPlayer, computerPlayer) {
+    const randomizer = () => {
+        return Math.floor(Math.random() * 10)
+    }
+
+    let [row, col] = [randomizer(), randomizer()]
+    let realPlayerGameboardTile = realPlayerGameboard.querySelector(`[data-row='${row}'][data-col='${col}']`)
+
+    while (realPlayerGameboardTile.className.includes('clicked')) {
+        ;[row, col] = [randomizer(), randomizer()]
+        realPlayerGameboardTile = realPlayerGameboard.querySelector(`[data-row='${row}'][data-col='${col}']`)
+    }
+
+    realPlayerGameboardTile.className = realPlayerGameboardTile.className + ' clicked'
+    realPlayerGameboardTile.textContent = String.fromCharCode(0x25cf)
+
+    if (realPlayer.gameboard.board[row][col] !== 0) {
+        recordHit(realPlayer, realPlayerGameboard, row, col)
+        setTimeout(() => {
+            computerMoves(realPlayer, computerPlayer)
+        }, 1500)
+    } else if (realPlayer.gameboard.areAllShipsSunked) {
+        endGame(realPlayer, computerPlayer)
+    } else {
+        setTimeout(() => {
+            realPlayerMoves()
+        }, 1000)
+    }
+}
+
+function realPlayerMoves() {
+    if (!realPlayerGameboard.className.includes('move')) {
+        realPlayerGameboard.className = realPlayerGameboard.className + ' move'
+    }
+
+    computerPlayerGameboard.className = 'gameboard'
 }
