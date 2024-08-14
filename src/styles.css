@@ -73,7 +73,7 @@ main.start {
     flex-direction: column;
 }
 
-#computerPlayer > .row > *:hover {
+#computerPlayer > .row > *:hover:not(.overlay) {
     border: 3px solid red;
 }
 
@@ -304,9 +304,9 @@ main.start {
     letter-spacing: 0.1rem;
 }
 
-.move > .row > .loc {
+.gameboard.move > .row > .loc {
     pointer-events: none;
-    opacity: 0.2;
+    opacity: 0.4;
 }
 
 .overlay {
