@@ -143,21 +143,6 @@ export default class Gameboard {
             }
         }
 
-        // Remove duplicates in ship.boundary array
-        const removeDuplicates = (arr) => {
-            let seen = {}
-            let returnArr = []
-
-            for (let i = 0; i < arr.length; i++) {
-                if (!(arr[i] in seen)) {
-                    returnArr.push(arr[i])
-                    seen[arr[i]] = true
-                }
-            }
-
-            return returnArr
-        }
-
         // Update new ship boundary array.
         ship.boundary = removeDuplicates(ship.boundary)
     }
@@ -355,4 +340,19 @@ export default class Gameboard {
         this.ships = []
         this.areAllShipsSunked = false
     }
+}
+
+// Remove duplicate locations in array
+function removeDuplicates(arr) {
+    let seen = {}
+    let returnArr = []
+
+    for (let i = 0; i < arr.length; i++) {
+        if (!(arr[i] in seen)) {
+            returnArr.push(arr[i])
+            seen[arr[i]] = true
+        }
+    }
+
+    return returnArr
 }
