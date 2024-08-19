@@ -162,7 +162,6 @@ function recordHit(player, playerGameboard, row, col) {
         }
 
         const shipIcon = getShipIcon()
-        console.log(shipIcon)
         shipIcon.className = shipIcon.className + ' sunk'
 
         styleBoundary(ship.boundary)
@@ -194,29 +193,233 @@ function recordHit(player, playerGameboard, row, col) {
     }
 }
 
-function computerMoves(realPlayer, computerPlayer) {
+function getAdjacentTiles(realPlayerGameboardTile) {
+    const row = parseInt(realPlayerGameboardTile.dataset.row)
+    const col = parseInt(realPlayerGameboardTile.dataset.col)
+
+    // Narrow down the specific ship tile.
+    let adjacentTiles = []
+
+    adjacentTiles.push([row, col - 1])
+    adjacentTiles.push([row - 1, col])
+    adjacentTiles.push([row + 1, col])
+    adjacentTiles.push([row, col + 1])
+
+    adjacentTiles = adjacentTiles.filter((elem) => {
+        let x = elem[0]
+        let y = elem[1]
+
+        if (x <= 9 && y <= 9 && x >= 0 && y >= 0) {
+            return elem
+        }
+    })
+
+    return adjacentTiles
+}
+
+// Keep track of previous ship
+let lastShip
+
+function computerMoves(realPlayer, computerPlayer, shipAdjTiles, currentShip) {
+    // End game.
+    if (realPlayer.gameboard.areAllShipsSunked) {
+        console.log('end game')
+        endGame(realPlayer, computerPlayer)
+        return
+    }
+
     const randomizer = () => {
         return Math.floor(Math.random() * 10)
     }
 
+    // Initial coordinates, if no shipAdjTiles provided
     let [row, col] = [randomizer(), randomizer()]
     let realPlayerGameboardTile = realPlayerGameboard.querySelector(`[data-row='${row}'][data-col='${col}']`)
 
-    while (realPlayerGameboardTile.className.includes('clicked')) {
-        ;[row, col] = [randomizer(), randomizer()]
+    // Percentage of ship health
+    let healthOfShip
+
+    if (lastShip) {
+        console.log(`Last ship: ${lastShip.typeOfShip}`)
+    }
+
+    if (currentShip) {
+        console.log(`Current ship: ${currentShip.typeOfShip}`)
+    }
+
+    if (shipAdjTiles && !currentShip.sunk) {
+        const randomTile = (tiles) => {
+            let adjacentTiles = tiles || shipAdjTiles
+            const randomIdx = Math.floor(Math.random() * adjacentTiles.length)
+
+            const [tile] = adjacentTiles.splice(randomIdx, 1)
+
+            return tile
+        }
+
+        let adjTile = randomTile()
+        ;[row, col] = adjTile
+        console.log(`Next adj: ${row}, ${col}`)
+
         realPlayerGameboardTile = realPlayerGameboard.querySelector(`[data-row='${row}'][data-col='${col}']`)
+
+        // Percentage of ship health
+        healthOfShip = (currentShip.hitsTaken / currentShip.length) * 100
+
+        if (healthOfShip > 50) {
+            const remainingLoc = currentShip.location.filter((elem) => {
+                let locX = elem[0]
+                let locY = elem[1]
+
+                const isClicked = realPlayerGameboard.querySelector(`[data-row='${locX}'][data-col='${locY}']`)
+
+                if (!isClicked.className.includes('clicked')) {
+                    return elem
+                }
+            })
+
+            const randomRemainingTile = () => {
+                const randomIdx = Math.floor(Math.random() * remainingLoc.length)
+
+                const [tile] = remainingLoc.splice(randomIdx, 1)
+                return tile
+            }
+
+            adjTile = randomRemainingTile()
+            ;[row, col] = adjTile
+            console.log(`Going to remaining loc: ${row}, ${col}`)
+            realPlayerGameboardTile = realPlayerGameboard.querySelector(`[data-row='${row}'][data-col='${col}']`)
+        } else {
+            // If adjacent tile has already been clicked, choose another tile.
+
+            let baseTile
+
+            const changeTile = (realPlayerGameboardTile, tiles) => {
+                if (realPlayerGameboardTile.className.includes('clicked')) {
+                    adjTile = randomTile(tiles)
+
+                    if (adjTile) {
+                        ;[row, col] = adjTile
+                        console.log(`Re-locating to: ${row}, ${col}`)
+
+                        realPlayerGameboardTile = realPlayerGameboard.querySelector(
+                            `[data-row='${row}'][data-col='${col}']`
+                        )
+
+                        if (realPlayerGameboardTile.className.includes(currentShip.typeOfShip)) {
+                            baseTile = adjTile
+                        }
+
+                        changeTile(realPlayerGameboardTile)
+                    } else {
+                        return false
+                    }
+                }
+            }
+
+            let tileChange = changeTile(realPlayerGameboardTile)
+
+            // Go back to base tile and try adjacent tiles.
+            if (!tileChange && baseTile) {
+                console.log(realPlayerGameboardTile)
+                console.log(baseTile)
+
+                realPlayerGameboardTile = realPlayerGameboard.querySelector(
+                    `[data-row='${baseTile[0]}'][data-col='${baseTile[1]}']`
+                )
+
+                const baseAdjTiles = getAdjacentTiles(realPlayerGameboardTile)
+
+                changeTile(realPlayerGameboardTile, baseAdjTiles)
+            }
+
+            console.log(`shipAdjTiles length: ${shipAdjTiles.length}`)
+        }
+    } else {
+        while (realPlayerGameboardTile.className.includes('clicked')) {
+            ;[row, col] = [randomizer(), randomizer()]
+            realPlayerGameboardTile = realPlayerGameboard.querySelector(`[data-row='${row}'][data-col='${col}']`)
+        }
+    }
+
+    // If previous move hit location occupied by ship and next move did not hit adjacent location of ship,
+    // go back to previous ship and try other adjacent locations.
+    if (lastShip !== currentShip && !lastShip.sunk) {
+        const [firstClickedTile] = lastShip.location.filter((elem) => {
+            let tileX = elem[0]
+            let tileY = elem[1]
+
+            let tileElement = realPlayerGameboard.querySelector(`[data-row='${tileX}'][data-col='${tileY}']`)
+
+            if (tileElement.className.includes('clicked')) {
+                return elem
+            }
+        })
+
+        const firstClickedTileElem = realPlayerGameboard.querySelector(
+            `[data-row='${firstClickedTile[0]}'][data-col='${firstClickedTile[1]}']`
+        )
+
+        const lastShipAdjTiles = getAdjacentTiles(firstClickedTileElem)
+
+        const randomTile = () => {
+            const randomIdx = Math.floor(Math.random() * lastShipAdjTiles.length)
+
+            const [tile] = lastShipAdjTiles.splice(randomIdx, 1)
+
+            return tile
+        }
+
+        let nextTileChoice = randomTile()
+        ;[row, col] = nextTileChoice
+        console.log(`Trying adjacent tile: ${row},${col}`)
+
+        realPlayerGameboardTile = realPlayerGameboard.querySelector(`[data-row='${row}'][data-col='${col}']`)
+
+        while (realPlayerGameboardTile.className.includes('clicked')) {
+            nextTileChoice = randomTile()
+            ;[row, col] = nextTileChoice
+
+            realPlayerGameboardTile = realPlayerGameboard.querySelector(`[data-row='${row}'][data-col='${col}']`)
+        }
     }
 
     realPlayerGameboardTile.className = realPlayerGameboardTile.className + ' clicked'
     realPlayerGameboardTile.textContent = String.fromCharCode(0x25cf)
 
     if (realPlayer.gameboard.board[row][col] !== 0) {
+        // Find ship in realPlayer.gameboard.board
+        let [ship] = realPlayer.gameboard.ships
+            .filter((elem) => {
+                if (realPlayerGameboardTile.className.includes(elem.typeOfShip)) return elem
+            })
+            .filter((elem) => {
+                for (let i = 0; i < elem.location.length; i++) {
+                    if (row === elem.location[i][0] && col === elem.location[i][1]) {
+                        return elem
+                    }
+                }
+            })
+
+        // Overwrite last ship
+        if (!lastShip || lastShip.sunk) {
+            lastShip = ship
+        }
+
+        // Initialise adjTiles
+        let adjTiles
+
+        // First hit to get adjacent tiles (up, right, down, left tiles)
+        if (realPlayer.gameboard.board[row][col] !== 'p') {
+            adjTiles = getAdjacentTiles(realPlayerGameboardTile)
+        }
+
         recordHit(realPlayer, realPlayerGameboard, row, col)
+        console.log(`Hit recorded at ${row}, ${col}`)
+
         setTimeout(() => {
-            computerMoves(realPlayer, computerPlayer)
+            computerMoves(realPlayer, computerPlayer, adjTiles, ship)
         }, 1500)
-    } else if (realPlayer.gameboard.areAllShipsSunked) {
-        endGame(realPlayer, computerPlayer)
     } else {
         setTimeout(() => {
             realPlayerMoves()
