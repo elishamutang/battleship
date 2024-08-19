@@ -1,2 +1,5 @@
-<!-- Template to use for future projects -->
-<!-- Webpack is fully set-up with all the other dependencies. -->
+# Battleship!
+
+Currently still a WIP. Please see demo below:
+
+![demo](src/asset/battleship-test.gif)
