@@ -1,6 +1,7 @@
 import { Ship } from './ship'
 import { Player } from './player'
 import startGame from './startGame'
+import enableDragAndDrop from './dragAndDrop'
 
 // Initialize players
 const realPlayer = new Player()
@@ -53,7 +54,7 @@ export default function setUp() {
     tipDiv.className = 'tipDiv'
 
     const tipContainer = document.createElement('p')
-    tipContainer.textContent = 'Drag and drop the ships (or go random). Ready? Click start below.'
+    tipContainer.textContent = 'Drag and drop the ships, or go random. Ready? Click start below.'
 
     tipDiv.append(tipContainer)
 
@@ -95,6 +96,9 @@ export default function setUp() {
     startBtn.textContent = 'START'
 
     tipDiv.append(startBtn)
+
+    // Drag and drop
+    enableDragAndDrop(realPlayer)
 
     startBtn.addEventListener(
         'click',
