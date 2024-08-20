@@ -64,7 +64,7 @@ function attackGameboard(computerPlayer, realPlayer) {
     // Record hit logs on gameboard.
     function clickOnBoard(e) {
         // If the target is a valid coordinate and has not been clicked, enter here.
-        if (e.target.dataset.row && e.target.dataset.col && !Array.from(e.target.classList).includes('clicked')) {
+        if (e.target.dataset.row && e.target.dataset.col && !e.target.className.includes('clicked')) {
             // Marks tile on gameboard UI and identify it as "clicked".
             e.target.textContent = String.fromCharCode(0x25cf)
 
@@ -132,6 +132,7 @@ function recordHit(player, playerGameboard, row, col) {
     // Style boundary tiles
     const styleBoundary = (boundary) => {
         boundary.forEach((loc) => {
+            console.log(loc)
             let boundaryX = loc[0]
             let boundaryY = loc[1]
 
@@ -239,14 +240,6 @@ function computerMoves(realPlayer, computerPlayer, shipAdjTiles, currentShip) {
     // Percentage of ship health
     let healthOfShip
 
-    if (lastShip) {
-        console.log(`Last ship: ${lastShip.typeOfShip}`)
-    }
-
-    if (currentShip) {
-        console.log(`Current ship: ${currentShip.typeOfShip}`)
-    }
-
     if (shipAdjTiles && !currentShip.sunk) {
         const randomTile = (tiles) => {
             let adjacentTiles = tiles || shipAdjTiles
@@ -322,7 +315,7 @@ function computerMoves(realPlayer, computerPlayer, shipAdjTiles, currentShip) {
             // Go back to base tile and try adjacent tiles.
             if (!tileChange && baseTile) {
                 console.log(realPlayerGameboardTile)
-                console.log(baseTile)
+                console.log(`Base tile: ${baseTile}`)
 
                 realPlayerGameboardTile = realPlayerGameboard.querySelector(
                     `[data-row='${baseTile[0]}'][data-col='${baseTile[1]}']`
@@ -372,7 +365,7 @@ function computerMoves(realPlayer, computerPlayer, shipAdjTiles, currentShip) {
 
         let nextTileChoice = randomTile()
         ;[row, col] = nextTileChoice
-        console.log(`Trying adjacent tile: ${row},${col}`)
+        console.log(`Last ship not sunk, go back to ship and try adjacent tile: ${row},${col}`)
 
         realPlayerGameboardTile = realPlayerGameboard.querySelector(`[data-row='${row}'][data-col='${col}']`)
 
@@ -384,6 +377,7 @@ function computerMoves(realPlayer, computerPlayer, shipAdjTiles, currentShip) {
         }
     }
 
+    console.log(realPlayerGameboardTile)
     realPlayerGameboardTile.className = realPlayerGameboardTile.className + ' clicked'
     realPlayerGameboardTile.textContent = String.fromCharCode(0x25cf)
 

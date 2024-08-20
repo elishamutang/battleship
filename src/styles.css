@@ -12,6 +12,10 @@
     --banner-color: rgb(78, 108, 241);
     --restart-button: rgb(233, 77, 77);
     --disabled-tiles: rgba(245, 117, 117, 0.596);
+    --patrolBoat-color: lightcoral;
+    --destroyer-color: lightblue;
+    --battleship-color: lightgoldenrodyellow;
+    --carrier-color: lightgray;
 }
 
 html {
@@ -73,6 +77,14 @@ main.start {
     flex-direction: column;
 }
 
+.patrolBoat,
+.destroyer,
+.battleShip,
+.carrier {
+    border: 1px solid black;
+    background-color: white;
+}
+
 #computerPlayer > .row > *:hover:not(.overlay) {
     border: 3px solid red;
 }
@@ -113,22 +125,22 @@ main.start {
     align-self: center;
 }
 
-.patrolBoat {
+#realPlayer > .row > .patrolBoat {
     border: 2px solid red;
     background-color: lightcoral;
 }
 
-.destroyer {
+#realPlayer > .row > .destroyer {
     border: 2px solid blue;
     background-color: lightblue;
 }
 
-.battleShip {
+#realPlayer > .row > .battleShip {
     border: 2px solid orange;
     background-color: lightgoldenrodyellow;
 }
 
-.carrier {
+#realPlayer > .row > .carrier {
     border: 2px solid grey;
     background-color: lightgray;
 }
@@ -142,7 +154,24 @@ main.start {
 .clicked.destroyer,
 .clicked.carrier,
 .clicked.battleShip {
+    border: 2px solid red;
     color: red;
+}
+
+.clicked.patrolBoat {
+    background-color: lightcoral;
+}
+
+.clicked.destroyer {
+    background-color: var(--destroyer-color);
+}
+
+.clicked.battleShip {
+    background-color: var(--battleship-color);
+}
+
+.clicked.carrier {
+    background-color: var(--carrier-color);
 }
 
 .clicked.boundaryLoc {
@@ -246,7 +275,7 @@ main.start {
     font-size: 1rem;
 }
 
-.hover {
+#realPlayer > .row > .hover {
     border: 3px solid black;
 }
 
