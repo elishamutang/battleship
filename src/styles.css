@@ -360,3 +360,7 @@ main.start {
 .overlayText > span {
     color: var(--banner-color);
 }
+
+.drop-here {
+    border: 3px solid blue;
+}
