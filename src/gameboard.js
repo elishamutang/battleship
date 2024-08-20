@@ -101,9 +101,6 @@ export default class Gameboard {
             this.placeShip(ship, newCoord)
             this.flip(ship)
         }
-
-        // Drag and drop option
-        //...
     }
 
     #generateShipBoundary(ship, shipTilePath) {
