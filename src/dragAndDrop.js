@@ -28,12 +28,16 @@ export default function enableDragAndDrop(realPlayer) {
                 e.preventDefault()
                 e.stopPropagation()
 
+                // No dropping on boundary tiles
+
                 e.target.classList.add('drop-here')
             })
 
             loc.addEventListener('dragover', (e) => {
                 e.preventDefault()
                 e.stopPropagation()
+
+                // No dropping on boundary tiles
 
                 e.target.classList.add('drop-here')
             })
@@ -49,6 +53,8 @@ export default function enableDragAndDrop(realPlayer) {
         loc.addEventListener('drop', (e) => {
             e.preventDefault()
             e.stopPropagation()
+
+            // No dropping on boundary tiles
 
             // Old Ship
             const shipRow = parseInt(e.dataTransfer.getData('shipRow'))
@@ -126,7 +132,11 @@ function changeLocation(realPlayer, shipObj, newLoc) {
     realPlayer.gameboard.placeShip(newShip, [newRow, newCol])
 
     const newShipElem = realPlayerGameboard.querySelector(`[data-row='${newRow}'][data-col='${newCol}']`)
+    newShipElem.classList.add(`${newShip.typeOfShip}`)
     newShipElem.setAttribute('draggable', 'true')
+
+    const newShipObj = getShip(realPlayer, newShipElem)
+    console.log(newShipObj)
 
     // Remove from DOM
     const oldRow = shipObj.location[0][0]
@@ -141,3 +151,5 @@ function changeLocation(realPlayer, shipObj, newLoc) {
         oldShipElem.removeAttribute('draggable')
     }
 }
+
+function noMovingOnBoundary() {}
