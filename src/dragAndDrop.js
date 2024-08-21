@@ -133,7 +133,11 @@ function changeLocation(realPlayer, shipObj, newLoc) {
     const oldCol = shipObj.location[0][1]
 
     const oldShipElem = realPlayerGameboard.querySelector(`[data-row='${oldRow}'][data-col='${oldCol}']`)
-    oldShipElem.classList.remove(`${shipObj.typeOfShip}`)
-    oldShipElem.classList.remove('hover')
-    oldShipElem.removeAttribute('draggable')
+
+    // If position changes, update classlist and attribute.
+    if (newShipElem !== oldShipElem) {
+        oldShipElem.classList.remove(`${shipObj.typeOfShip}`)
+        oldShipElem.classList.remove('hover')
+        oldShipElem.removeAttribute('draggable')
+    }
 }
