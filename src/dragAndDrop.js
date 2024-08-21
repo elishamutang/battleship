@@ -1,6 +1,8 @@
-export default function enableDragAndDrop(realPlayer) {
-    const realPlayerGameboard = document.getElementById('realPlayer')
+import { Ship } from './ship'
 
+const realPlayerGameboard = document.getElementById('realPlayer')
+
+export default function enableDragAndDrop(realPlayer) {
     const locationDropZone = Array.from(realPlayerGameboard.getElementsByClassName('loc'))
 
     const firstPatrolBoat = document.querySelector('.patrolBoat')
@@ -33,11 +35,6 @@ export default function enableDragAndDrop(realPlayer) {
                 e.preventDefault()
                 e.stopPropagation()
 
-                console.log(`${e.target.dataset.row}, ${e.target.dataset.col}`)
-
-                // e.dataTransfer.setData('hoverX', e.target.dataset.row)
-                // e.dataTransfer.setData('hoverY', e.target.dataset.col)
-
                 e.target.classList.add('drop-here')
             })
         }
@@ -54,16 +51,36 @@ export default function enableDragAndDrop(realPlayer) {
             e.stopPropagation()
 
             // Old Ship
-            const shipRow = e.dataTransfer.getData('shipRow')
-            const shipCol = e.dataTransfer.getData('shipCol')
+            const shipRow = parseInt(e.dataTransfer.getData('shipRow'))
+            const shipCol = parseInt(e.dataTransfer.getData('shipCol'))
             console.log(`Ship from ${shipRow}, ${shipCol}`)
 
             const shipElem = realPlayerGameboard.querySelector(`[data-row='${shipRow}'][data-col='${shipCol}']`)
 
-            // Ship object
+            // Add drag events to previously occupied ship location.
+            shipElem.addEventListener('dragenter', (e) => {
+                e.preventDefault()
+                e.stopPropagation()
+
+                shipElem.classList.add('drop-here')
+            })
+
+            shipElem.addEventListener('dragover', (e) => {
+                e.preventDefault()
+                e.stopPropagation()
+
+                shipElem.classList.add('drop-here')
+            })
+
+            // Old ship object
             const shipObj = getShip(realPlayer, shipElem)
 
-            changeLocation(realPlayer, shipObj)
+            // New ship location
+            const newRow = parseInt(e.target.dataset.row)
+            const newCol = parseInt(e.target.dataset.col)
+
+            // Update new location of old ship.
+            changeLocation(realPlayer, shipObj, [newRow, newCol])
         })
     })
 }
@@ -96,18 +113,27 @@ function getShip(realPlayer, shipElem) {
     }
 }
 
-function changeLocation(realPlayer, shipObj) {
-    // Remove ship from realPlayer object
-    realPlayer.gameboard.ships.forEach((ship, idx) => {
-        if (ship === shipObj) {
-            console.log(ship)
-            console.log(`Index: ${idx}`)
+function changeLocation(realPlayer, shipObj, newLoc) {
+    // Destructure new location
+    const [newRow, newCol] = newLoc
+    console.log(`Ship moved to ${newLoc}`)
 
-            realPlayer.gameboard.ships.splice(idx, 1)
-        }
-    })
+    // Create new ship object.
+    const newShip = new Ship(shipObj.length)
 
-    // Remove from DOM.
+    // Remove old ship from real player gameboard and place at new location.
+    realPlayer.gameboard.removeShip(shipObj)
+    realPlayer.gameboard.placeShip(newShip, [newRow, newCol])
 
-    // Add new ship with placeShip method.
+    const newShipElem = realPlayerGameboard.querySelector(`[data-row='${newRow}'][data-col='${newCol}']`)
+    newShipElem.setAttribute('draggable', 'true')
+
+    // Remove from DOM
+    const oldRow = shipObj.location[0][0]
+    const oldCol = shipObj.location[0][1]
+
+    const oldShipElem = realPlayerGameboard.querySelector(`[data-row='${oldRow}'][data-col='${oldCol}']`)
+    oldShipElem.classList.remove(`${shipObj.typeOfShip}`)
+    oldShipElem.classList.remove('hover')
+    oldShipElem.removeAttribute('draggable')
 }
