@@ -103,6 +103,23 @@ export default class Gameboard {
         }
     }
 
+    removeShip(ship) {
+        // Remove from gameboard
+        ship.location.forEach((loc) => {
+            const row = loc[0]
+            const col = loc[1]
+
+            this.board[row][col] = 0
+        })
+
+        // Remove from ships array
+        const shipIdx = this.ships.findIndex((elem) => {
+            return elem === ship
+        })
+
+        this.ships.splice(shipIdx, 1)
+    }
+
     #generateShipBoundary(ship, shipTilePath) {
         for (let i = 0; i < shipTilePath.length; i++) {
             let coordX = shipTilePath[i][0]
