@@ -364,3 +364,9 @@ main.start {
 .drop-here {
     border: 3px solid blue;
 }
+
+.noDrop {
+    background-color: var(--disabled-tiles);
+    pointer-events: none;
+    cursor: not-allowed;
+}
