@@ -8,14 +8,18 @@ export default function enableDragAndDrop(realPlayer) {
     const firstPatrolBoat = document.querySelector('.patrolBoat')
     firstPatrolBoat.setAttribute('draggable', 'true')
 
-    console.log(firstPatrolBoat)
-
     locationDropZone.forEach((loc) => {
         loc.addEventListener('dragstart', (e) => {
-            e.dataTransfer.setData('shipRow', e.target.dataset.row)
-            e.dataTransfer.setData('shipCol', e.target.dataset.col)
+            const targetShipRow = e.target.dataset.row
+            const targetShipCol = e.target.dataset.col
+
+            e.dataTransfer.setData('shipRow', targetShipRow)
+            e.dataTransfer.setData('shipCol', targetShipCol)
 
             e.dataTransfer.effectAllowed = 'move'
+
+            // Show boundary tiles, ensure user cannot drop it into any boundary/ship tiles?
+            toggleBoundary(realPlayer, [targetShipRow, targetShipCol])
         })
 
         if (
@@ -54,8 +58,6 @@ export default function enableDragAndDrop(realPlayer) {
             e.preventDefault()
             e.stopPropagation()
 
-            // No dropping on boundary tiles
-
             // Old Ship
             const shipRow = parseInt(e.dataTransfer.getData('shipRow'))
             const shipCol = parseInt(e.dataTransfer.getData('shipCol'))
@@ -87,6 +89,11 @@ export default function enableDragAndDrop(realPlayer) {
 
             // Update new location of old ship.
             changeLocation(realPlayer, shipObj, [newRow, newCol])
+        })
+
+        loc.addEventListener('dragend', (e) => {
+            // Remove noDrop styling
+            toggleBoundary(realPlayer)
         })
     })
 }
@@ -139,6 +146,7 @@ function changeLocation(realPlayer, shipObj, newLoc) {
     console.log(newShipObj)
 
     // Remove from DOM
+    // Below needs to change to suit other ships of length > 1
     const oldRow = shipObj.location[0][0]
     const oldCol = shipObj.location[0][1]
 
@@ -152,4 +160,43 @@ function changeLocation(realPlayer, shipObj, newLoc) {
     }
 }
 
-function noMovingOnBoundary() {}
+function toggleBoundary(realPlayer, currentLoc) {
+    // If currentLoc is provided, add noDrop class to boundary location elements, else remove class.
+    if (currentLoc) {
+        const [currRow, currCol] = currentLoc
+
+        const currShipElem = realPlayerGameboard.querySelector(`[data-row='${currRow}'][data-col='${currCol}']`)
+        const currShipObj = getShip(realPlayer, currShipElem)
+
+        realPlayer.gameboard.ships.forEach((ship) => {
+            if (ship !== currShipObj) {
+                ship.boundary.forEach((loc) => {
+                    const boundaryX = loc[0]
+                    const boundaryY = loc[1]
+
+                    const boundaryElem = realPlayerGameboard.querySelector(
+                        `[data-row='${boundaryX}'][data-col='${boundaryY}']`
+                    )
+
+                    boundaryElem.classList.add('noDrop')
+                })
+            }
+        })
+    } else {
+        // Remove noDrop class
+        realPlayer.gameboard.ships.forEach((ship) => {
+            ship.boundary.forEach((loc) => {
+                const boundaryX = loc[0]
+                const boundaryY = loc[1]
+
+                const boundaryElem = realPlayerGameboard.querySelector(
+                    `[data-row='${boundaryX}'][data-col='${boundaryY}']`
+                )
+
+                if (boundaryElem.classList.contains('noDrop')) {
+                    boundaryElem.classList.remove('noDrop')
+                }
+            })
+        })
+    }
+}
