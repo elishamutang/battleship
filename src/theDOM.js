@@ -149,7 +149,7 @@ export function hoverOverRealPlayerShips(e) {
                 const x = loc[0]
                 const y = loc[1]
 
-                document.querySelector(`[data-row='${x}'][data-col='${y}']`).className = `loc ${shipType} hover`
+                document.querySelector(`[data-row='${x}'][data-col='${y}']`).classList.add('hover')
 
                 document
                     .querySelector(`[data-row='${x}'][data-col='${y}']`)
@@ -166,7 +166,7 @@ export function onMouseLeave() {
             const x = loc[0]
             const y = loc[1]
 
-            document.querySelector(`[data-row='${x}'][data-col='${y}']`).className = `loc ${ship.typeOfShip}`
+            document.querySelector(`[data-row='${x}'][data-col='${y}']`).classList.remove('hover')
         })
     })
 }
@@ -220,13 +220,57 @@ function generateGameboard(player, playerGameboard) {
 export function refreshStyling(player, gameboard) {
     const getAllRowsPlayer = Array.from(gameboard.getElementsByClassName('row'))
 
+    const allDestroyers = realPlayer.gameboard.ships.filter((ship) => {
+        if (ship.typeOfShip === 'destroyer') return ship
+    })
+
+    allDestroyers.forEach((ship) => {
+        const shipStartPoint = realPlayerGameboard.querySelector(
+            `[data-row='${ship.location[0][0]}'][data-col='${ship.location[0][1]}']`
+        )
+
+        const shipAdjTile = realPlayerGameboard.querySelector(
+            `[data-row='${ship.location[1][0]}'][data-col='${ship.location[1][1]}']`
+        )
+
+        // console.log(shipStartPoint, shipAdjTile)
+
+        const shipDiv = document.createElement('div')
+        shipDiv.className = 'loc destroyer shipDiv'
+
+        if (shipStartPoint.children.length === 0) {
+            shipStartPoint.append(shipDiv)
+        }
+
+        // Ship currently vertical
+        if (shipStartPoint.dataset.row < shipAdjTile.dataset.row) {
+            if (shipDiv.classList.contains('horizontal')) {
+                shipDiv.classList.remove('horizontal')
+            }
+
+            shipDiv.classList.add('vertical')
+        } else if (shipStartPoint.dataset.row > shipAdjTile.dataset.row) {
+            shipDiv.classList.add('vertical')
+            shipDiv.classList.add('last-row')
+        }
+
+        // Ship currently horizontal
+        if (shipStartPoint.dataset.col < shipAdjTile.dataset.col) {
+            if (shipDiv.classList.contains('vertical')) {
+                shipDiv.classList.remove('vertical')
+            }
+
+            shipDiv.classList.add('horizontal')
+        }
+    })
+
     // Style the ships.
     player.gameboard.board.forEach((row, rowIdx) => {
         row.forEach((loc, idx) => {
             if (loc === 'p') {
                 getAllRowsPlayer[rowIdx].children[idx].className = 'loc patrolBoat'
             } else if (loc === 'd') {
-                getAllRowsPlayer[rowIdx].children[idx].className = 'loc destroyer'
+                // getAllRowsPlayer[rowIdx].children[idx].classList.add('destroyer')
             } else if (loc === 'c') {
                 getAllRowsPlayer[rowIdx].children[idx].className = 'loc carrier'
             } else if (loc === 'b') {
@@ -240,9 +284,9 @@ export function refreshStyling(player, gameboard) {
 
 // Flip the ship functionality (horizontal to vertical and vice versa).
 export function flipTheShip(e) {
-    if (e.target.dataset.row && e.target.dataset.col) {
-        const demoGameboardRow = parseInt(e.target.dataset.row)
-        const demoGameboardCol = parseInt(e.target.dataset.col)
+    if (e.target.parentNode.dataset.row && e.target.parentNode.dataset.col) {
+        const demoGameboardRow = parseInt(e.target.parentNode.dataset.row)
+        const demoGameboardCol = parseInt(e.target.parentNode.dataset.col)
 
         const [shipName] = Array.from(e.target.classList).filter((className) => {
             if (className !== 'loc') return className
@@ -268,9 +312,41 @@ export function flipTheShip(e) {
                         realPlayer.gameboard.flip(ship)
 
                         for (let i = 1; i < oldShipLoc.length; i++) {
-                            document.querySelector(
+                            const shipTileElem = document.querySelector(
                                 `[data-row='${oldShipLoc[i][0]}'][data-col='${oldShipLoc[i][1]}']`
-                            ).className = 'loc'
+                            )
+
+                            // Get starting location of ship element.
+                            const shipStartPoint = ship.location[0]
+                            const shipStartPointElem = document.querySelector(
+                                `[data-row='${shipStartPoint[0]}'][data-col='${shipStartPoint[1]}']`
+                            )
+
+                            const shipDiv = shipStartPointElem.querySelector('.shipDiv')
+
+                            // Horizontal to vertical (including starting points at last row)
+                            if (shipStartPoint[0] < ship.location[i][0] || shipStartPoint[0] > ship.location[i][0]) {
+                                console.log('Horizontal to vertical ship')
+
+                                if (shipDiv.classList.contains('horizontal')) {
+                                    shipDiv.classList.remove('horizontal')
+                                }
+
+                                shipDiv.classList.add('vertical')
+                            }
+
+                            // Vertical to horizontal
+                            if (shipStartPoint[1] < ship.location[i][1]) {
+                                console.log('Vertical to horizonal ship')
+
+                                if (shipDiv.classList.contains('vertical')) {
+                                    shipDiv.classList.remove('vertical')
+                                }
+
+                                shipDiv.classList.add('horizontal')
+                            }
+
+                            shipTileElem.className = 'loc'
                         }
                     }
                 })
