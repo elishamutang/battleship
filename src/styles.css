@@ -370,3 +370,33 @@ main.start {
     pointer-events: none;
     cursor: not-allowed;
 }
+
+.loc:has(> .loc.shipDiv) {
+    position: relative;
+    border: 0;
+}
+
+.shipDiv {
+    position: absolute;
+    height: 100%;
+    opacity: 0.8;
+    background-color: var(--destroyer-color);
+    z-index: 99;
+}
+
+.shipDiv.vertical {
+    top: 0;
+    bottom: 0;
+    height: calc(50vh * 2 / var(--totalNumOfTiles));
+}
+
+.shipDiv.vertical.last-row {
+    bottom: 0;
+    top: unset;
+}
+
+.shipDiv.horizontal {
+    left: 0;
+    right: 0;
+    width: calc(50vh * 2 / var(--totalNumOfTiles));
+}
