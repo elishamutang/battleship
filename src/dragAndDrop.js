@@ -23,27 +23,10 @@ export default function enableDragAndDrop(realPlayerObj) {
         })
     })
 
+    // Open / available tiles to drop.
     locationDropZone.forEach((loc) => {
         if (loc.classList.length === 1 && loc.classList.contains('loc')) {
-            // loc.addEventListener('dragstart', (e) => {
-            //     const targetShipRow = e.target.parentNode.dataset.row
-            //     const targetShipCol = e.target.parentNode.dataset.col
-
-            //     e.dataTransfer.setData('shipRow', targetShipRow)
-            //     e.dataTransfer.setData('shipCol', targetShipCol)
-
-            //     e.dataTransfer.effectAllowed = 'move'
-
-            //     // Show boundary tiles, ensure user cannot drop it into any boundary/ship tiles.
-            //     toggleBoundary(realPlayer, [targetShipRow, targetShipCol])
-            // })
-
-            if (
-                !loc.classList.contains('patrolBoat') &&
-                !loc.classList.contains('destroyer') &&
-                !loc.classList.contains('battleShip') &&
-                !loc.classList.contains('carrier')
-            ) {
+            if (loc.children.length === 0) {
                 loc.addEventListener('dragenter', (e) => {
                     e.preventDefault()
                     e.stopPropagation()
@@ -70,7 +53,6 @@ export default function enableDragAndDrop(realPlayerObj) {
                 e.preventDefault()
                 e.stopPropagation()
 
-                // EDIT BELOW TO SUIT SHIPS WITH LENGTH > 1
                 // Old Ship
                 const shipRow = parseInt(e.dataTransfer.getData('shipRow'))
                 const shipCol = parseInt(e.dataTransfer.getData('shipCol'))
@@ -110,14 +92,6 @@ export default function enableDragAndDrop(realPlayerObj) {
                 // Update new location of old ship.
                 changeLocation(realPlayerObj, shipObj, [newRow, newCol], shipDivClass)
             })
-
-            // loc.addEventListener('dragend', (e) => {
-            //     e.preventDefault()
-            //     e.stopPropagation()
-
-            //     // Remove noDrop styling
-            //     toggleBoundary(realPlayer)
-            // })
         }
     })
 }
