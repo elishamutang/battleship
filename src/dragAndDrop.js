@@ -162,7 +162,12 @@ function changeLocation(realPlayerObj, shipObj, newLoc, shipDivClass) {
 
     // Remove old ship from real player gameboard and place at new location.
     realPlayerObj.gameboard.removeShip(shipObj)
-    realPlayerObj.gameboard.placeShip(newShip, [newRow, newCol])
+
+    if (shipDivClass.includes('vertical')) {
+        realPlayerObj.gameboard.placeShip(newShip, [newRow, newCol], 'vertical')
+    } else {
+        realPlayerObj.gameboard.placeShip(newShip, [newRow, newCol])
+    }
 
     const newShipParent = realPlayerGameboard.querySelector(`[data-row='${newRow}'][data-col='${newCol}']`)
 

@@ -17,27 +17,38 @@ export default class Gameboard {
     }
 
     // Place ship on gameboard
-    placeShip(ship, coord) {
+    placeShip(ship, coord, vertical) {
         let [x, y] = coord
 
-        // Check for out of bounds (this code may be redundant for now, wait till Drag n Drop feature is implemented).
-        if (x > 10 || y > 10) throw new Error('Out of bounds')
-
-        // Get the last Y (or column) coordinate to check whether we are still within the range of the gameboard.
+        // Get the last Y (column) or X (row) coordinate to check whether we are still within the range of the gameboard.
         let finalY = y + ship.length
+        let finalX = x + ship.length
 
         // Generate the locations of each tile that the ship will occupy.
         let shipTilePath = []
 
         // Add ships horizontally by default
         // Map out the pathway of the ship by generating all the tile coordinates that it will occupy and store in shipTilePath array.
-        if (finalY > 10) {
-            for (let i = 0; i < ship.length; i++) {
-                shipTilePath.push([x, y - i])
+        if (!vertical) {
+            if (finalY > 10) {
+                for (let i = 0; i < ship.length; i++) {
+                    shipTilePath.push([x, y - i])
+                }
+            } else {
+                for (let i = 0; i < ship.length; i++) {
+                    shipTilePath.push([x, y + i])
+                }
             }
         } else {
-            for (let i = 0; i < ship.length; i++) {
-                shipTilePath.push([x, y + i])
+            console.log('vertical')
+            if (finalX > 10) {
+                for (let i = 0; i < ship.length; i++) {
+                    shipTilePath.push([x - i, y])
+                }
+            } else {
+                for (let i = 0; i < ship.length; i++) {
+                    shipTilePath.push([x + i, y])
+                }
             }
         }
 
