@@ -120,13 +120,7 @@ function recordHit(player, playerGameboard, row, col) {
     player.gameboard.receiveAttack([row, col])
     shipLocParentElem.textContent = player.gameboard.board[row][col]
 
-    // Ship div elem
-    const shipDivElem = shipLocParentElem.children
-    console.log(shipDivElem)
-
     const classList = Array.from(shipLocParentElem.classList)
-    console.log(shipLocParentElem)
-    console.log(classList)
 
     // Narrow down the specific ship tile.
     const [ship] = player.gameboard.ships
