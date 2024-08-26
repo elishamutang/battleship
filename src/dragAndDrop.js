@@ -5,25 +5,25 @@ const realPlayerGameboard = document.getElementById('realPlayer')
 export default function enableDragAndDrop(realPlayerObj) {
     const locationDropZone = Array.from(realPlayerGameboard.getElementsByClassName('loc'))
 
-    // Change code to target all ships, not only the first patrolBoat.
-    const firstPatrolBoat = document.querySelector('.patrolBoat')
-    firstPatrolBoat.setAttribute('draggable', 'true')
+    const attachEventListeners = (ships) => {
+        ships.forEach((ship) => {
+            ship.setAttribute('draggable', 'true')
 
-    // Destroyer
-    const destroyerShips = Array.from(realPlayerGameboard.getElementsByClassName('destroyer'))
-    destroyerShips.forEach((ship) => {
-        ship.setAttribute('draggable', 'true')
+            ship.addEventListener('dragstart', (e) => {
+                dragStartHandler(e, realPlayerObj)
+            })
 
-        ship.addEventListener('dragstart', (e) => {
-            dragStartHandler(e, realPlayerObj)
+            ship.addEventListener('dragend', (e) => {
+                dragEndHandler(e, realPlayerObj)
+            })
         })
+    }
 
-        ship.addEventListener('dragend', (e) => {
-            dragEndHandler(e, realPlayerObj)
-        })
-    })
+    // Get all ships
+    const allShips = Array.from(realPlayerGameboard.getElementsByClassName('shipDiv'))
+    attachEventListeners(allShips)
 
-    // Open / available tiles to drop.
+    // Open (or available) tiles to drop.
     locationDropZone.forEach((loc) => {
         if (loc.classList.length === 1 && loc.classList.contains('loc')) {
             loc.addEventListener('dragenter', (e) => {
