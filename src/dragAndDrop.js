@@ -219,6 +219,17 @@ function toggleNoDropTiles(realPlayerObj, currentLoc) {
                     boundaryElem.classList.remove('noDrop')
                 }
             })
+
+            ship.location.forEach((loc) => {
+                const locX = loc[0]
+                const locY = loc[1]
+
+                const shipLocationElem = realPlayerGameboard.querySelector(`[data-row='${locX}'][data-col='${locY}']`)
+
+                if (shipLocationElem.classList.contains('noDrop')) {
+                    shipLocationElem.classList.remove('noDrop')
+                }
+            })
         })
     }
 }
