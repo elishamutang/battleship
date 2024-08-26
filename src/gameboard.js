@@ -153,6 +153,9 @@ export default class Gameboard {
             }
         })
 
+        const newBoundary = []
+
+        // REDO THIS
         // Remove ship.location coordinates from ship.boundary array.
         for (let i = 0; i < ship.boundary.length; i++) {
             let boundaryX = ship.boundary[i][0]
@@ -164,6 +167,7 @@ export default class Gameboard {
 
                 if (boundaryX === locX && boundaryY === locY) {
                     ship.boundary.splice(i, 1)
+                    // newBoundary.push(ship.boundary[i])
                 }
             }
         }
