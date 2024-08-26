@@ -1,7 +1,7 @@
 import { Ship } from './ship'
 import { Player } from './player'
 import startGame from './startGame'
-import enableDragAndDrop from './dragAndDrop'
+import enableDragAndDrop, { shipDragAndDrop } from './dragAndDrop'
 
 // Initialize players
 const realPlayer = new Player()
@@ -82,9 +82,14 @@ export default function setUp() {
             })
         })
 
-        refreshStyling()
+        // Remove old ships
+        refreshStyling(true)
 
+        // Generate new ships and refresh gameboard.
         generateTheShips(realPlayer, computerPlayer).realPlayerShips()
+
+        // Attach drag and drop feature to new ships.
+        shipDragAndDrop(realPlayer)
     })
 
     // Hover effect
@@ -217,7 +222,7 @@ function generateGameboard(player, playerGameboard) {
 }
 
 // Render gameboard.
-export function refreshStyling() {
+export function refreshStyling(remove) {
     // All ships
     const allShips = realPlayer.gameboard.ships
 
@@ -265,6 +270,12 @@ export function refreshStyling() {
     }
 
     generateShipGameboardIcon(allShips)
+
+    if (remove) {
+        Array.from(realPlayerGameboard.getElementsByClassName('shipDiv')).forEach((div) => {
+            div.remove()
+        })
+    }
 }
 
 // Flip the ship functionality (horizontal to vertical and vice versa).
