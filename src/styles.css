@@ -434,3 +434,7 @@ main.start {
 .shipDiv.carrier.horizontal {
     width: calc(50vh * 4 / var(--totalNumOfTiles));
 }
+
+.shipDiv.carrier.vertical {
+    height: calc(50vh * 4 / var(--totalNumOfTiles));
+}
