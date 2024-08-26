@@ -23,7 +23,14 @@ export default function startGame(realPlayer, computerPlayer) {
     // Add computer gameboard after clicking start.
     computerPlayerGameboard.style.display = 'flex'
 
+    // Generate ships and hide them.
     generateTheShips(realPlayer, computerPlayer).computerPlayerShips()
+
+    const computerShips = Array.from(computerPlayerGameboard.getElementsByClassName('shipDiv'))
+    computerShips.forEach((ship) => {
+        ship.parentNode.style.border = '1px solid black'
+        ship.style.visibility = 'hidden'
+    })
 
     // Remove the tip div
     document.querySelector('.tipDiv').remove()
