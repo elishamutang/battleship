@@ -81,7 +81,7 @@ main.start {
 .destroyer,
 .battleShip,
 .carrier {
-    border: 1px solid black;
+    /* border: 1px solid black; */
     background-color: white;
 }
 
@@ -100,7 +100,8 @@ main.start {
 }
 
 .loc {
-    width: calc(50vh / var(--totalNumOfTiles));
+    /* width: calc(50vh / var(--totalNumOfTiles)); */
+    width: 100%;
     border: 1px solid black;
     cursor: pointer;
     background-color: white;
@@ -126,22 +127,22 @@ main.start {
 }
 
 #realPlayer > .row > .patrolBoat {
-    border: 2px solid red;
+    /* border: 2px solid red; */
     background-color: lightcoral;
 }
 
 #realPlayer > .row > .destroyer {
-    border: 2px solid blue;
+    /* border: 2px solid blue; */
     background-color: lightblue;
 }
 
 #realPlayer > .row > .battleShip {
-    border: 2px solid orange;
+    /* border: 2px solid orange; */
     background-color: lightgoldenrodyellow;
 }
 
 #realPlayer > .row > .carrier {
-    border: 2px solid grey;
+    /* border: 2px solid grey; */
     background-color: lightgray;
 }
 
@@ -276,7 +277,7 @@ main.start {
 }
 
 #realPlayer > .row > .hover {
-    border: 3px solid black;
+    border: 1px solid black;
 }
 
 .startBtn {
@@ -373,7 +374,7 @@ main.start {
 
 .loc:has(> .loc.shipDiv) {
     position: relative;
-    border: 0;
+    /* border: 0; */
 }
 
 .shipDiv {
@@ -387,7 +388,8 @@ main.start {
 .shipDiv.vertical {
     top: 0;
     bottom: 0;
-    height: calc(50vh * 2 / var(--totalNumOfTiles));
+    height: 205%;
+    /* height: calc(50vh * 2 / var(--totalNumOfTiles)); */
 }
 
 .shipDiv.vertical.last-row {
@@ -398,5 +400,6 @@ main.start {
 .shipDiv.horizontal {
     left: 0;
     right: 0;
-    width: calc(50vh * 2 / var(--totalNumOfTiles));
+    width: 205%;
+    /* width: calc(50vh * 2 / var(--totalNumOfTiles)); */
 }
