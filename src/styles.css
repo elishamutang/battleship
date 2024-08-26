@@ -14,7 +14,7 @@
     --disabled-tiles: rgba(245, 117, 117, 0.596);
     --patrolBoat-color: lightcoral;
     --destroyer-color: lightblue;
-    --battleship-color: lightgoldenrodyellow;
+    --battleship-color: rgb(226, 226, 87);
     --carrier-color: lightgray;
 }
 
@@ -366,7 +366,7 @@ main.start {
 }
 
 .noDrop {
-    background-color: var(--disabled-tiles);
+    background-color: grey;
     pointer-events: none;
     cursor: not-allowed;
 }
@@ -380,14 +380,11 @@ main.start {
     position: absolute;
     height: 100%;
     opacity: 0.8;
-    background-color: var(--destroyer-color);
     z-index: 99;
 }
 
 .shipDiv.vertical {
     top: 0;
-    bottom: 0;
-    height: calc(50vh * 2 / var(--totalNumOfTiles));
 }
 
 .shipDiv.vertical.last-row {
@@ -397,6 +394,43 @@ main.start {
 
 .shipDiv.horizontal {
     left: 0;
-    right: 0;
+}
+
+.shipDiv.patrolBoat {
+    background-color: var(--patrolBoat-color);
+    border: 2px solid red;
+}
+
+.shipDiv.destroyer {
+    background-color: var(--destroyer-color);
+    border: 2px solid blue;
+}
+
+.shipDiv.destroyer.horizontal {
     width: calc(50vh * 2 / var(--totalNumOfTiles));
+}
+
+.shipDiv.destroyer.vertical {
+    height: calc(50vh * 2 / var(--totalNumOfTiles));
+}
+
+.shipDiv.battleShip {
+    background-color: var(--battleship-color);
+}
+
+.shipDiv.battleShip.horizontal {
+    width: calc(50vh * 3 / var(--totalNumOfTiles));
+}
+
+.shipDiv.battleShip.vertical {
+    height: calc(50vh * 3 / var(--totalNumOfTiles));
+}
+
+.shipDiv.carrier {
+    background-color: var(--carrier-color);
+    border: 2px solid grey;
+}
+
+.shipDiv.carrier.horizontal {
+    width: calc(50vh * 4 / var(--totalNumOfTiles));
 }
