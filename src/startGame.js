@@ -28,8 +28,7 @@ export default function startGame(realPlayer, computerPlayer) {
 
     const computerShips = Array.from(computerPlayerGameboard.getElementsByClassName('shipDiv'))
     computerShips.forEach((ship) => {
-        ship.parentNode.style.border = '1px solid black'
-        ship.style.visibility = 'hidden'
+        ship.style.display = 'none'
     })
 
     // Remove the tip div
@@ -115,13 +114,19 @@ function attackGameboard(computerPlayer, realPlayer) {
 }
 
 function recordHit(player, playerGameboard, row, col) {
-    const boardElem = playerGameboard.querySelector(`[data-row='${row}'][data-col='${col}']`)
+    const shipLocParentElem = playerGameboard.querySelector(`[data-row='${row}'][data-col='${col}']`)
 
     // Mark on player gameboard.
     player.gameboard.receiveAttack([row, col])
-    boardElem.textContent = player.gameboard.board[row][col]
+    shipLocParentElem.textContent = player.gameboard.board[row][col]
 
-    const classList = Array.from(boardElem.classList)
+    // Ship div elem
+    const shipDivElem = shipLocParentElem.children
+    console.log(shipDivElem)
+
+    const classList = Array.from(shipLocParentElem.classList)
+    console.log(shipLocParentElem)
+    console.log(classList)
 
     // Narrow down the specific ship tile.
     const [ship] = player.gameboard.ships
@@ -135,6 +140,8 @@ function recordHit(player, playerGameboard, row, col) {
                 }
             }
         })
+
+    console.log(ship)
 
     // Style boundary tiles
     const styleBoundary = (boundary) => {

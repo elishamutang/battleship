@@ -85,7 +85,7 @@ main.start {
     background-color: white;
 }
 
-#computerPlayer > .row > *:hover:not(.overlay) {
+#computerPlayer > .row > *:hover {
     border: 3px solid red;
 }
 
@@ -101,7 +101,7 @@ main.start {
 
 .loc {
     width: calc(50vh / var(--totalNumOfTiles));
-    border: 1px solid black;
+    border: 1px solid slategray;
     cursor: pointer;
     background-color: white;
 
@@ -374,6 +374,14 @@ main.start {
 .loc:has(> .loc.shipDiv) {
     position: relative;
     border: 0;
+}
+
+#computerPlayer > .row > .loc:has(> .loc.shipDiv) {
+    border: 1px solid slategray;
+}
+
+#computerPlayer > .row > .loc:has(> .loc.shipDiv):hover {
+    border: 3px solid red;
 }
 
 .shipDiv {
