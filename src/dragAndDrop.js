@@ -26,21 +26,19 @@ export default function enableDragAndDrop(realPlayerObj) {
     // Open / available tiles to drop.
     locationDropZone.forEach((loc) => {
         if (loc.classList.length === 1 && loc.classList.contains('loc')) {
-            if (loc.children.length === 0) {
-                loc.addEventListener('dragenter', (e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
+            loc.addEventListener('dragenter', (e) => {
+                e.preventDefault()
+                e.stopPropagation()
 
-                    e.target.classList.add('drop-here')
-                })
+                e.target.classList.add('drop-here')
+            })
 
-                loc.addEventListener('dragover', (e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
+            loc.addEventListener('dragover', (e) => {
+                e.preventDefault()
+                e.stopPropagation()
 
-                    e.target.classList.add('drop-here')
-                })
-            }
+                e.target.classList.add('drop-here')
+            })
 
             loc.addEventListener('dragleave', (e) => {
                 e.preventDefault()
@@ -53,6 +51,8 @@ export default function enableDragAndDrop(realPlayerObj) {
                 e.preventDefault()
                 e.stopPropagation()
 
+                e.target.classList.remove('drop-here')
+
                 // Old Ship
                 const shipRow = parseInt(e.dataTransfer.getData('shipRow'))
                 const shipCol = parseInt(e.dataTransfer.getData('shipCol'))
@@ -62,21 +62,6 @@ export default function enableDragAndDrop(realPlayerObj) {
                 const shipElemParent = realPlayerGameboard.querySelector(
                     `[data-row='${shipRow}'][data-col='${shipCol}']`
                 )
-
-                // Add drag events to previously occupied ship location.
-                shipElemParent.addEventListener('dragenter', (e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-
-                    shipElemParent.classList.add('drop-here')
-                })
-
-                shipElemParent.addEventListener('dragover', (e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-
-                    shipElemParent.classList.add('drop-here')
-                })
 
                 // Old ship object
                 const shipObj = getShip(realPlayerObj, shipElemParent)
