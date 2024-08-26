@@ -83,7 +83,7 @@ export default function setUp() {
         })
 
         // Remove old ships
-        refreshStyling(true)
+        refreshStyling(realPlayer, realPlayerGameboard, true)
 
         // Generate new ships and refresh gameboard.
         generateTheShips(realPlayer, computerPlayer).realPlayerShips()
@@ -222,14 +222,14 @@ function generateGameboard(player, playerGameboard) {
 }
 
 // Render gameboard.
-export function refreshStyling(remove) {
-    // All ships
-    const allShips = realPlayer.gameboard.ships
+export function refreshStyling(player, playerGameboard, remove) {
+    // Get all ships
+    const allShips = player.gameboard.ships
 
     // Function to generate icons for each type of ship.
     const generateShipGameboardIcon = (ships) => {
         ships.forEach((ship) => {
-            const shipStartPoint = realPlayerGameboard.querySelector(
+            const shipStartPoint = playerGameboard.querySelector(
                 `[data-row='${ship.location[0][0]}'][data-col='${ship.location[0][1]}']`
             )
 
@@ -241,7 +241,7 @@ export function refreshStyling(remove) {
             }
 
             if (ship.length > 1) {
-                const shipAdjTile = realPlayerGameboard.querySelector(
+                const shipAdjTile = playerGameboard.querySelector(
                     `[data-row='${ship.location[1][0]}'][data-col='${ship.location[1][1]}']`
                 )
 
@@ -349,7 +349,7 @@ export function flipTheShip(e) {
             })
 
             // Re-render gameboard.
-            refreshStyling()
+            refreshStyling(realPlayer, realPlayerGameboard)
         }
     }
 }
@@ -397,7 +397,7 @@ export function generateTheShips(realPlayer, computerPlayer) {
             realPlayer.gameboard.placeShip(boat, [randomizer(), randomizer()])
         })
 
-        refreshStyling()
+        refreshStyling(realPlayer, realPlayerGameboard)
     }
 
     const computerPlayerShips = () => {
@@ -436,7 +436,7 @@ export function generateTheShips(realPlayer, computerPlayer) {
             computerPlayer.gameboard.placeShip(boat, [randomizer(), randomizer()])
         })
 
-        refreshStyling()
+        refreshStyling(computerPlayer, computerPlayerGameboard)
     }
 
     return {
