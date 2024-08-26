@@ -1,7 +1,7 @@
 import { Ship } from './ship'
 import { Player } from './player'
 import startGame from './startGame'
-import enableDragAndDrop, { shipDragAndDrop } from './dragAndDrop'
+import enableDragAndDrop, { shipDragAndDrop, insertDraggableShips } from './dragAndDrop'
 
 // Initialize players
 const realPlayer = new Player()
@@ -88,6 +88,11 @@ export default function setUp() {
         // Generate new ships and refresh gameboard.
         generateTheShips(realPlayer, computerPlayer).realPlayerShips()
 
+        // Remove
+        Array.from(realPlayerGameboard.getElementsByClassName('shipDiv')).forEach((div) => {
+            div.remove()
+        })
+
         // Attach drag and drop feature to new ships.
         shipDragAndDrop(realPlayer)
     })
@@ -107,7 +112,7 @@ export default function setUp() {
 
     startBtn.addEventListener(
         'click',
-        (e) => {
+        () => {
             // Start game
             startGame(realPlayer, computerPlayer)
         },
@@ -222,61 +227,7 @@ function generateGameboard(player, playerGameboard) {
 }
 
 // Render gameboard.
-export function refreshStyling(player, playerGameboard, remove) {
-    // Get all ships
-    const allShips = player.gameboard.ships
-
-    // Function to generate icons for each type of ship.
-    const generateShipGameboardIcon = (ships) => {
-        ships.forEach((ship) => {
-            const shipStartPoint = playerGameboard.querySelector(
-                `[data-row='${ship.location[0][0]}'][data-col='${ship.location[0][1]}']`
-            )
-
-            const shipDiv = document.createElement('div')
-            shipDiv.className = `loc ${ship.typeOfShip} shipDiv`
-
-            if (shipStartPoint.children.length === 0) {
-                shipStartPoint.append(shipDiv)
-            }
-
-            if (ship.length > 1) {
-                const shipAdjTile = playerGameboard.querySelector(
-                    `[data-row='${ship.location[1][0]}'][data-col='${ship.location[1][1]}']`
-                )
-
-                // Ship currently vertical
-                if (shipStartPoint.dataset.row < shipAdjTile.dataset.row) {
-                    if (shipDiv.classList.contains('horizontal')) {
-                        shipDiv.classList.remove('horizontal')
-                    }
-
-                    shipDiv.classList.add('vertical')
-                } else if (shipStartPoint.dataset.row > shipAdjTile.dataset.row) {
-                    shipDiv.classList.add('vertical')
-                    shipDiv.classList.add('last-row')
-                }
-
-                // Ship currently horizontal
-                if (shipStartPoint.dataset.col < shipAdjTile.dataset.col) {
-                    if (shipDiv.classList.contains('vertical')) {
-                        shipDiv.classList.remove('vertical')
-                    }
-
-                    shipDiv.classList.add('horizontal')
-                }
-            }
-        })
-    }
-
-    generateShipGameboardIcon(allShips)
-
-    if (remove) {
-        Array.from(realPlayerGameboard.getElementsByClassName('shipDiv')).forEach((div) => {
-            div.remove()
-        })
-    }
-}
+export function refreshStyling(player, playerGameboard, remove) {}
 
 // Flip the ship functionality (horizontal to vertical and vice versa).
 export function flipTheShip(e) {

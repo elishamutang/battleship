@@ -82,9 +82,61 @@ export function shipDragAndDrop(realPlayerObj) {
         })
     }
 
+    insertDraggableShips(realPlayerObj)
+
     // Get all ships
     const allShips = Array.from(realPlayerGameboard.getElementsByClassName('shipDiv'))
     attachEventListeners(allShips)
+}
+
+export function insertDraggableShips(realPlayerObj) {
+    // Get all ships
+    const allShips = realPlayerObj.gameboard.ships
+
+    // Function to generate icons for each type of ship.
+    const generateShipGameboardIcon = (ships) => {
+        ships.forEach((ship) => {
+            const shipStartPoint = realPlayerGameboard.querySelector(
+                `[data-row='${ship.location[0][0]}'][data-col='${ship.location[0][1]}']`
+            )
+
+            const shipDiv = document.createElement('div')
+            shipDiv.className = `loc ${ship.typeOfShip} shipDiv`
+
+            if (shipStartPoint.children.length === 0) {
+                shipStartPoint.append(shipDiv)
+            }
+
+            if (ship.length > 1) {
+                const shipAdjTile = realPlayerGameboard.querySelector(
+                    `[data-row='${ship.location[1][0]}'][data-col='${ship.location[1][1]}']`
+                )
+
+                // Ship currently vertical
+                if (shipStartPoint.dataset.row < shipAdjTile.dataset.row) {
+                    if (shipDiv.classList.contains('horizontal')) {
+                        shipDiv.classList.remove('horizontal')
+                    }
+
+                    shipDiv.classList.add('vertical')
+                } else if (shipStartPoint.dataset.row > shipAdjTile.dataset.row) {
+                    shipDiv.classList.add('vertical')
+                    shipDiv.classList.add('last-row')
+                }
+
+                // Ship currently horizontal
+                if (shipStartPoint.dataset.col < shipAdjTile.dataset.col) {
+                    if (shipDiv.classList.contains('vertical')) {
+                        shipDiv.classList.remove('vertical')
+                    }
+
+                    shipDiv.classList.add('horizontal')
+                }
+            }
+        })
+    }
+
+    generateShipGameboardIcon(allShips)
 }
 
 function getShip(realPlayerObj, shipElem) {
