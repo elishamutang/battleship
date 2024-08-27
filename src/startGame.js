@@ -1,4 +1,4 @@
-import { generateTheShips, hoverOverRealPlayerShips, flipTheShip } from './theDOM'
+import { generateTheShips, hoverOverRealPlayerShips, flipTheShip, refreshStyling } from './theDOM'
 import endGame from './endGame'
 
 // Get the gameboards
@@ -14,6 +14,14 @@ export default function startGame(realPlayer, computerPlayer) {
     realPlayerGameboard.removeEventListener('mouseover', hoverOverRealPlayerShips)
     realPlayerGameboard.removeEventListener('click', flipTheShip)
 
+    // Remove draggable ships and style the tiles instead.
+    Array.from(realPlayerGameboard.getElementsByClassName('shipDiv')).forEach((div) => {
+        div.remove()
+    })
+
+    refreshStyling(realPlayer, realPlayerGameboard)
+
+    // No pointer events for each tile in realPlayerGameboard
     const allTiles = Array.from(realPlayerGameboard.getElementsByClassName('loc'))
 
     allTiles.forEach((tile) => {
@@ -25,6 +33,7 @@ export default function startGame(realPlayer, computerPlayer) {
 
     // Generate ships and hide them.
     generateTheShips(realPlayer, computerPlayer).computerPlayerShips()
+    refreshStyling(computerPlayer, computerPlayerGameboard)
 
     const computerShips = Array.from(computerPlayerGameboard.getElementsByClassName('shipDiv'))
     computerShips.forEach((ship) => {
