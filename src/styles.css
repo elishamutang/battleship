@@ -424,6 +424,7 @@ main.start {
 
 .shipDiv.battleShip {
     background-color: var(--battleship-color);
+    border: 2px solid orangered;
 }
 
 .shipDiv.battleShip.horizontal {
