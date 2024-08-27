@@ -112,6 +112,11 @@ export function insertDraggableShips(realPlayerObj) {
                     `[data-row='${ship.location[1][0]}'][data-col='${ship.location[1][1]}']`
                 )
 
+                // Ship currently at last row, add special styling.
+                if (ship.location[0][0] === 9) {
+                    shipStartPoint.firstChild.classList.add('last-row')
+                }
+
                 // Ship currently vertical
                 if (shipStartPoint.dataset.row < shipAdjTile.dataset.row) {
                     if (shipDiv.classList.contains('horizontal')) {
@@ -192,7 +197,7 @@ function changeLocation(realPlayerObj, shipObj, newLoc, shipDivClass) {
     newShipDiv.className = shipDivClass
     newShipDiv.setAttribute('draggable', 'true')
 
-    // Apply special last row styling.
+    // Apply special styling for last row.
     if (newRow === 9) {
         newShipDiv.classList.add('last-row')
     }
@@ -209,7 +214,6 @@ function changeLocation(realPlayerObj, shipObj, newLoc, shipDivClass) {
     newShipParent.append(newShipDiv)
 
     // Remove from DOM
-    // BELOW NEEDS TO CHANGE TO SUIT SHIP LENGTH > 1
     const oldRow = shipObj.location[0][0]
     const oldCol = shipObj.location[0][1]
 
