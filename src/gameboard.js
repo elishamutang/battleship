@@ -166,7 +166,6 @@ export default class Gameboard {
                 let locY = shipTilePath[j][1]
 
                 if (boundaryX === locX && boundaryY === locY) {
-                    newBoundary.push(ship.boundary[i])
                     ship.boundary.splice(i, 1)
                 }
             }
