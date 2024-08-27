@@ -82,13 +82,10 @@ export default function setUp() {
             })
         })
 
-        // Remove old ships
-        refreshStyling(realPlayer, realPlayerGameboard, true)
-
         // Generate new ships and refresh gameboard.
         generateTheShips(realPlayer, computerPlayer).realPlayerShips()
 
-        // Remove
+        // Remove old ships
         Array.from(realPlayerGameboard.getElementsByClassName('shipDiv')).forEach((div) => {
             div.remove()
         })
@@ -227,7 +224,26 @@ function generateGameboard(player, playerGameboard) {
 }
 
 // Render gameboard.
-export function refreshStyling(player, playerGameboard, remove) {}
+export function refreshStyling(player, playerGameboard) {
+    const allRows = Array.from(playerGameboard.getElementsByClassName('row'))
+
+    // Style the ships.
+    player.gameboard.board.forEach((row, rowIdx) => {
+        row.forEach((loc, idx) => {
+            if (loc === 'p') {
+                allRows[rowIdx].children[idx].className = 'loc patrolBoat'
+            } else if (loc === 'd') {
+                allRows[rowIdx].children[idx].className = 'loc destroyer'
+            } else if (loc === 'c') {
+                allRows[rowIdx].children[idx].className = 'loc carrier'
+            } else if (loc === 'b') {
+                allRows[rowIdx].children[idx].className = 'loc battleShip'
+            } else {
+                allRows[rowIdx].children[idx].className = 'loc'
+            }
+        })
+    })
+}
 
 // Flip the ship functionality (horizontal to vertical and vice versa).
 export function flipTheShip(e) {
@@ -298,9 +314,6 @@ export function flipTheShip(e) {
                     }
                 })
             })
-
-            // Re-render gameboard.
-            refreshStyling(realPlayer, realPlayerGameboard)
         }
     }
 }
@@ -347,8 +360,6 @@ export function generateTheShips(realPlayer, computerPlayer) {
         realPlayerPatrolBoats.forEach((boat) => {
             realPlayer.gameboard.placeShip(boat, [randomizer(), randomizer()])
         })
-
-        refreshStyling(realPlayer, realPlayerGameboard)
     }
 
     const computerPlayerShips = () => {
@@ -386,8 +397,6 @@ export function generateTheShips(realPlayer, computerPlayer) {
         compPatrolBoats.forEach((boat) => {
             computerPlayer.gameboard.placeShip(boat, [randomizer(), randomizer()])
         })
-
-        refreshStyling(computerPlayer, computerPlayerGameboard)
     }
 
     return {
