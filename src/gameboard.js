@@ -88,10 +88,10 @@ export default class Gameboard {
             // Check if ship that is being placed is within any other ship's boundary.
             // If it is, run placeShip method recursively with a new random-generated coordinate.
             if (!this.#checkBoundary(ship)) {
+                console.log(`${ship.typeOfShip} at ${ship.location[0]} is within boundary of other ships`)
                 const newCoord = [randomizer(), randomizer()]
 
                 this.placeShip(ship, newCoord)
-                this.flip(ship)
             } else {
                 ship.location.forEach((tile) => {
                     let tileX = tile[0]
@@ -105,9 +105,10 @@ export default class Gameboard {
             }
         } else {
             // If ship overlaps, re-assign new coordinates/location to the ship.
-            console.log('Ship overlap with other ships')
+            console.log(`${ship.typeOfShip} at ${coord} overlaps with other ships`)
 
-            let newCoord = [randomizer(), randomizer()]
+            const newCoord = [randomizer(), randomizer()]
+            console.log(`Relocating to ${newCoord}`)
 
             this.placeShip(ship, newCoord)
             this.flip(ship)
@@ -153,9 +154,8 @@ export default class Gameboard {
             }
         })
 
-        const newBoundary = []
+        console.log(`Generating ship boundary for ${ship.typeOfShip} at ${shipTilePath[0]}`)
 
-        // REDO THIS
         // Remove ship.location coordinates from ship.boundary array.
         for (let i = 0; i < ship.boundary.length; i++) {
             let boundaryX = ship.boundary[i][0]
@@ -166,8 +166,8 @@ export default class Gameboard {
                 let locY = shipTilePath[j][1]
 
                 if (boundaryX === locX && boundaryY === locY) {
+                    newBoundary.push(ship.boundary[i])
                     ship.boundary.splice(i, 1)
-                    // newBoundary.push(ship.boundary[i])
                 }
             }
         }
@@ -176,7 +176,7 @@ export default class Gameboard {
         ship.boundary = removeDuplicates(ship.boundary)
     }
 
-    // If true, ship that is being placed is out of boundary from other ships. Else, it is being placed within the boundary of some ship(s).
+    // If true, ship is placed out other ships boundary. Else, it is being placed within the boundary of some ship(s).
     #checkBoundary(ship) {
         const locationContent = []
 
@@ -323,12 +323,6 @@ export default class Gameboard {
             // Insert initial ship starting coordinate at the beginning of shipTilePath array.
             shipTilePath.unshift(...ship.location.slice(0, 1))
 
-            // Reset ship boundary
-            ship.boundary = []
-
-            // Generate new boundary
-            this.#generateShipBoundary(ship, shipTilePath)
-
             // Logic to remove previous ship location on the gameboard
             ship.location.forEach((tile) => {
                 let tileX = tile[0]
@@ -337,8 +331,14 @@ export default class Gameboard {
                 this.board[tileX][tileY] = referenceGameboard[tileX][tileY]
             })
 
-            // If the pathway of the ship will not overlap with any other ships, enter here and
-            // check if its new position will overlap with a ship's boundary.
+            // Keep ship's old boundary
+            const originalShipBoundary = ship.boundary
+
+            // Run checkBoundary to see if new shipTilePath will overlap with other ships boundary.
+            ship.boundary = []
+            this.#generateShipBoundary(ship, shipTilePath)
+
+            // If shipTilePath will not overlap with any other ships and ships boundary tiles then enter.
             if (noNaN && this.#checkBoundary(ship)) {
                 ship.location = shipTilePath
 
@@ -350,7 +350,9 @@ export default class Gameboard {
                     this.board[tileX][tileY] = ship.typeOfShip.split('')[0]
                 })
             } else {
-                // Maintain original orientation.
+                // Maintain original orientation and original boundary.
+                ship.boundary = originalShipBoundary
+
                 ship.location.forEach((loc) => {
                     let locX = loc[0]
                     let locY = loc[1]
