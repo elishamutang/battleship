@@ -8,7 +8,7 @@ export default function endGame(realPlayer, computerPlayer) {
     realPlayerGameboard.className = 'gameboard gameover'
 
     // Winner
-    const winner = computerPlayer.gameboard.areAllShipsSunked ? 'You' : 'BudgetAI'
+    const winner = computerPlayer.gameboard.areAllShipsSunked ? 'You' : 'ChadGPZ'
 
     // Add end game banner
     const bannerElem = document.getElementById('banner')
