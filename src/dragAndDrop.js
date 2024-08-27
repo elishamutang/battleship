@@ -15,6 +15,9 @@ export default function enableDragAndDrop(realPlayerObj) {
                 e.preventDefault()
                 e.stopPropagation()
 
+                // Style available tiles for ships with length > 1
+                styleOpenLocationsForBiggerShips(e)
+
                 e.target.classList.add('drop-here')
             })
 
@@ -29,7 +32,10 @@ export default function enableDragAndDrop(realPlayerObj) {
                 e.preventDefault()
                 e.stopPropagation()
 
-                loc.classList.remove('drop-here')
+                // Remove styling for available tiles for ships with length > 1
+                styleOpenLocationsForBiggerShips(e, true)
+
+                e.target.classList.remove('drop-here')
             })
 
             loc.addEventListener('drop', (e) => {
@@ -64,6 +70,26 @@ export default function enableDragAndDrop(realPlayerObj) {
             })
         }
     })
+}
+
+let shipLength
+// FINISH THIS !*
+function styleOpenLocationsForBiggerShips(e, remove) {
+    // Get ship
+    const shipLocX = !e.target.dataset.row ? parseInt(e.target.parentNode.dataset.row) : parseInt(e.target.dataset.row)
+    const shipLocY = !e.target.dataset.col ? parseInt(e.target.parentNode.dataset.col) : parseInt(e.target.dataset.col)
+
+    const firstElem = realPlayerGameboard.querySelector(`[data-row='${shipLocX}'][data-col='${shipLocY}']`)
+
+    const secondElem = realPlayerGameboard.querySelector(`[data-row='${shipLocX}'][data-col='${shipLocY + 1}']`)
+
+    if (shipLength > 1) {
+        secondElem.classList.add('drop-here')
+    }
+
+    if (remove) {
+        secondElem.classList.remove('drop-here')
+    }
 }
 
 export function shipDragAndDrop(realPlayerObj) {
@@ -154,8 +180,6 @@ function getShip(realPlayerObj, shipElem) {
         }
     })
 
-    console.log(realPlayerObj)
-
     const relevantShips = realPlayerObj.gameboard.ships.filter((ship) => {
         if (ship.typeOfShip === shipType) {
             return ship
@@ -228,7 +252,8 @@ function changeLocation(realPlayerObj, shipObj, newLoc, shipDivClass) {
 }
 
 function toggleNoDropTiles(realPlayerObj, currentLoc) {
-    // If currentLoc is provided add noDrop class to boundary location elements, else remove class.
+    // If currentLoc is provided then add noDrop class to boundary location elements.
+    // Else remove noDrop class.
     if (currentLoc) {
         const [currRow, currCol] = currentLoc
 
@@ -291,14 +316,20 @@ function toggleNoDropTiles(realPlayerObj, currentLoc) {
 }
 
 function dragStartHandler(e, realPlayerObj) {
-    const selectedShipRow = e.target.parentNode.dataset.row
-    const selectedShipCol = e.target.parentNode.dataset.col
-
-    console.log(selectedShipRow, selectedShipCol)
+    const selectedShipRow = parseInt(e.target.parentNode.dataset.row)
+    const selectedShipCol = parseInt(e.target.parentNode.dataset.col)
 
     e.dataTransfer.setData('shipRow', selectedShipRow)
     e.dataTransfer.setData('shipCol', selectedShipCol)
     e.dataTransfer.setData('className', e.target.className)
+
+    // Get selected ship and set ship length for styling of open tiles for ship length > 1
+    const selectedShipElem = realPlayerGameboard.querySelector(
+        `[data-row='${selectedShipRow}'][data-col='${selectedShipCol}']`
+    )
+
+    const selectedShip = getShip(realPlayerObj, selectedShipElem)
+    shipLength = selectedShip.length
 
     e.dataTransfer.effectAllowed = 'move'
 
