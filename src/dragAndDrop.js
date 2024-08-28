@@ -39,8 +39,6 @@ export default function enableDragAndDrop(realPlayerObj) {
                 e.stopPropagation()
 
                 // Remove styling after drop.
-                // Maybe transfer this line of code into function below.
-                e.target.classList.remove('drop-here')
                 styleOpenLocationsForBiggerShips(e, true)
 
                 // Old Ship
@@ -64,6 +62,12 @@ export default function enableDragAndDrop(realPlayerObj) {
                     return
                 }
 
+                // Check if ship path is out of bounds of gameboard and return if it is.
+                const shipOrientation = shipDivClass.substr(shipDivClass.search('horizontal'))
+                const shipPath = createShipPath(newRow, newCol, shipOrientation)
+
+                if (!shipPath) return
+
                 // Update new location of old ship.
                 changeLocation(realPlayerObj, shipObj, [newRow, newCol], shipDivClass)
             })
@@ -72,6 +76,8 @@ export default function enableDragAndDrop(realPlayerObj) {
 }
 
 let shipLength
+let shipOrientation
+
 // FINISH THIS !*
 function styleOpenLocationsForBiggerShips(e, remove) {
     // Get ship
@@ -84,6 +90,11 @@ function styleOpenLocationsForBiggerShips(e, remove) {
 
     // Ships with length > 1
     if (shipLength > 1) {
+        // Generate expected ship pathway based on new location.
+        const shipPath = createShipPath(shipLocX, shipLocY, shipOrientation)
+
+        if (!shipPath) return
+
         if (secondElem.classList.contains('noDrop')) {
             firstElem.classList.remove('drop-here')
         } else {
@@ -99,6 +110,32 @@ function styleOpenLocationsForBiggerShips(e, remove) {
         firstElem.classList.remove('drop-here')
         secondElem.classList.remove('drop-here')
     }
+}
+
+// Generate ship path at a particular starting point.
+function createShipPath(shipLocX, shipLocY, shipOrientation) {
+    let result = []
+
+    if (shipOrientation === 'horizontal') {
+        for (let i = 1; i < shipLength; i++) {
+            if (shipLocY + i > 9) {
+                return false
+            }
+
+            result.push([shipLocX, shipLocY + i])
+        }
+    } else {
+        for (let i = 1; i < shipLength; i++) {
+            if (shipLocX + i > 9) {
+                return false
+            }
+
+            result.push([shipLocX + i, shipLocY])
+        }
+    }
+
+    result.unshift([shipLocX, shipLocY])
+    return result
 }
 
 export function shipDragAndDrop(realPlayerObj) {
@@ -233,6 +270,8 @@ function changeLocation(realPlayerObj, shipObj, newLoc, shipDivClass) {
     // Apply special styling for last row.
     if (newRow === 9) {
         newShipDiv.classList.add('last-row')
+    } else if (newRow !== 9 && newShipDiv.classList.contains('last-row')) {
+        newShipDiv.classList.remove('last-row')
     }
 
     // Re-attach event listeners.
@@ -339,6 +378,12 @@ function dragStartHandler(e, realPlayerObj) {
 
     const selectedShip = getShip(realPlayerObj, selectedShipElem)
     shipLength = selectedShip.length
+
+    if (selectedShipElem.firstChild.classList.contains('horizontal')) {
+        shipOrientation = 'horizontal'
+    } else {
+        shipOrientation = 'vertical'
+    }
 
     e.dataTransfer.effectAllowed = 'move'
 
