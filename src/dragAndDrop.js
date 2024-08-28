@@ -17,15 +17,13 @@ export default function enableDragAndDrop(realPlayerObj) {
 
                 // Style available tiles for ships with length > 1
                 styleOpenLocationsForBiggerShips(e)
-
-                e.target.classList.add('drop-here')
             })
 
             loc.addEventListener('dragover', (e) => {
                 e.preventDefault()
                 e.stopPropagation()
 
-                e.target.classList.add('drop-here')
+                styleOpenLocationsForBiggerShips(e)
             })
 
             loc.addEventListener('dragleave', (e) => {
@@ -34,15 +32,16 @@ export default function enableDragAndDrop(realPlayerObj) {
 
                 // Remove styling for available tiles for ships with length > 1
                 styleOpenLocationsForBiggerShips(e, true)
-
-                e.target.classList.remove('drop-here')
             })
 
             loc.addEventListener('drop', (e) => {
                 e.preventDefault()
                 e.stopPropagation()
 
+                // Remove styling after drop.
+                // Maybe transfer this line of code into function below.
                 e.target.classList.remove('drop-here')
+                styleOpenLocationsForBiggerShips(e, true)
 
                 // Old Ship
                 const shipRow = parseInt(e.dataTransfer.getData('shipRow'))
@@ -83,11 +82,21 @@ function styleOpenLocationsForBiggerShips(e, remove) {
 
     const secondElem = realPlayerGameboard.querySelector(`[data-row='${shipLocX}'][data-col='${shipLocY + 1}']`)
 
+    // Ships with length > 1
     if (shipLength > 1) {
-        secondElem.classList.add('drop-here')
+        if (secondElem.classList.contains('noDrop')) {
+            firstElem.classList.remove('drop-here')
+        } else {
+            firstElem.classList.add('drop-here')
+            secondElem.classList.add('drop-here')
+        }
+    } else {
+        firstElem.classList.add('drop-here')
     }
 
-    if (remove) {
+    // Only for ships with length > 1
+    if (remove && secondElem) {
+        firstElem.classList.remove('drop-here')
         secondElem.classList.remove('drop-here')
     }
 }
