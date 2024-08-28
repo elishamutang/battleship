@@ -81,46 +81,58 @@ export default function enableDragAndDrop(realPlayerObj) {
 let shipLength
 let shipOrientation
 
-// FINISH THIS !*
 function styleOpenLocationsForBiggerShips(e, remove) {
     // Get ship
     const shipLocX = !e.target.dataset.row ? parseInt(e.target.parentNode.dataset.row) : parseInt(e.target.dataset.row)
     const shipLocY = !e.target.dataset.col ? parseInt(e.target.parentNode.dataset.col) : parseInt(e.target.dataset.col)
 
-    // Needs to be changed to fit other ships such as battleship and carrier.
-    const firstElem = realPlayerGameboard.querySelector(`[data-row='${shipLocX}'][data-col='${shipLocY}']`)
-    const secondElem = realPlayerGameboard.querySelector(`[data-row='${shipLocX}'][data-col='${shipLocY + 1}']`)
-    // const thirdElem etc..
+    // Store all tiles that the ship might occupy.
+    const tilesForDrop = []
+
+    if (shipOrientation === 'horizontal') {
+        for (let i = 0; i < shipLength; i++) {
+            const element = realPlayerGameboard.querySelector(`[data-row='${shipLocX}'][data-col='${shipLocY + i}']`)
+            tilesForDrop.push(element)
+        }
+    } else {
+        for (let i = 0; i < shipLength; i++) {
+            const element = realPlayerGameboard.querySelector(`[data-row='${shipLocX + i}'][data-col='${shipLocY}']`)
+            tilesForDrop.push(element)
+        }
+    }
 
     // Ships with length > 1
     if (shipLength > 1) {
         // Generate expected ship pathway based on new location.
         const shipPath = createShipPath(shipLocX, shipLocY, shipOrientation)
-
         if (!shipPath) return
 
-        // Check if path is clear (e.g all tiles are available to drop onto for the selected ships)
+        // Check if path is clear (e.g all tiles are available to drop onto for the selected ships).
+        // If path not clear, disable pointer events for the starting point tile.
         if (!isPathClear(shipLocX, shipLocY, shipOrientation)) {
-            firstElem.style.pointerEvents = 'none'
+            tilesForDrop[0].style.pointerEvents = 'none'
         }
 
-        if (secondElem.classList.contains('noDrop')) {
-            firstElem.classList.remove('drop-here')
-        } else {
-            firstElem.classList.add('drop-here')
-            secondElem.classList.add('drop-here')
-        }
+        tilesForDrop.forEach((tile) => {
+            if (tile.classList.contains('noDrop')) {
+                tilesForDrop[0].classList.remove('drop-here')
+            } else {
+                tile.classList.add('drop-here')
+            }
+        })
     } else {
-        firstElem.classList.add('drop-here')
+        tilesForDrop[0].classList.add('drop-here')
     }
 
-    // Only for ships with length > 1
-    if (remove && secondElem) {
-        firstElem.classList.remove('drop-here')
-        secondElem.classList.remove('drop-here')
+    // Remove blue border styling.
+    if (remove && tilesForDrop) {
+        tilesForDrop.forEach((tile) => {
+            tile.classList.remove('drop-here')
+        })
     }
 }
 
+// Checks if new proposed location is all clear to drop ship.
 function isPathClear(shipRow, shipCol, shipOrientation) {
     if (shipOrientation === 'horizontal') {
         for (let i = 0; i < shipLength; i++) {
