@@ -68,6 +68,9 @@ export default function enableDragAndDrop(realPlayerObj) {
 
                 if (!shipPath) return
 
+                // Check if ship path is clear
+                if (!isPathClear(newRow, newCol, shipOrientation)) return
+
                 // Update new location of old ship.
                 changeLocation(realPlayerObj, shipObj, [newRow, newCol], shipDivClass)
             })
@@ -84,9 +87,10 @@ function styleOpenLocationsForBiggerShips(e, remove) {
     const shipLocX = !e.target.dataset.row ? parseInt(e.target.parentNode.dataset.row) : parseInt(e.target.dataset.row)
     const shipLocY = !e.target.dataset.col ? parseInt(e.target.parentNode.dataset.col) : parseInt(e.target.dataset.col)
 
+    // Needs to be changed to fit other ships such as battleship and carrier.
     const firstElem = realPlayerGameboard.querySelector(`[data-row='${shipLocX}'][data-col='${shipLocY}']`)
-
     const secondElem = realPlayerGameboard.querySelector(`[data-row='${shipLocX}'][data-col='${shipLocY + 1}']`)
+    // const thirdElem etc..
 
     // Ships with length > 1
     if (shipLength > 1) {
@@ -94,6 +98,11 @@ function styleOpenLocationsForBiggerShips(e, remove) {
         const shipPath = createShipPath(shipLocX, shipLocY, shipOrientation)
 
         if (!shipPath) return
+
+        // Check if path is clear (e.g all tiles are available to drop onto for the selected ships)
+        if (!isPathClear(shipLocX, shipLocY, shipOrientation)) {
+            firstElem.style.pointerEvents = 'none'
+        }
 
         if (secondElem.classList.contains('noDrop')) {
             firstElem.classList.remove('drop-here')
@@ -110,6 +119,28 @@ function styleOpenLocationsForBiggerShips(e, remove) {
         firstElem.classList.remove('drop-here')
         secondElem.classList.remove('drop-here')
     }
+}
+
+function isPathClear(shipRow, shipCol, shipOrientation) {
+    if (shipOrientation === 'horizontal') {
+        for (let i = 0; i < shipLength; i++) {
+            const element = realPlayerGameboard.querySelector(`[data-row='${shipRow}'][data-col='${shipCol + i}']`)
+
+            if (element.classList.contains('noDrop')) {
+                return false
+            }
+        }
+    } else {
+        for (let i = 0; i < shipLength; i++) {
+            const element = realPlayerGameboard.querySelector(`[data-row='${shipRow + i}'][data-col='${shipCol}']`)
+
+            if (element.classList.contains('noDrop')) {
+                return false
+            }
+        }
+    }
+
+    return true
 }
 
 // Generate ship path at a particular starting point.
