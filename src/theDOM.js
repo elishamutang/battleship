@@ -196,24 +196,6 @@ function generateGameboard(player, playerGameboard) {
 
     const getAllRowDivs = Array.from(playerGameboard.getElementsByClassName('row'))
 
-    // Numbering
-    // getAllRowDivs.forEach((div, idx) => {
-    //     if (idx !== 0) {
-    //         div.children[0].textContent = idx
-    //         div.children[0].className += ' numbering'
-    //     }
-    // })
-
-    // Alphabets
-    const alphabets = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
-
-    // Array.from(getAllRowDivs[0].children).forEach((loc, idx) => {
-    //     if (idx !== 0) {
-    //         loc.textContent = alphabets[idx - 1]
-    //         loc.className += ' alphabets'
-    //     }
-    // })
-
     // Generate coordinates of gameboard and set as dataset coordinate for the DOM elements.
     getAllRowDivs.forEach((div, rowIdx) => {
         Array.from(div.children).forEach((loc, idx) => {
