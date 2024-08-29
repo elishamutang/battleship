@@ -149,7 +149,6 @@ function recordHit(player, playerGameboard, row, col) {
     // Style boundary tiles
     const styleBoundary = (boundary) => {
         boundary.forEach((loc) => {
-            console.log(loc)
             let boundaryX = loc[0]
             let boundaryY = loc[1]
 
@@ -258,8 +257,8 @@ function computerMoves(realPlayer, computerPlayer, shipAdjTiles, currentShip) {
     let healthOfShip
 
     if (shipAdjTiles && !currentShip.sunk) {
-        const randomTile = (tiles) => {
-            let adjacentTiles = tiles || shipAdjTiles
+        const randomTile = () => {
+            let adjacentTiles = shipAdjTiles
             const randomIdx = Math.floor(Math.random() * adjacentTiles.length)
 
             const [tile] = adjacentTiles.splice(randomIdx, 1)
@@ -304,9 +303,11 @@ function computerMoves(realPlayer, computerPlayer, shipAdjTiles, currentShip) {
 
             let baseTile
 
-            const changeTile = (realPlayerGameboardTile, tiles) => {
+            // Looks like a bit buggy..
+            const changeTile = (realPlayerGameboardTile) => {
                 if (realPlayerGameboardTile.className.includes('clicked')) {
-                    adjTile = randomTile(tiles)
+                    adjTile = randomTile()
+                    console.log(adjTile)
 
                     if (adjTile) {
                         ;[row, col] = adjTile
