@@ -82,6 +82,11 @@ let shipLength
 let shipOrientation
 
 function styleOpenLocationsForBiggerShips(e, remove) {
+    // Reset tiles with no-path class.
+    Array.from(realPlayerGameboard.getElementsByClassName('no-path')).forEach((tile) => {
+        tile.classList.remove('no-path')
+    })
+
     // Get ship
     const shipLocX = !e.target.dataset.row ? parseInt(e.target.parentNode.dataset.row) : parseInt(e.target.dataset.row)
     const shipLocY = !e.target.dataset.col ? parseInt(e.target.parentNode.dataset.col) : parseInt(e.target.dataset.col)
@@ -110,7 +115,9 @@ function styleOpenLocationsForBiggerShips(e, remove) {
         // Check if path is clear (e.g all tiles are available to drop onto for the selected ships).
         // If path not clear, disable pointer events for the starting point tile.
         if (!isPathClear(shipLocX, shipLocY, shipOrientation)) {
-            tilesForDrop[0].style.pointerEvents = 'none'
+            tilesForDrop.forEach((tile) => {
+                tile.classList.add('no-path')
+            })
         }
 
         tilesForDrop.forEach((tile) => {

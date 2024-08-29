@@ -447,3 +447,7 @@ main.start {
 .shipDiv.carrier.vertical {
     height: calc(50vh * 4 / var(--totalNumOfTiles));
 }
+
+.no-path {
+    pointer-events: none;
+}
