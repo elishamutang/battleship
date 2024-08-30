@@ -66,7 +66,7 @@ export default function startGame(realPlayer, computerPlayer) {
 
     const overlayText = document.createElement('p')
     overlayText.className = 'overlayText'
-    overlayText.innerHTML = "It's <span>your move</span>, click on any tile on your opponent's board."
+    overlayText.innerHTML = "It's <span>your move</span> , click on any tile on your opponent's board."
 
     overlay.append(overlayText)
     firstRowDiv.insertAdjacentElement('afterbegin', overlay)
@@ -157,7 +157,7 @@ function recordHit(player, playerGameboard, row, col) {
             boundaryTile.textContent = 'X'
 
             if (!boundaryTile.className.includes('clicked')) {
-                boundaryTile.className += ' clicked'
+                boundaryTile.classList.add('clicked')
             }
         })
     }
@@ -179,7 +179,7 @@ function recordHit(player, playerGameboard, row, col) {
         }
 
         const shipIcon = getShipIcon()
-        shipIcon.className = shipIcon.className + ' sunk'
+        shipIcon.classList.add('sunk')
 
         styleBoundary(ship.boundary)
     } else {
@@ -303,7 +303,6 @@ function computerMoves(realPlayer, computerPlayer, shipAdjTiles, currentShip) {
 
             let baseTile
 
-            // Looks like a bit buggy..
             const changeTile = (realPlayerGameboardTile) => {
                 if (realPlayerGameboardTile.className.includes('clicked')) {
                     adjTile = randomTile()

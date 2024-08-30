@@ -1,7 +1,7 @@
 import { Ship } from './ship'
 import { Player } from './player'
 import startGame from './startGame'
-import enableDragAndDrop, { shipDragAndDrop, insertDraggableShips } from './dragAndDrop'
+import enableDragAndDrop, { shipDragAndDrop } from './dragAndDrop'
 
 // Initialize players
 const realPlayer = new Player()
@@ -54,18 +54,24 @@ export default function setUp() {
     tipDiv.className = 'tipDiv'
 
     const tipContainer = document.createElement('p')
-    tipContainer.textContent = 'Drag and drop the ships, or go random. Ready? Click start below.'
+    tipContainer.textContent = "Drag and drop the ships, or go random. Ready? Let's start!"
 
     tipDiv.append(tipContainer)
 
     realPlayerGameboard.querySelector('.boardUI').append(tipDiv)
+
+    // To store start and randomise buttons
+    const buttonsContainer = document.createElement('div')
+    buttonsContainer.id = 'buttonsContainer'
+
+    tipDiv.append(buttonsContainer)
 
     // Add randomise ship positions button.
     const randomiseBtn = document.createElement('button')
     randomiseBtn.className = 'randomiseBtn'
     randomiseBtn.innerHTML = '<i class="gg-sync"></i>'
 
-    tipDiv.append(randomiseBtn)
+    buttonsContainer.append(randomiseBtn)
 
     randomiseBtn.addEventListener('click', (e) => {
         realPlayer.gameboard.reset()
@@ -102,7 +108,7 @@ export default function setUp() {
     startBtn.className = 'startBtn'
     startBtn.textContent = 'START'
 
-    tipDiv.append(startBtn)
+    buttonsContainer.append(startBtn)
 
     // Drag and drop
     enableDragAndDrop(realPlayer)
