@@ -497,6 +497,30 @@ main.start {
     height: 100%;
     opacity: 0.8;
     z-index: 99;
+
+    animation: shipDarken 5s ease-out infinite;
+}
+
+@keyframes shipDarken {
+    0% {
+        filter: brightness(0.5);
+    }
+
+    25% {
+        filter: brightness(1);
+    }
+
+    50% {
+        filter: brightness(0.5);
+    }
+
+    75% {
+        filter: brightness(1);
+    }
+
+    100% {
+        filter: brightness(0.5);
+    }
 }
 
 .shipDiv.vertical {
