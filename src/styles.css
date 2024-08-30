@@ -28,7 +28,6 @@ body {
 }
 
 main {
-    border: 2px solid black;
     height: 100vh;
 
     display: grid;
@@ -59,6 +58,17 @@ main.start {
     padding: 0.5rem 1rem;
     border-bottom-left-radius: 1rem;
     border-bottom-right-radius: 1rem;
+    border: 1px solid var(--banner-color);
+    border-top: 0px;
+
+    transition: all 0.5s ease;
+}
+
+#banner:hover {
+    color: var(--banner-color);
+    background-color: white;
+    border: 1px solid var(--banner-color);
+    border-top: 0px;
 }
 
 #realPlayer {
@@ -286,6 +296,7 @@ main.start {
     padding: 0.5rem 0;
     font-size: 1.5rem;
     cursor: pointer;
+    font-weight: bold;
 
     background: var(--banner-color);
     color: white;
@@ -293,6 +304,8 @@ main.start {
     border-style: none;
     position: relative;
     z-index: 1;
+
+    transition: 0.4s ease;
 }
 
 .startBtn::after {
@@ -309,11 +322,15 @@ main.start {
         inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),
         7px 7px 20px 0px rgba(0, 0, 0, 0.1),
         4px 4px 5px 0px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+
+    transition: all 0.4s ease;
 }
 
 .startBtn:hover {
     color: white;
+    letter-spacing: 0.2rem;
+
+    transition: 0.4s ease;
 }
 
 .startBtn:hover::after {
