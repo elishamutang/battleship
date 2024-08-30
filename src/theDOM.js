@@ -106,7 +106,7 @@ export default function setUp() {
     // Add start button
     const startBtn = document.createElement('button')
     startBtn.className = 'startBtn'
-    startBtn.textContent = 'START'
+    startBtn.textContent = 'Start'
 
     buttonsContainer.append(startBtn)
 
